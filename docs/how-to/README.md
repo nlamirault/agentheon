@@ -10,6 +10,7 @@ goals in Agentheon. These guides assume you already know the basics.
 
 ## Available Guides
 
+- [Install the pantheon into Hermes Agent](install-the-pantheon.md)
 - [Add a new agent to the pantheon](add-a-new-agent.md)
 
 ## What's a How-to Guide?
