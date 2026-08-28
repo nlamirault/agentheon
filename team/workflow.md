@@ -12,10 +12,12 @@ Nothing advances past a gate it has not passed.
 
 ```text
 Request → Hermes (route)
+  → Kairos        prioritize   gate: worth building, scoped, acceptance criteria set
   → Athena        plan         gate: plan is ordered, files named, risks listed
   → Hephaestus    build        gate: builds and runs
   → Artemis       test         GATE: PASS/FAIL on acceptance criteria
   → Argus         review       GATE: PASS/FAIL on correctness + security
+  → Themis        comply       GATE: PASS/FAIL on licensing, DCO, privacy, policy
   → Apollo        document     gate: docs match the change
   → Hermes        synthesize + return
 ```
