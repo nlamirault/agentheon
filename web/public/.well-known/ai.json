@@ -1,0 +1,31 @@
+{
+  "spec_version": "1.0",
+  "site_name": "Agentheon",
+  "site_url": "https://agentheon.lamirault.xyz",
+  "description": "A pantheon of Greek-deity software-engineering agents, orchestrated by Hermes.",
+  "contact": "https://github.com/nlamirault/agentheon",
+  "policy_url": "https://agentheon.lamirault.xyz/llms.txt",
+  "training": "deny",
+  "scraping": "allow",
+  "indexing": "allow",
+  "caching": "allow",
+  "attribution": "required",
+  "ai_disclosure": "recommended",
+  "training_license": "Apache-2.0",
+  "agents": {
+    "ClaudeBot": {
+      "training": "deny",
+      "scraping": "allow"
+    },
+    "GPTBot": {
+      "training": "deny",
+      "scraping": "allow"
+    },
+    "CCBot": {
+      "scraping": "deny"
+    },
+    "Bytespider": {
+      "scraping": "deny"
+    }
+  }
+}

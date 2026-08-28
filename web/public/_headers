@@ -1,0 +1,8 @@
+/*
+  Link: <https://agentheon.lamirault.xyz/.well-known/agent-card.json>; rel="agent-card", <https://agentheon.lamirault.xyz/llms.txt>; rel="describedby"; type="text/plain", <https://agentheon.lamirault.xyz/.well-known/security.txt>; rel="security.txt", <https://agentheon.lamirault.xyz/.well-known/ai.txt>; rel="ai-txt", <https://agentheon.lamirault.xyz/.well-known/ai.json>; rel="ai-json"
+  Vary: Accept
+  X-Robots-Tag: index, follow
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600

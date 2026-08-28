@@ -91,10 +91,25 @@ web-preview: check-pnpm ## Preview the production build locally
 	@echo -e "$(INFO)$(INFO_COLOR)[Website] Previewing build $(NO_COLOR)"
 	@$(PNPM) run preview
 
+# wrangler is run on-demand via `pnpm dlx` (not a project dependency) so the
+# supply-chain release-age gate on Astro's transitive deps never blocks a plain
+# `web-build`. Pin the major to keep deploys reproducible.
+WRANGLER = pnpm --dir $(WEB_DIR) dlx wrangler@4
+
+.PHONY: web-serve
+web-serve: web-build ## Serve the build through the Cloudflare Worker locally (wrangler dev)
+	@echo -e "$(INFO)$(INFO_COLOR)[Website] Serving via wrangler dev $(NO_COLOR)"
+	@$(WRANGLER) dev
+
+.PHONY: web-deploy
+web-deploy: web-build ## Deploy the website to Cloudflare Workers (wrangler deploy)
+	@echo -e "$(INFO)$(INFO_COLOR)[Website] Deploying to Cloudflare $(NO_COLOR)"
+	@$(WRANGLER) deploy
+
 .PHONY: web-clean
-web-clean: ## Remove website build artifacts (dist, .astro)
+web-clean: ## Remove website build artifacts (dist, .astro, .wrangler)
 	@echo -e "$(INFO)$(INFO_COLOR)[Website] Cleaning artifacts $(NO_COLOR)"
-	@rm -rf $(WEB_DIR)/dist $(WEB_DIR)/.astro
+	@rm -rf $(WEB_DIR)/dist $(WEB_DIR)/.astro $(WEB_DIR)/.wrangler
 
 ##@ Misc
 

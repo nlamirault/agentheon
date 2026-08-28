@@ -1,0 +1,5 @@
+Contact: mailto:nicolas.lamirault@gmail.com
+Canonical: https://agentheon.lamirault.xyz/.well-known/security.txt
+Policy: https://github.com/nlamirault/agentheon/blob/main/SECURITY.md
+Expires: 2027-08-28T00:00:00.000Z
+Preferred-Languages: en, fr

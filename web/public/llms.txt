@@ -1,0 +1,66 @@
+# Agentheon
+
+> A pantheon of Greek-deity software-engineering agents. Hermes orchestrates;
+> each specialist owns exactly one domain and hands off along defined routes,
+> advancing only through PASS/FAIL quality gates.
+
+Agentheon is an open-source agentic agency: a curated roster of specialist AI
+agent profiles — each a god of its domain — that drop into your agent runtime.
+Every agent is a single Markdown profile (role, domain, tools, system prompt).
+
+License: Apache 2.0
+Source: https://github.com/nlamirault/agentheon
+Language: English
+
+## Markdown for agents
+
+Every page supports content negotiation. Send `Accept: text/markdown` to any
+URL and the edge Worker returns a clean Markdown rendering instead of HTML —
+for example the home page or any agent page below.
+
+## The Pantheon
+
+Each agent page lives at `/agents/<name>/`.
+
+- Hermes — The Orchestrator — Routing & Coordination (the sole entrypoint)
+- Athena — The Strategist — Architecture & Planning
+- Hephaestus — The Builder — Implementation
+- Apollo — The Chronicler — Documentation & Knowledge
+- Artemis — The Hunter — Testing & QA
+- Argus — The Watcher — Security & Review
+- Hestia — The Keeper — DevOps & Infrastructure
+- Asclepius — The Healer — Debugging & Incident Response
+- Demeter — The Cultivator — Data & Database Engineering
+- Prometheus — The Forethinker — AI & ML Engineering
+- Aphrodite — The Aesthete — Frontend & UX
+- Aglaea — The Adornment — Design & Design Systems
+- Kairos — The Opportune — Product & Prioritization
+- Themis — The Arbiter — Compliance & Governance
+- Helios — The All-Seeing — Observability & SRE
+- Hygieia — The Purifier — Code Health & Refactoring
+- Iris — The Messenger — Open Source & Community
+
+## How it works
+
+- Hermes is the single orchestrator (see ADR-0001): it routes every request and
+  never does specialist work; specialists execute and hand off along their
+  declared `handoffs` edges.
+- Work advances through a plan → build → test → review → comply loop, gated by
+  explicit PASS/FAIL checks.
+
+## Pages
+
+- / — Home
+- /agents/<name>/ — one page per agent profile
+
+## AI discovery
+
+- AI policy (text): https://agentheon.lamirault.xyz/.well-known/ai.txt
+- AI policy (json): https://agentheon.lamirault.xyz/.well-known/ai.json
+- Agent card: https://agentheon.lamirault.xyz/.well-known/agent-card.json
+- Security: https://agentheon.lamirault.xyz/.well-known/security.txt
+
+## Contact & Contribution
+
+All content is open source (Apache 2.0). Contributions are welcome via GitHub:
+https://github.com/nlamirault/agentheon

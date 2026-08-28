@@ -1,9 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages project page. If you later add a custom domain, set
-// site to that domain and base to '/'.
+// Served at the domain root on Cloudflare Workers (see ADR-0002). No `base`
+// path — asset URLs resolve from `/`, not a `/agentheon` project subpath.
 export default defineConfig({
-  site: 'https://nlamirault.github.io',
-  base: '/agentheon',
+  site: 'https://agentheon.lamirault.xyz',
 });

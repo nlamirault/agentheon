@@ -1,0 +1,28 @@
+Spec-Version: 1.0
+Site-Name: Agentheon
+Site-URL: https://agentheon.lamirault.xyz
+Description: A pantheon of Greek-deity software-engineering agents, orchestrated by Hermes.
+Contact: https://github.com/nlamirault/agentheon
+Policy-URL: https://agentheon.lamirault.xyz/llms.txt
+
+Training: deny
+Scraping: allow
+Indexing: allow
+Caching: allow
+Attribution: required
+AI-Disclosure: recommended
+Training-License: Apache-2.0
+
+Agent: ClaudeBot
+  Training: deny
+  Scraping: allow
+
+Agent: GPTBot
+  Training: deny
+  Scraping: allow
+
+Agent: CCBot
+  Scraping: deny
+
+Agent: Bytespider
+  Scraping: deny
