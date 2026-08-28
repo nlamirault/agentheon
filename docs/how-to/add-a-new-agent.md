@@ -53,7 +53,7 @@ narrow the boundary in `does` / `does_not` rather than duplicating scope.
 ### 3. Wire the handoffs
 
 Set `handoffs` to the agents this one legitimately routes to. These edges become
-the routing matrix (`team/routing.md`) that Hermes reads. Every handoff must
+the routing matrix (`team/routing.md`) that Zeus reads. Every handoff must
 travel with the [handoff template](../../team/handoff-template.md).
 
 ### 4. Regenerate the profiles

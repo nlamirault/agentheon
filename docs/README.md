@@ -6,7 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 # Agentheon Documentation
 
 Welcome to the Agentheon documentation. Agentheon is a pantheon of
-Greek-deity software-engineering agents — Hermes orchestrates, specialists do
+Greek-deity software-engineering agents — Zeus orchestrates, specialists do
 the work and hand off to each other along defined routes through quality gates.
 
 Content is organized following the [Diátaxis framework](https://diataxis.fr/),

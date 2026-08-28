@@ -8,7 +8,7 @@ date: 2026-08-28
 spdx-license: Apache-2.0
 ---
 
-# ADR-0001: Hermes as the Sole Orchestrator
+# ADR-0001: Zeus as the Sole Orchestrator
 
 ## Context
 
@@ -33,7 +33,7 @@ The decision: where does routing authority live?
 
 ## Considered Options
 
-1. **Single orchestrator (Hermes)** — one entrypoint routes every request;
+1. **Single orchestrator (Zeus)** — one entrypoint routes every request;
    specialists only execute within their domain.
 2. **Peer-to-peer routing** — every agent knows the others and hands off
    directly, with no central router.
@@ -42,7 +42,7 @@ The decision: where does routing authority live?
 
 ## Pros and Cons
 
-### 1. Single orchestrator (Hermes)
+### 1. Single orchestrator (Zeus)
 
 **Pros:**
 
@@ -86,9 +86,9 @@ The decision: where does routing authority live?
 
 ## Decision
 
-We will use **Option 1 — a single orchestrator (Hermes)**. Hermes is the only
+We will use **Option 1 — a single orchestrator (Zeus)**. Zeus is the only
 entrypoint. It routes and never does specialist work; the specialists execute
-and hand off along their declared routes. Hermes reads `team/routing.md`, which
+and hand off along their declared routes. Zeus reads `team/routing.md`, which
 is compiled from the machine-readable `handoffs` edges declared across the agent
 profiles, so the "who does what" map has exactly one source of truth.
 
@@ -108,7 +108,7 @@ tribal routing knowledge that peer-to-peer would require.
 
 ### Negative
 
-- ❌ Hermes is a bottleneck and a single point of failure for request intake.
+- ❌ Zeus is a bottleneck and a single point of failure for request intake.
 - ❌ Every new agent must declare `handoffs` edges so the routing matrix stays
   complete.
 
@@ -122,4 +122,4 @@ tribal routing knowledge that peer-to-peer would require.
 - [`docs/explanation/architecture.md`](../explanation/architecture.md) — orchestration, handoffs, and gates
 - [`team/company.md`](../../team/company.md) — shared team principles
 - [`team/workflow.md`](../../team/workflow.md) — the plan → build → test → review → comply loop
-- [`agents/hermes.md`](../../agents/hermes.md) — the orchestrator profile
+- [`agents/zeus.md`](../../agents/zeus.md) — the orchestrator profile

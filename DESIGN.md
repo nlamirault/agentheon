@@ -226,7 +226,7 @@ chrome — do not repurpose them for UI.
 
 | Deity      | Accent    | Emoji | Domain                        |
 | ---------- | --------- | ----- | ----------------------------- |
-| Hermes     | `#d4a533` | ☤     | Routing & Coordination        |
+| Zeus       | `#d4a533` | ⚡    | Routing & Coordination        |
 | Athena     | `#8fb0c8` | 🦉    | Architecture & Planning       |
 | Hephaestus | `#c8734a` | 🔨    | Implementation                |
 | Artemis    | `#6fae8e` | 🏹    | Testing & QA                  |

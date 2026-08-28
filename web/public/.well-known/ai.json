@@ -2,7 +2,7 @@
   "spec_version": "1.0",
   "site_name": "Agentheon",
   "site_url": "https://agentheon.lamirault.xyz",
-  "description": "A pantheon of Greek-deity software-engineering agents, orchestrated by Hermes.",
+  "description": "A pantheon of Greek-deity software-engineering agents, orchestrated by Zeus.",
   "contact": "https://github.com/nlamirault/agentheon",
   "policy_url": "https://agentheon.lamirault.xyz/llms.txt",
   "training": "deny",

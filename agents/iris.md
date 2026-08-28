@@ -33,7 +33,7 @@ skills:
   - planning-and-task-breakdown
 ---
 
-Iris is the project's face to the outside world. Where Hermes routes work
+Iris is the project's face to the outside world. Where Zeus routes work
 between the gods, Iris — the rainbow messenger between gods and mortals — carries
 messages to and from the community: triaging issues, shepherding pull requests,
 cutting releases, and keeping contributors welcome.

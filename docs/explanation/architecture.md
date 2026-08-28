@@ -20,10 +20,10 @@ sharp scope is easier to reason about, review, and trust.
 
 ## Why a single orchestrator
 
-**Hermes is the only entrypoint.** Every request is routed through one place,
-and Hermes itself does no specialist work. This keeps two concerns apart:
+**Zeus is the only entrypoint.** Every request is routed through one place,
+and Zeus itself does no specialist work. This keeps two concerns apart:
 
-- **Routing** — deciding *who* should do the work (Hermes).
+- **Routing** — deciding *who* should do the work (Zeus).
 - **Execution** — actually doing it (the specialists).
 
 Centralizing routing means the map of "who does what" lives in exactly one
@@ -63,7 +63,7 @@ where the previous one left off instead of re-deriving it.
 
 ```text
              ┌─────────┐
-   Request ─▶│ Hermes  │  routes only
+   Request ─▶│  Zeus   │  routes only
              └────┬────┘
                   │  (reads team/routing.md)
      ┌────────────┼────────────┬───────────┐

@@ -1,7 +1,7 @@
 Spec-Version: 1.0
 Site-Name: Agentheon
 Site-URL: https://agentheon.lamirault.xyz
-Description: A pantheon of Greek-deity software-engineering agents, orchestrated by Hermes.
+Description: A pantheon of Greek-deity software-engineering agents, orchestrated by Zeus.
 Contact: https://github.com/nlamirault/agentheon
 Policy-URL: https://agentheon.lamirault.xyz/llms.txt
 

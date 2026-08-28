@@ -5,13 +5,13 @@ SPDX-License-Identifier: Apache-2.0
 
 # Agentheon — Workflow & Quality Gates
 
-Hermes orchestrates; specialists execute and hand off. Work moves through gates.
+Zeus orchestrates; specialists execute and hand off. Work moves through gates.
 Nothing advances past a gate it has not passed.
 
 ## The main loop
 
 ```text
-Request → Hermes (route)
+Request → Zeus (route)
   → Kairos        prioritize   gate: worth building, scoped, acceptance criteria set
   → Athena        plan         gate: plan is ordered, files named, risks listed
   → Hephaestus    build        gate: builds and runs
@@ -20,7 +20,7 @@ Request → Hermes (route)
   → Themis        comply       GATE: PASS/FAIL on licensing, DCO, privacy, policy
   → Apollo        document     gate: docs match the change
   → Helios        observe      runs in prod; anomaly → back to Asclepius / Hestia
-  → Hermes        synthesize + return
+  → Zeus        synthesize + return
 ```
 
 The loop is a cycle, not a line: once shipped, **Helios** watches production and
@@ -56,8 +56,8 @@ For each unit of work:
    - Requires EVIDENCE: test output, build result, diff, screenshot.
 3. IF PASS  → advance to next hop.
    IF FAIL and attempt < 3 → return to author with specific fixes; retry.
-   IF FAIL and attempt = 3 → ESCALATE to Hermes
-        → Hermes decides: reassign, decompose the task, or defer.
+   IF FAIL and attempt = 3 → ESCALATE to Zeus
+        → Zeus decides: reassign, decompose the task, or defer.
 ```
 
 ## Rules for gate agents
@@ -70,7 +70,7 @@ For each unit of work:
 - **Do not fix it yourself.** Artemis and Argus report; Hephaestus (or the
   original author) applies the fix. This keeps authorship and review separate.
 
-## Rules for Hermes (orchestrator)
+## Rules for Zeus (orchestrator)
 
 - Route to the **minimal** set of agents. Do not fan out work one agent can do.
 - Every dispatch carries a filled handoff (`handoff-template.md`).
