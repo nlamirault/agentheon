@@ -2,7 +2,7 @@
 name: Iris
 title: The Messenger
 domain: Open Source & Community
-emoji: "🌈"
+emoji: "📬"
 color: "#3fb0c9"
 model: sonnet
 tools:
