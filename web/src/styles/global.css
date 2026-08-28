@@ -1,0 +1,152 @@
+:root {
+  --bg: #0a0a0b;
+  --surface: #141416;
+  --surface-2: #1c1c20;
+  --border: #2a2a30;
+  --gold: #d4a533;
+  --gold-bright: #e8c063;
+  --text: #e8e8ea;
+  --muted: #9a9aa2;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --maxw: 1080px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* subtle gold aura behind the hero */
+body::before {
+  content: "";
+  position: fixed;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(212, 165, 51, 0.10), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+a { color: var(--gold-bright); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+
+/* ---- nav ---- */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+nav .brand { display: flex; align-items: center; gap: .55rem; font-weight: 600; color: var(--text); }
+nav .brand .mark { color: var(--gold); font-size: 1.4rem; }
+nav .links { display: flex; gap: 1.5rem; font-size: .9rem; }
+nav .links a { color: var(--muted); }
+nav .links a:hover { color: var(--text); text-decoration: none; }
+
+/* ---- hero ---- */
+.hero { padding: 6rem 0 4rem; text-align: center; }
+.hero .eyebrow {
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.2rem;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  line-height: 1.05;
+  margin: 0 0 1.2rem;
+  letter-spacing: -0.01em;
+}
+.hero h1 em { color: var(--gold-bright); font-style: italic; }
+.hero p.lede { color: var(--muted); font-size: 1.2rem; max-width: 620px; margin: 0 auto 2.2rem; }
+
+.cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .7rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: .95rem;
+}
+.btn-primary { background: var(--gold); color: #17130a; }
+.btn-primary:hover { background: var(--gold-bright); text-decoration: none; }
+.btn-ghost { border: 1px solid var(--border); color: var(--text); }
+.btn-ghost:hover { border-color: var(--gold); text-decoration: none; }
+
+/* ---- install block ---- */
+.install {
+  margin: 2.5rem auto 0; max-width: 560px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  font-family: var(--font-mono); font-size: .9rem;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .9rem 1.1rem; text-align: left;
+}
+.install .cmd { color: var(--text); }
+.install .cmd .sigil { color: var(--gold); user-select: none; }
+
+/* ---- section heading ---- */
+.section { padding: 4rem 0; }
+.section h2 {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: 2.4rem; margin: 0 0 .4rem; text-align: center;
+}
+.section .sub { color: var(--muted); text-align: center; margin: 0 auto 2.5rem; max-width: 560px; }
+
+/* ---- agent grid ---- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.5rem; transition: border-color .18s, transform .18s;
+  display: block; color: var(--text);
+}
+.card:hover { border-color: var(--agent, var(--gold)); transform: translateY(-3px); text-decoration: none; }
+.card .top { display: flex; align-items: center; gap: .8rem; margin-bottom: .9rem; }
+.card .glyph {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: grid; place-items: center; font-size: 1.4rem;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.card .name { font-weight: 600; font-size: 1.15rem; line-height: 1.1; }
+.card .role { font-family: var(--font-mono); font-size: .72rem; color: var(--agent, var(--gold)); text-transform: uppercase; letter-spacing: .1em; }
+.card .tagline { color: var(--muted); font-size: .95rem; margin: 0 0 1rem; }
+.card .meta { display: flex; flex-wrap: wrap; gap: .4rem; }
+.pill {
+  font-family: var(--font-mono); font-size: .72rem; color: var(--muted);
+  background: var(--surface-2); border: 1px solid var(--border);
+  padding: .2rem .55rem; border-radius: 999px;
+}
+
+/* ---- footer ---- */
+footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--muted); font-size: .88rem; }
+footer .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+
+/* ---- agent detail page ---- */
+.detail { padding: 4rem 0; max-width: 760px; }
+.detail .back { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); }
+.detail .head { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0 .5rem; }
+.detail .head .glyph { width: 60px; height: 60px; font-size: 2rem; border-radius: 12px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--border); }
+.detail h1 { font-family: var(--font-display); font-weight: 500; font-size: 3rem; margin: 0; }
+.detail .role { font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .12em; }
+.detail .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0 2.5rem; }
+.prose { color: var(--text); }
+.prose h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.9rem; margin: 2.2rem 0 .6rem; }
+.prose code { font-family: var(--font-mono); font-size: .88em; background: var(--surface); border: 1px solid var(--border); padding: .1rem .35rem; border-radius: 5px; }
+.prose ul { padding-left: 1.2rem; }
+.prose li { margin: .3rem 0; }

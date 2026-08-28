@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url';
+
+const agents = (await getCollection('agents')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+<Base>
+  <section class="wrap hero">
+    <div class="eyebrow">Open-source agentic agency</div>
+    <h1>Summon a <em>pantheon</em><br />of AI agents.</h1>
+    <p class="lede">
+      Agentheon is a curated roster of specialist agent profiles — each a god of
+      its domain — orchestrated by Hermes into a single working agency.
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary" href={withBase('#agents')}>Meet the agents</a>
+      <a class="btn btn-ghost" href="https://github.com/nlamirault/agentheon">★ Star on GitHub</a>
+    </div>
+    <div class="install" id="start">
+      <span class="cmd"><span class="sigil">$ </span>git clone https://github.com/nlamirault/agentheon</span>
+    </div>
+  </section>
+
+  <section class="wrap section" id="agents">
+    <h2>The Pantheon</h2>
+    <p class="sub">Each agent is one markdown profile — a role, a domain, its tools, and a system prompt. Drop them into your agent runtime.</p>
+    <div class="grid">
+      {agents.map((a) => (
+        <a class="card" href={withBase(`agents/${a.id}/`)} style={`--agent:${a.data.color}`}>
+          <div class="top">
+            <div class="glyph">{a.data.emoji}</div>
+            <div>
+              <div class="name">{a.data.name}</div>
+              <div class="role">{a.data.title}</div>
+            </div>
+          </div>
+          <p class="tagline">{a.data.tagline}</p>
+          <div class="meta">
+            <span class="pill">{a.data.domain}</span>
+            <span class="pill">{a.data.model}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>
