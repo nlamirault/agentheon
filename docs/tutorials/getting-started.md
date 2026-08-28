@@ -77,6 +77,7 @@ at each gate.
 
 ## Next steps
 
+- [Install the pantheon into Hermes Agent](../how-to/install-the-pantheon.md)
 - [Add a new agent to the pantheon](../how-to/add-a-new-agent.md)
 - [Pantheon architecture](../explanation/architecture.md)
 - [Agent catalog](../reference/agents.md)
