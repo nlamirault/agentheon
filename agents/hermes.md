@@ -27,6 +27,8 @@ handoffs:
   - aglaea
   - kairos
   - themis
+  - helios
+  - hygieia
 does:
   - Classify the request and pick the minimal set of agents.
   - Pass context between agents and sequence their work.

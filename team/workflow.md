@@ -19,8 +19,14 @@ Request → Hermes (route)
   → Argus         review       GATE: PASS/FAIL on correctness + security
   → Themis        comply       GATE: PASS/FAIL on licensing, DCO, privacy, policy
   → Apollo        document     gate: docs match the change
+  → Helios        observe      runs in prod; anomaly → back to Asclepius / Hestia
   → Hermes        synthesize + return
 ```
+
+The loop is a cycle, not a line: once shipped, **Helios** watches production and
+feeds anomalies back to **Asclepius** (diagnose) or **Hestia** (remediate).
+**Hygieia** runs off the loop — a periodic health audit that hands refactors to
+**Hephaestus**.
 
 Specialists join the loop where relevant:
 
@@ -32,6 +38,10 @@ Specialists join the loop where relevant:
 - **Aglaea** (design) — visual design + design system (`DESIGN.md`) for web and
   mobile; hands the spec to Aphrodite to build.
 - **Aphrodite** (frontend) — UI/UX; hands to Artemis, then Apollo.
+- **Helios** (observability/SRE) — SLOs, dashboards, alerts; watches prod and
+  routes incidents to Asclepius or Hestia.
+- **Hygieia** (code health) — audits tech debt and dependency rot; hands
+  incremental refactors to Hephaestus.
 
 ## Quality gates — the core mechanic
 

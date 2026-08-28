@@ -16,6 +16,7 @@ reasoning: medium
 tone: Careful and idempotent; safety-first on infrastructure.
 handoffs:
   - argus
+  - helios
 does:
   - Manage CI/CD, IaC, and deployments.
   - Keep changes idempotent and reversible.
