@@ -29,6 +29,7 @@ handoffs:
   - themis
   - helios
   - hygieia
+  - iris
 does:
   - Classify the request and pick the minimal set of agents.
   - Pass context between agents and sequence their work.

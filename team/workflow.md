@@ -42,6 +42,9 @@ Specialists join the loop where relevant:
   routes incidents to Asclepius or Hestia.
 - **Hygieia** (code health) — audits tech debt and dependency rot; hands
   incremental refactors to Hephaestus.
+- **Iris** (open source/community) — the project's external interface: triages
+  issues and PRs, cuts releases, routes feature requests to Kairos, code review
+  to Argus, and bugs to Asclepius.
 
 ## Quality gates — the core mechanic
 
