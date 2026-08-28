@@ -1,0 +1,36 @@
+# Agentheon — https://agentheon.lamirault.xyz
+#
+# Content-Signal definitions (Cloudflare Content Signals spec):
+#   search    — building a search index and returning results
+#   ai-input  — reading content for RAG / grounding / real-time AI answers
+#   ai-train  — training or fine-tuning AI models
+#   use       — how AI systems may consume content (immediate | reference | full)
+
+User-agent: *
+Allow: /
+
+# AI crawlers — welcome for content reading; training is not permitted
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Disallow bots known primarily for AI training data harvesting
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /

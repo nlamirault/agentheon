@@ -10,3 +10,6 @@ pnpm-debug.log*
 # env
 .env
 .env.production
+# cloudflare wrangler
+.wrangler/
+.dev.vars

@@ -1,0 +1,10 @@
+{
+  "name": "agentheon-web",
+  "main": "worker.js",
+  "compatibility_date": "2026-04-11",
+  "assets": {
+    "directory": "./dist"
+  }
+  // Custom domain (agentheon.lamirault.xyz) is attached in the Cloudflare
+  // dashboard: Workers & Pages > agentheon-web > Settings > Domains & Routes.
+}
