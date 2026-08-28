@@ -57,6 +57,15 @@ hermes-profiles: check-hermes ## Generate a Hermes agent profile for each agent 
 	@echo -e "$(INFO)$(INFO_COLOR)[Hermes] Generating profiles $(NO_COLOR)"
 	@./hack/gen-hermes-profiles.sh
 
+.PHONY: install
+install: ## Install all agents into $$HERMES_HOME (file-drop; no hermes CLI required)
+	@echo -e "$(INFO)$(INFO_COLOR)[Agentheon] Installing profiles $(NO_COLOR)"
+	@./agentheon.sh install
+
+.PHONY: install-dry-run
+install-dry-run: ## Preview what agentheon.sh install would write (no changes)
+	@./agentheon.sh install --dry-run
+
 ##@ Misc
 
 .PHONY: clean
