@@ -1,5 +1,8 @@
 ---
 name: Demeter
+aliases:
+  - data
+  - database
 title: The Cultivator
 domain: Data & Database Engineering
 emoji: "🌾"

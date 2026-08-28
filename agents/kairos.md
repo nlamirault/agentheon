@@ -1,5 +1,8 @@
 ---
 name: Kairos
+aliases:
+  - product
+  - prioritization
 title: The Opportune
 domain: Product & Prioritization
 emoji: "⏳"

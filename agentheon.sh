@@ -21,6 +21,11 @@ set -euo pipefail
 # It also seeds shared team context (team/*.md) into $HERMES_HOME/team/company/
 # and rebuilds the routing matrix that Hermes uses to dispatch work.
 #
+# Aliases: each agent may declare `aliases:` in its frontmatter — alternate
+# names that resolve to the profile (e.g. `hermes -p design ...` → aglaea).
+# These are registered with `hermes profile alias` and therefore need the
+# hermes CLI; the file-drop path warns and skips them when it is absent.
+#
 # Two install paths, same source:
 #   (default)  file-drop — writes the files directly. Works with NO hermes CLI.
 #              If the hermes CLI IS present, the profile is also registered
@@ -155,7 +160,7 @@ split_model() { # "provider/model" -> "provider" "model"
 
 # --- pass 1: sibling lookup for handoff routes ----------------------------
 
-declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS
+declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS ALIASES
 shopt -s nullglob
 for file in "${AGENTS_DIR}"/*.md; do
   n="$(fm_scalar "$file" name)"; [[ -z "$n" ]] && continue
@@ -163,6 +168,7 @@ for file in "${AGENTS_DIR}"/*.md; do
   NAME[$s]="$n"; DOMAIN[$s]="$(fm_scalar "$file" domain)"; TAGLINE[$s]="$(fm_scalar "$file" tagline)"
   MODEL[$s]="$(fm_scalar "$file" model)"; REASON[$s]="$(fm_scalar "$file" reasoning)"
   HANDS[$s]="$(fm_list "$file" handoffs | paste -sd, - | sed 's/,/, /g')"
+  ALIASES[$s]="$(fm_list "$file" aliases | paste -sd, - | sed 's/,/, /g')"
 done
 
 build_routing() {
@@ -171,10 +177,10 @@ build_routing() {
   echo
   echo "Hermes uses this to route work. Ordered by name; hand-offs per agent."
   echo
-  echo "| Agent | Domain | Model | Reasoning | Hands off to |"
-  echo "|-------|--------|-------|-----------|--------------|"
+  echo "| Agent | Aliases | Domain | Model | Reasoning | Hands off to |"
+  echo "|-------|---------|--------|-------|-----------|--------------|"
   for s in $(printf '%s\n' "${!NAME[@]}" | sort); do
-    echo "| ${NAME[$s]} | ${DOMAIN[$s]} | ${MODEL[$s]:-?} | ${REASON[$s]:-default} | ${HANDS[$s]:-—} |"
+    echo "| ${NAME[$s]} | ${ALIASES[$s]:-—} | ${DOMAIN[$s]} | ${MODEL[$s]:-?} | ${REASON[$s]:-default} | ${HANDS[$s]:-—} |"
   done
 }
 
@@ -243,6 +249,7 @@ for file in "${AGENTS_DIR}"/*.md; do
   mapfile -t does_not  < <(fm_list "$file" does_not)
   mapfile -t handoffs  < <(fm_list "$file" handoffs)
   mapfile -t skills    < <(fm_list "$file" skills)
+  mapfile -t aliases   < <(fm_list "$file" aliases)
 
   pdir="${PROFILES_DIR}/${slug}"
   run mkdir -p "$pdir"
@@ -253,6 +260,21 @@ for file in "${AGENTS_DIR}"/*.md; do
       :
     else
       run hermes profile create "$slug" --description "${domain} — ${tagline}"
+    fi
+  fi
+
+  # Aliases (frontmatter `aliases:`) — alternate names that resolve to this
+  # profile, e.g. `hermes -p design ...` → aglaea. CLI-only feature; there is no
+  # on-disk file to template, so it is registered only when the hermes CLI is
+  # present. Re-adding an existing alias is tolerated (idempotent re-runs).
+  if [[ ${#aliases[@]} -gt 0 ]]; then
+    if [[ "$HAVE_HERMES" == 1 ]]; then
+      for a in "${aliases[@]}"; do
+        run hermes profile alias "$slug" --name "$a" \
+          || echo "${WARN} alias '${a}' → '${slug}' not set (already exists?)"
+      done
+    else
+      echo "${WARN} aliases for '${slug}' need the hermes CLI — skipping (${aliases[*]})"
     fi
   fi
 
@@ -340,7 +362,7 @@ YAML
   write_soul "$pdir" "$gen"
   rm -f "$gen"
 
-  echo "${OK} ${name} → ${pdir}  (model=${provider}/${model}, reasoning=${reasoning}, toolsets=${toolsets// /,})"
+  echo "${OK} ${name} → ${pdir}  (model=${provider}/${model}, reasoning=${reasoning}, toolsets=${toolsets// /,}${aliases:+, aliases=$(IFS=,; echo "${aliases[*]}")})"
   count=$((count + 1))
 done
 

@@ -1,5 +1,8 @@
 ---
 name: Aphrodite
+aliases:
+  - frontend
+  - ux
 title: The Aesthete
 domain: Frontend & UX
 emoji: "🪞"

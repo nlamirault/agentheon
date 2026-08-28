@@ -1,5 +1,8 @@
 ---
 name: Hestia
+aliases:
+  - devops
+  - infra
 title: The Keeper
 domain: DevOps & Infrastructure
 emoji: "🔥"

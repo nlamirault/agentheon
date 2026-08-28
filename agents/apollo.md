@@ -1,5 +1,8 @@
 ---
 name: Apollo
+aliases:
+  - docs
+  - documentation
 title: The Chronicler
 domain: Documentation & Knowledge
 emoji: "📜"

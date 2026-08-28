@@ -1,5 +1,8 @@
 ---
 name: Hygieia
+aliases:
+  - refactor
+  - codehealth
 title: The Purifier
 domain: Code Health & Refactoring
 emoji: "🧼"

@@ -1,5 +1,8 @@
 ---
 name: Argus
+aliases:
+  - security
+  - review
 title: The Watcher
 domain: Security & Review
 emoji: "👁"

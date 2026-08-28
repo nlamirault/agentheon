@@ -1,5 +1,8 @@
 ---
 name: Artemis
+aliases:
+  - testing
+  - qa
 title: The Hunter
 domain: Testing & QA
 emoji: "🏹"

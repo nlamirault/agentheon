@@ -1,5 +1,8 @@
 ---
 name: Iris
+aliases:
+  - community
+  - oss
 title: The Messenger
 domain: Open Source & Community
 emoji: "📬"

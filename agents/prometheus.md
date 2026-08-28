@@ -1,5 +1,8 @@
 ---
 name: Prometheus
+aliases:
+  - ai
+  - ml
 title: The Forethinker
 domain: AI & ML Engineering
 emoji: "🧠"

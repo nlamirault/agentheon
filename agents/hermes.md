@@ -1,5 +1,8 @@
 ---
 name: Hermes
+aliases:
+  - orchestrator
+  - router
 title: The Orchestrator
 domain: Routing & Coordination
 emoji: "☤"

@@ -83,7 +83,7 @@ profile_exists() { hermes profile list 2>/dev/null | grep -qw "$1"; }
 
 # --- pass 1: build the sibling lookup used to render handoff routes --------
 
-declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS
+declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS ALIASES
 shopt -s nullglob
 for file in "${AGENTS_DIR}"/*.md; do
   n="$(fm_scalar "$file" name)"; [[ -z "$n" ]] && continue
@@ -91,6 +91,7 @@ for file in "${AGENTS_DIR}"/*.md; do
   NAME[$s]="$n"; DOMAIN[$s]="$(fm_scalar "$file" domain)"; TAGLINE[$s]="$(fm_scalar "$file" tagline)"
   MODEL[$s]="$(fm_scalar "$file" model)"; REASON[$s]="$(fm_scalar "$file" reasoning)"
   HANDS[$s]="$(fm_list "$file" handoffs | paste -sd, - | sed 's/,/, /g')"
+  ALIASES[$s]="$(fm_list "$file" aliases | paste -sd, - | sed 's/,/, /g')"
 done
 
 # Generated routing matrix — Hermes' machine-readable assignment table.
@@ -100,10 +101,10 @@ build_routing() {
   echo
   echo "Hermes uses this to route work. Ordered by role; hand-offs per agent."
   echo
-  echo "| Agent | Domain | Model | Reasoning | Hands off to |"
-  echo "|-------|--------|-------|-----------|--------------|"
+  echo "| Agent | Aliases | Domain | Model | Reasoning | Hands off to |"
+  echo "|-------|---------|--------|-------|-----------|--------------|"
   for s in $(printf '%s\n' "${!NAME[@]}" | sort); do
-    echo "| ${NAME[$s]} | ${DOMAIN[$s]} | ${MODEL[$s]:-?} | ${REASON[$s]:-default} | ${HANDS[$s]:-—} |"
+    echo "| ${NAME[$s]} | ${ALIASES[$s]:-—} | ${DOMAIN[$s]} | ${MODEL[$s]:-?} | ${REASON[$s]:-default} | ${HANDS[$s]:-—} |"
   done
 }
 
@@ -164,11 +165,20 @@ for file in "${AGENTS_DIR}"/*.md; do
   mapfile -t does_not  < <(fm_list "$file" does_not)
   mapfile -t handoffs  < <(fm_list "$file" handoffs)
   mapfile -t skills    < <(fm_list "$file" skills)
+  mapfile -t aliases   < <(fm_list "$file" aliases)
 
   if profile_exists "$slug"; then
     echo "ℹ  profile '$slug' exists — updating in place"
   else
     hermes profile create "$slug" "${extra_create[@]}" --description "$domain — $tagline" >/dev/null
+  fi
+
+  # Register frontmatter aliases as alternate names for this profile.
+  if [[ ${#aliases[@]} -gt 0 ]]; then
+    for a in "${aliases[@]}"; do
+      hermes profile alias "$slug" --name "$a" >/dev/null 2>&1 \
+        || echo "⚠  alias '$a' → '$slug' not set (already exists?)"
+    done
   fi
 
   hermes -p "$slug" config set model "$model" >/dev/null
@@ -223,7 +233,7 @@ for file in "${AGENTS_DIR}"/*.md; do
   write_soul "$pdir" "$gen"
   rm -f "$gen"
 
-  echo "🟢 ${name} → ${pdir}  (model=${model}, reasoning=${reasoning:-default}, toolsets=${toolsets})"
+  echo "🟢 ${name} → ${pdir}  (model=${model}, reasoning=${reasoning:-default}, toolsets=${toolsets}${aliases:+, aliases=$(IFS=,; echo "${aliases[*]}")})"
 done
 
 echo
