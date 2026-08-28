@@ -15,6 +15,12 @@ const agents = defineCollection({
     tools: z.array(z.string()),
     tagline: z.string(),
     order: z.number().default(99),
+    reasoning: z.enum(['low', 'medium', 'high']).optional(),
+    tone: z.string().optional(),
+    handoffs: z.array(z.string()).default([]),
+    does: z.array(z.string()).default([]),
+    does_not: z.array(z.string()).default([]),
+    skills: z.array(z.string()).default([]),
   }),
 });
 
