@@ -1,0 +1,62 @@
+<!--
+SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+SPDX-License-Identifier: Apache-2.0
+-->
+
+# Agentheon — Workflow & Quality Gates
+
+Hermes orchestrates; specialists execute and hand off. Work moves through gates.
+Nothing advances past a gate it has not passed.
+
+## The main loop
+
+```text
+Request → Hermes (route)
+  → Athena        plan         gate: plan is ordered, files named, risks listed
+  → Hephaestus    build        gate: builds and runs
+  → Artemis       test         GATE: PASS/FAIL on acceptance criteria
+  → Argus         review       GATE: PASS/FAIL on correctness + security
+  → Apollo        document     gate: docs match the change
+  → Hermes        synthesize + return
+```
+
+Specialists join the loop where relevant:
+
+- **Asclepius** (debug) — enters when a build or test fails with an unknown
+  cause; reproduces, finds root cause, hands the fix to Hephaestus.
+- **Hestia** (infra) — CI/CD, deploy, IaC; hands security-sensitive infra to Argus.
+- **Demeter** (data) — schemas, migrations, queries; hands to Artemis for tests.
+- **Prometheus** (AI/ML) — models, prompts, pipelines; builds evals before shipping.
+- **Aphrodite** (frontend) — UI/UX; hands to Artemis, then Apollo.
+
+## Quality gates — the core mechanic
+
+For each unit of work:
+
+```text
+1. Author agent IMPLEMENTS against the acceptance criteria.
+2. Gate agent VERIFIES (Artemis = tests, Argus = review).
+   - Requires EVIDENCE: test output, build result, diff, screenshot.
+3. IF PASS  → advance to next hop.
+   IF FAIL and attempt < 3 → return to author with specific fixes; retry.
+   IF FAIL and attempt = 3 → ESCALATE to Hermes
+        → Hermes decides: reassign, decompose the task, or defer.
+```
+
+## Rules for gate agents
+
+- **Evidence over claims.** No PASS without proof the criteria are met.
+- **Verdict is PASS or FAIL**, never "looks fine". Use the handoff template's
+  verdict block.
+- **On FAIL, be specific.** List the exact criteria unmet and the fixes needed —
+  a vague FAIL just causes another failed attempt.
+- **Do not fix it yourself.** Artemis and Argus report; Hephaestus (or the
+  original author) applies the fix. This keeps authorship and review separate.
+
+## Rules for Hermes (orchestrator)
+
+- Route to the **minimal** set of agents. Do not fan out work one agent can do.
+- Every dispatch carries a filled handoff (`handoff-template.md`).
+- Enforce the gates — do not mark a task done on an author's say-so.
+- Own escalations: after three failed attempts, decide, don't loop.
+- Synthesize partial results into one answer; never do specialist work yourself.
