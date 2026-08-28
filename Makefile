@@ -50,6 +50,15 @@ check-%:
 		echo -e "$(ERROR_COLOR)$(KO)$(NO_COLOR) $*"; \
 	fi
 
+##@ Hermes
+
+.PHONY: hermes-profiles
+hermes-profiles: check-hermes ## Generate a Hermes agent profile for each agent (agents/*.md)
+	@echo -e "$(INFO)$(INFO_COLOR)[Hermes] Generating profiles $(NO_COLOR)"
+	@./hack/gen-hermes-profiles.sh
+
+##@ Misc
+
 .PHONY: clean
 clean: ## Clean project
 	@echo -e "$(INFO)$(INFO_COLOR)[Clean] Processing $(NO_COLOR)"
