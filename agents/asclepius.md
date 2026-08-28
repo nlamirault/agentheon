@@ -1,5 +1,8 @@
 ---
 name: Asclepius
+aliases:
+  - debug
+  - incident
 title: The Healer
 domain: Debugging & Incident Response
 emoji: "⚕"

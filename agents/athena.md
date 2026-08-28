@@ -1,5 +1,8 @@
 ---
 name: Athena
+aliases:
+  - architecture
+  - planning
 title: The Strategist
 domain: Architecture & Planning
 emoji: "🦉"

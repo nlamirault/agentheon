@@ -1,6 +1,6 @@
 # Agentheon
 
-> A pantheon of Greek-deity software-engineering agents. Hermes orchestrates;
+> A pantheon of Greek-deity software-engineering agents. Zeus orchestrates;
 > each specialist owns exactly one domain and hands off along defined routes,
 > advancing only through PASS/FAIL quality gates.
 
@@ -22,7 +22,7 @@ for example the home page or any agent page below.
 
 Each agent page lives at `/agents/<name>/`.
 
-- Hermes — The Orchestrator — Routing & Coordination (the sole entrypoint)
+- Zeus — The King — Routing & Coordination (the sole entrypoint)
 - Athena — The Strategist — Architecture & Planning
 - Hephaestus — The Builder — Implementation
 - Apollo — The Chronicler — Documentation & Knowledge
@@ -42,7 +42,7 @@ Each agent page lives at `/agents/<name>/`.
 
 ## How it works
 
-- Hermes is the single orchestrator (see ADR-0001): it routes every request and
+- Zeus is the single orchestrator (see ADR-0001): it routes every request and
   never does specialist work; specialists execute and hand off along their
   declared `handoffs` edges.
 - Work advances through a plan → build → test → review → comply loop, gated by

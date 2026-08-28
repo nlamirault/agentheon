@@ -12,7 +12,7 @@ SPDX-License-Identifier: Apache-2.0
 ## What you'll learn
 
 - Who the core agents are and what each one owns
-- How Hermes routes a request to the right specialist
+- How Zeus routes a request to the right specialist
 - How work advances through quality gates
 - How a handoff carries context from one agent to the next
 
@@ -24,9 +24,9 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Step 1 — Meet the entrypoint
 
-Every request enters through **Hermes**, the orchestrator. Hermes never does
+Every request enters through **Zeus**, the orchestrator. Zeus never does
 specialist work — it reads the request and routes it. Open
-[`agents/hermes.md`](../../agents/hermes.md) and note its `domain` and `tools`.
+[`agents/zeus.md`](../../agents/zeus.md) and note its `domain` and `tools`.
 
 *You should see:* a routing-only agent with `Task`, `Read`, and `Grep`.
 
@@ -36,7 +36,7 @@ Open [`team/workflow.md`](../../team/workflow.md) and find the main loop. A
 typical feature travels:
 
 ```text
-Request → Hermes (route)
+Request → Zeus (route)
   → Kairos      prioritize
   → Athena      plan
   → Hephaestus  build
@@ -60,7 +60,7 @@ evidence fields.
 
 Pick a tiny change (e.g. "fix a typo in the README"). Walk it through on paper:
 
-1. Hermes routes it — is it worth a full plan, or a direct build?
+1. Zeus routes it — is it worth a full plan, or a direct build?
 2. Hephaestus makes the change.
 3. Artemis checks it against acceptance criteria.
 4. Argus reviews for correctness.
@@ -70,14 +70,14 @@ at each gate.
 
 ## What you learned
 
-- Hermes is the only entrypoint and routes all work
+- Zeus is the only entrypoint and routes all work
 - Specialists stay inside their domain and hand off along defined routes
 - Nothing advances past a gate it hasn't passed
 - Handoffs carry full context to prevent multi-agent failure
 
 ## Next steps
 
-- [Install the pantheon into Hermes Agent](../how-to/install-the-pantheon.md)
+- [Install the pantheon into Zeus Agent](../how-to/install-the-pantheon.md)
 - [Add a new agent to the pantheon](../how-to/add-a-new-agent.md)
 - [Pantheon architecture](../explanation/architecture.md)
 - [Agent catalog](../reference/agents.md)

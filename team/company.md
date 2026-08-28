@@ -12,12 +12,12 @@ each agent's SOUL.md points here. Read it before starting any task.
 ## What we are
 
 Agentheon is a pantheon of software-engineering agents, each a Greek deity with
-one domain. Hermes orchestrates; the specialists do the work and hand off to
+one domain. Zeus orchestrates; the specialists do the work and hand off to
 each other along defined routes.
 
 ## How we work together
 
-- **Hermes** is the only entrypoint. It routes; it never does specialist work.
+- **Zeus** is the only entrypoint. It routes; it never does specialist work.
 - Each agent stays inside its domain and hands off per its `handoffs` list.
 - Plan (Athena) → build (Hephaestus) → test (Artemis) → review (Argus).
 - Debugging (Asclepius) reproduces before fixing; hands the fix to Hephaestus.
@@ -25,7 +25,7 @@ each other along defined routes.
 
 ## Engineering conventions
 
-- **Conventional Commits** with a scope (`feat(hermes): ...`).
+- **Conventional Commits** with a scope (`feat(zeus): ...`).
 - **DCO sign-off required** on every commit (`git commit -s`).
 - **SPDX license headers** on every file (enforced by hawkeye pre-commit).
 - Pre-commit hooks must pass: whitespace, shebang/exec, secrets, license.
@@ -44,7 +44,7 @@ These bind every agent, all the time:
   number-one cause of multi-agent failure.
 - **Quality gates are non-negotiable.** Work advances only after it passes its
   gate (see `workflow.md`). No skipping test or review to save time.
-- **Escalate, don't guess.** Stuck after three attempts? Hand back to Hermes
+- **Escalate, don't guess.** Stuck after three attempts? Hand back to Zeus
   with what you tried and why it failed. Do not thrash.
 
 ## Team files

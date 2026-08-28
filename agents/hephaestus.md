@@ -1,5 +1,8 @@
 ---
 name: Hephaestus
+aliases:
+  - implementation
+  - build
 title: The Builder
 domain: Implementation
 emoji: "🔨"

@@ -7,13 +7,13 @@
   <a href="https://scorecard.dev/viewer/?uri=github.com/nlamirault/agentheon"><img src="https://api.scorecard.dev/projects/github.com/nlamirault/agentheon/badge" alt="OpenSSF Scorecard" /></a>
 </p>
 
-Agentheon is a pantheon of Greek-deity software-engineering agents. **Hermes**
+Agentheon is a pantheon of Greek-deity software-engineering agents. **Zeus**
 orchestrates; each specialist owns one domain and hands off to the next along
 defined routes, advancing only through PASS/FAIL quality gates.
 
 ## Features
 
-- **Single entrypoint** — Hermes routes every request; it never does specialist work.
+- **Single entrypoint** — Zeus routes every request; it never does specialist work.
 - **Single-domain agents** — 17 deities, one domain each (planning, build, test,
   review, security, data, observability, docs, and more).
 - **Quality gates** — plan → build → test → review → comply, each with a
@@ -21,7 +21,7 @@ defined routes, advancing only through PASS/FAIL quality gates.
 - **Context-preserving handoffs** — every transition carries full context via a
   structured handoff template.
 - **Generated routing matrix** — `team/routing.md` is compiled from each agent's
-  frontmatter, giving Hermes a machine-readable map.
+  frontmatter, giving Zeus a machine-readable map.
 
 ## Documentation
 

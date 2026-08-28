@@ -1,5 +1,8 @@
 ---
 name: Helios
+aliases:
+  - observability
+  - sre
 title: The All-Seeing
 domain: Observability & SRE
 emoji: "☀️"

@@ -10,11 +10,11 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Agent catalog
 
-Each agent is one Greek deity owning one domain. Hermes is the only entrypoint.
+Each agent is one Greek deity owning one domain. Zeus is the only entrypoint.
 
 | Agent      | Title           | Domain                        | Model  |
 | ---------- | --------------- | ----------------------------- | ------ |
-| Hermes     | The Orchestrator| Routing & Coordination        | opus   |
+| Zeus       | The King        | Routing & Coordination        | opus   |
 | Kairos     | The Opportune   | Product & Prioritization      | opus   |
 | Athena     | The Strategist  | Architecture & Planning       | opus   |
 | Hephaestus | The Builder     | Implementation                | sonnet |
@@ -72,7 +72,6 @@ Every `agents/<name>.md` opens with YAML frontmatter:
 | `HERMES_HOME`     | `~/.hermes`               | Profiles root parent.                   |
 | `MODEL_OPUS`      | `anthropic/claude-opus`   | Concrete id for `model: opus`.          |
 | `MODEL_SONNET`    | `anthropic/claude-sonnet` | Concrete id for `model: sonnet`.        |
-| `HERMES_RESERVED` | `hermes-agent`            | Replacement for reserved name `hermes`. |
 
 Outputs: `$HERMES_HOME/profiles/<name>/SOUL.md` (managed block + preserved
 custom additions) and `$HERMES_HOME/team/company/` (seeded shared context and
@@ -80,7 +79,7 @@ regenerated `routing.md`).
 
 ## Engineering conventions
 
-- **Conventional Commits** with a scope: `feat(hermes): ...`.
+- **Conventional Commits** with a scope: `feat(zeus): ...`.
 - **DCO sign-off** on every commit: `git commit -s`.
 - **SPDX license headers** on every file (enforced by hawkeye pre-commit).
 - Pre-commit hooks must pass: whitespace, shebang/exec, secrets, license.

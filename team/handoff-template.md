@@ -78,5 +78,5 @@ Use when a gate agent (Artemis for tests, Argus for review) reports back.
 - **FAIL** → back to <author> with the specific fixes below:
   1. <precise, actionable fix>
   2. ...
-- **Attempt 3 FAIL** → escalate to Hermes (reassign / decompose / defer).
+- **Attempt 3 FAIL** → escalate to Zeus (reassign / decompose / defer).
 ```

@@ -1,5 +1,8 @@
 ---
 name: Aglaea
+aliases:
+  - design
+  - designer
 title: The Adornment
 domain: Design & Design Systems
 emoji: "🎨"

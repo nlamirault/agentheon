@@ -1,5 +1,8 @@
 ---
 name: Themis
+aliases:
+  - compliance
+  - governance
 title: The Arbiter
 domain: Compliance & Governance
 emoji: "⚖️"

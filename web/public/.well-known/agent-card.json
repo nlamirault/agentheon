@@ -1,7 +1,7 @@
 {
   "protocolVersion": "1.0.0",
   "name": "Agentheon",
-  "description": "Public read-only interface for agentheon.lamirault.xyz, an open-source pantheon of Greek-deity software-engineering agent profiles orchestrated by Hermes. Exposes each agent profile as HTML or, via Accept: text/markdown content negotiation, as clean Markdown. No authentication required. No write operations.",
+  "description": "Public read-only interface for agentheon.lamirault.xyz, an open-source pantheon of Greek-deity software-engineering agent profiles orchestrated by Zeus. Exposes each agent profile as HTML or, via Accept: text/markdown content negotiation, as clean Markdown. No authentication required. No write operations.",
   "url": "https://agentheon.lamirault.xyz",
   "version": "1.0.0",
   "provider": {
@@ -41,7 +41,7 @@
     {
       "id": "agent-roster",
       "name": "Agent roster",
-      "description": "List and describe the Agentheon pantheon: 17 specialist agents, each owning one domain — Hermes (orchestration), Athena (architecture), Hephaestus (implementation), Apollo (documentation), Artemis (testing), Argus (security), Hestia (DevOps), Asclepius (debugging), Demeter (data), Prometheus (AI/ML), Aphrodite (frontend), Aglaea (design), Kairos (product), Themis (compliance), Helios (observability), Hygieia (refactoring), and Iris (community).",
+      "description": "List and describe the Agentheon pantheon: 17 specialist agents, each owning one domain — Zeus (orchestration), Athena (architecture), Hephaestus (implementation), Apollo (documentation), Artemis (testing), Argus (security), Hestia (DevOps), Asclepius (debugging), Demeter (data), Prometheus (AI/ML), Aphrodite (frontend), Aglaea (design), Kairos (product), Themis (compliance), Helios (observability), Hygieia (refactoring), and Iris (community).",
       "tags": [
         "agents",
         "open-source",
@@ -51,7 +51,7 @@
       "examples": [
         "What agents does Agentheon provide?",
         "Which agent handles testing?",
-        "Show me the Hermes profile as Markdown"
+        "Show me the Zeus profile as Markdown"
       ]
     },
     {
@@ -73,17 +73,17 @@
     {
       "id": "orchestration-model",
       "name": "Orchestration model",
-      "description": "Explain how Agentheon coordinates work: Hermes is the sole orchestrator (ADR-0001) that routes every request; specialists execute within one domain and hand off along declared routes through a plan → build → test → review → comply loop gated by PASS/FAIL checks.",
+      "description": "Explain how Agentheon coordinates work: Zeus is the sole orchestrator (ADR-0001) that routes every request; specialists execute within one domain and hand off along declared routes through a plan → build → test → review → comply loop gated by PASS/FAIL checks.",
       "tags": [
         "orchestration",
         "routing",
         "workflow",
-        "hermes"
+        "zeus"
       ],
       "examples": [
         "How does Agentheon route work between agents?",
         "What is the plan-build-test-review-comply loop?",
-        "Why is Hermes the only entrypoint?"
+        "Why is Zeus the only entrypoint?"
       ]
     }
   ]

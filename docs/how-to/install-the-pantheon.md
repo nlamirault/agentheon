@@ -29,7 +29,7 @@ frontmatter in each `agents/*.md`. For every agent it writes:
 
 It also seeds shared context into `$HERMES_HOME/team/company/`
 (`company.md`, `workflow.md`, `handoff-template.md`) and regenerates
-`routing.md`, the matrix Hermes uses to dispatch work.
+`routing.md`, the matrix Zeus uses to dispatch work.
 
 ## Prerequisites
 
@@ -99,7 +99,6 @@ install        Install/refresh all profiles (default action).
 | `HERMES_HOME`     | `~/.hermes`               | Profiles root parent.                          |
 | `MODEL_OPUS`      | `anthropic/claude-opus`   | Concrete `provider/model` for `model: opus`.   |
 | `MODEL_SONNET`    | `anthropic/claude-sonnet` | Concrete `provider/model` for `model: sonnet`. |
-| `HERMES_RESERVED` | `hermes-agent`            | Replacement for the reserved name `hermes`.    |
 
 Example — install into a custom home with a pinned model id:
 
