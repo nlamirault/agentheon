@@ -54,13 +54,19 @@ nav {
   border-bottom: 1px solid var(--border);
 }
 nav .brand { display: flex; align-items: center; gap: .55rem; font-weight: 600; color: var(--text); }
-nav .brand .mark { color: var(--gold); font-size: 1.4rem; }
+nav .brand .mark { display: block; width: 26px; height: 26px; }
 nav .links { display: flex; gap: 1.5rem; font-size: .9rem; }
 nav .links a { color: var(--muted); }
 nav .links a:hover { color: var(--text); text-decoration: none; }
 
 /* ---- hero ---- */
 .hero { padding: 6rem 0 4rem; text-align: center; }
+.hero .hero-mark {
+  display: block;
+  width: 92px; height: 92px;
+  margin: 0 auto 1.6rem;
+  filter: drop-shadow(0 0 24px rgba(212, 165, 51, 0.25));
+}
 .hero .eyebrow {
   font-family: var(--font-mono);
   font-size: .8rem;

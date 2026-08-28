@@ -1,7 +1,11 @@
-# agentheon
+<h1 align="center">
+  <img src="web/public/logo-wordmark.png" alt="Agentheon" width="440" />
+</h1>
 
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/nlamirault/agentheon/blob/main/LICENSE)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/nlamirault/agentheon/badge)](https://scorecard.dev/viewer/?uri=github.com/nlamirault/agentheon)
+<p align="center">
+  <a href="https://github.com/nlamirault/agentheon/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache-2.0" /></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/nlamirault/agentheon"><img src="https://api.scorecard.dev/projects/github.com/nlamirault/agentheon/badge" alt="OpenSSF Scorecard" /></a>
+</p>
 
 Agentheon is a pantheon of Greek-deity software-engineering agents. **Hermes**
 orchestrates; each specialist owns one domain and hands off to the next along

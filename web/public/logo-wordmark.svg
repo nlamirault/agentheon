@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Agentheon">
-  <rect width="120" height="120" rx="26" fill="#0a0a0b"/>
-  <g transform="translate(60 61) scale(0.84) translate(-60 -60)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 160" role="img" aria-label="Agentheon">
+  <rect width="660" height="160" rx="20" fill="#0a0a0b"/>
+  <g transform="translate(44 20)">
     <g fill="none" stroke="#d4a533" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
       <line x1="60" y1="30" x2="60" y2="99" stroke-width="4"/>
       <path d="M60,94 C41,85 41,73 60,65 C79,57 79,46 62,42"/>
@@ -16,4 +16,8 @@
       <path d="M61,41 Q78,31 95,35 Q80,41 61,47 Z"/>
     </g>
   </g>
+  <text x="184" y="96" font-family="'Cormorant Garamond', Georgia, 'Times New Roman', serif" font-size="64" font-weight="600" letter-spacing="0.5">
+    <tspan fill="#e8e8ea">agenth</tspan><tspan fill="#d4a533">e</tspan><tspan fill="#e8e8ea">on</tspan>
+  </text>
+  <text x="186" y="124" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="13" letter-spacing="4" fill="#9a9aa2">PANTHEON OF AGENTS</text>
 </svg>
