@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const agents = await getCollection('agents');
+  return agents.map((agent) => ({
+    params: { slug: agent.id },
+    props: { agent },
+  }));
+}
+
+const { agent } = Astro.props;
+const { Content } = await render(agent);
+const d = agent.data;
+---
+<Base title={`${d.name} — ${d.title} · Agentheon`} description={d.tagline}>
+  <section class="wrap detail" style={`--agent:${d.color}`}>
+    <a class="back" href={withBase('#agents')}>← back to the pantheon</a>
+    <div class="head">
+      <div class="glyph">{d.emoji}</div>
+      <div>
+        <h1>{d.name}</h1>
+        <div class="role" style={`color:${d.color}`}>{d.title} · {d.domain}</div>
+      </div>
+    </div>
+    <div class="meta">
+      <span class="pill">model: {d.model}</span>
+      {d.tools.map((t) => <span class="pill">{t}</span>)}
+    </div>
+    <div class="prose">
+      <Content />
+    </div>
+  </section>
+</Base>

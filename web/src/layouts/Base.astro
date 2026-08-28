@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+interface Props { title?: string; description?: string; }
+const {
+  title = 'Agentheon — a pantheon of AI agents',
+  description = 'An open-source agentic agency. A pantheon of specialist AI agent profiles, orchestrated by Hermes.',
+} = Astro.props;
+import { withBase } from '../lib/url';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="wrap">
+      <nav>
+        <a class="brand" href={withBase()}>
+          <span class="mark">☤</span> Agentheon
+        </a>
+        <div class="links">
+          <a href={withBase('#agents')}>Agents</a>
+          <a href={withBase('#start')}>Get started</a>
+          <a href="https://github.com/nlamirault/agentheon">GitHub</a>
+        </div>
+      </nav>
+    </div>
+    <slot />
+    <div class="wrap">
+      <footer>
+        <div class="row">
+          <span>Agentheon — open source under Apache-2.0.</span>
+          <span>Built with Astro. Guided by Hermes.</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
