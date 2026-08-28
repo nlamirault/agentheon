@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentheon Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --surface: #141416;
+      --surface-2: #1c1c20;
+      --border: #2a2a30;
+      --border-strong: #3a3a42;
+      --text: #e8e8ea;
+      --text-2: #9a9aa2;
+      --muted: #6c6c76;
+      --on-gold: #17130a;
+      --gold: #d4a533;
+      --gold-bright: #e8c063;
+      --gold-glow: rgba(212, 165, 51, 0.10);
+      --success: #6fae8e;
+      --warning: #f2c14e;
+      --error: #c8563d;
+      --info: #5b7fa6;
+      --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      --font-display: "Cormorant Garamond", Georgia, serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--font-sans); line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .section { padding: 48px clamp(24px, 6vw, 64px); border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+    .section-title {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: 32px;
+    }
+    h1 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.01em; }
+    header {
+      padding: 64px clamp(24px, 6vw, 64px) 56px; border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ""; position: absolute; top: -40%; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px; z-index: 0;
+      background: radial-gradient(ellipse at center, var(--gold-glow), transparent 70%);
+      pointer-events: none;
+    }
+    header .inner { position: relative; z-index: 1; }
+    header .eyebrow {
+      font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+    }
+    header h1 { font-size: clamp(2.8rem, 7vw, 5rem); line-height: 1.05; }
+    header h1 em { color: var(--gold-bright); font-style: italic; }
+    header p { color: var(--text-2); font-size: 19px; margin-top: 16px; max-width: 620px; }
+    .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+    .swatch .chip { width: 100%; height: 72px; border-radius: 10px; border: 1px solid var(--border); }
+    .swatch .name { margin-top: 8px; font-size: 13px; font-weight: 500; }
+    .swatch .role { font-size: 11px; color: var(--text-2); }
+    .swatch .hex { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+    .type-row { margin-bottom: 28px; }
+    .type-row .spec { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem; cursor: pointer;
+      font-family: var(--font-sans); font-weight: 600; font-size: 15px;
+      padding: 11px 22px; border-radius: 8px; border: 1px solid transparent;
+    }
+    .btn-primary { background: var(--gold); color: var(--on-gold); }
+    .btn-primary:hover { background: var(--gold-bright); }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+    .btn-ghost:hover { border-color: var(--gold); }
+    .btn-danger { background: var(--error); color: #fff; }
+    .btn[disabled] { opacity: .4; cursor: not-allowed; }
+    .field {
+      width: 100%; background: var(--surface); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+      font-family: var(--font-sans); font-size: 15px;
+    }
+    .field::placeholder { color: var(--muted); }
+    .field.focus { border-color: var(--gold); outline: none; }
+    .field.error { border-color: var(--error); }
+    .field[disabled] { opacity: .4; }
+    .helper { font-size: 12px; color: var(--error); margin-top: 4px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; transition: border-color .18s, transform .18s; display: block;
+    }
+    .card:hover { border-color: var(--agent, var(--gold)); transform: translateY(-3px); }
+    .card .top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .card .glyph {
+      width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center;
+      font-size: 1.4rem; background: var(--surface-2); border: 1px solid var(--border);
+    }
+    .card .name { font-weight: 600; font-size: 1.1rem; line-height: 1.1; }
+    .card .role { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--agent, var(--gold)); }
+    .card .tagline { color: var(--text-2); font-size: .95rem; margin-bottom: 14px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill {
+      font-family: var(--font-mono); font-size: 12px; color: var(--text-2);
+      background: var(--surface-2); border: 1px solid var(--border);
+      padding: 3px 9px; border-radius: 999px;
+    }
+    .elev-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .elev {
+      width: 200px; padding: 20px; border-radius: 12px; border: 1px solid var(--border);
+    }
+    .elev .lvl { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); margin-bottom: 8px; }
+    .e0 { background: var(--bg); }
+    .e1 { background: var(--surface); }
+    .e2 { background: var(--surface-2); }
+    .e3 { background: var(--surface-2); box-shadow: 0 8px 24px rgba(0,0,0,.55); }
+    .spacing-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+    .sp { text-align: center; }
+    .sp .bar { background: var(--gold); border-radius: 3px; margin: 0 auto; width: 100%; min-width: 8px; }
+    .sp .lbl { font-family: var(--font-mono); font-size: 11px; margin-top: 8px; color: var(--text-2); }
+    .radius-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .rad { width: 90px; }
+    .rad .box { height: 64px; background: var(--surface-2); border: 1px solid var(--border-strong); }
+    .rad .lbl { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); margin-top: 8px; text-align: center; }
+    .code {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 18px; font-family: var(--font-mono); font-size: 14px; max-width: 560px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .code .sigil { color: var(--gold); user-select: none; }
+    .dd { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .dd h3 { font-family: var(--font-sans); font-size: 14px; margin-bottom: 14px; }
+    .dd ul { list-style: none; }
+    .dd li { font-size: 14px; margin-bottom: 10px; color: var(--text-2); padding-left: 22px; position: relative; }
+    .dd .do li::before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: 700; }
+    .dd .dont li::before { content: "✗"; position: absolute; left: 0; color: var(--error); font-weight: 700; }
+    @media (max-width: 640px) { .dd { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="inner">
+      <div class="eyebrow">Design System · Visual Catalog</div>
+      <h1>Agentheon — a pantheon of <em>agents</em></h1>
+      <p>Obsidian surfaces, a single Hermes-gold flame, and a carved serif over precise monospace. Generated from DESIGN.md.</p>
+    </div>
+  </header>
+
+  <!-- Colors -->
+  <section class="section">
+    <div class="section-title">Color Palette &amp; Roles</div>
+    <div class="swatch-grid" id="swatches"></div>
+  </section>
+
+  <!-- Deity accents -->
+  <section class="section">
+    <div class="section-title">Deity Accent Colors — content only</div>
+    <div class="swatch-grid" id="deities"></div>
+  </section>
+
+  <!-- Typography -->
+  <section class="section">
+    <div class="section-title">Typography</div>
+    <div class="type-row">
+      <div class="spec">Display — Cormorant Garamond 500 / clamp 45–80px / -0.01em</div>
+      <div style="font-family:var(--font-display);font-weight:500;font-size:clamp(2.8rem,7vw,5rem);line-height:1.05;letter-spacing:-.01em;">Hermes routes the pantheon</div>
+    </div>
+    <div class="type-row">
+      <div class="spec">H2 — Cormorant Garamond 500 / 38px</div>
+      <div style="font-family:var(--font-display);font-weight:500;font-size:38px;line-height:1.15;">The quick brown fox</div>
+    </div>
+    <div class="type-row">
+      <div class="spec">H3 — Cormorant Garamond 500 / 30px</div>
+      <div style="font-family:var(--font-display);font-weight:500;font-size:30px;line-height:1.2;">The quick brown fox</div>
+    </div>
+    <div class="type-row">
+      <div class="spec">Lede — Inter 400 / 19px</div>
+      <div style="font-size:19px;color:var(--text-2);">A single entrypoint routes every request through PASS/FAIL quality gates.</div>
+    </div>
+    <div class="type-row">
+      <div class="spec">Body — Inter 400 / 16px / 1.6</div>
+      <div style="font-size:16px;max-width:640px;">Each specialist owns one domain and hands off to the next along defined routes, advancing only through quality gates. Nothing ships unverified.</div>
+    </div>
+    <div class="type-row">
+      <div class="spec">Eyebrow — JetBrains Mono 500 / 13px / 0.18em uppercase</div>
+      <div style="font-family:var(--font-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);">Single Entrypoint</div>
+    </div>
+    <div class="type-row">
+      <div class="spec">Code — JetBrains Mono 400 / 14px</div>
+      <div style="font-family:var(--font-mono);font-size:14px;">make hermes-profiles</div>
+    </div>
+  </section>
+
+  <!-- Buttons -->
+  <section class="section">
+    <div class="section-title">Buttons</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-primary">Primary</button>
+      <button class="btn btn-ghost">Ghost</button>
+      <button class="btn btn-danger">Destructive</button>
+      <button class="btn btn-primary" disabled>Disabled</button>
+    </div>
+  </section>
+
+  <!-- Inputs -->
+  <section class="section">
+    <div class="section-title">Form Inputs</div>
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:360px;">
+      <input class="field" type="text" placeholder="Default state" />
+      <input class="field focus" type="text" placeholder="Focus state" />
+      <div>
+        <input class="field error" type="text" placeholder="Error state" />
+        <div class="helper">This field is required</div>
+      </div>
+      <input class="field" type="text" placeholder="Disabled" disabled />
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <section class="section">
+    <div class="section-title">Deity Cards — hover to warm the border</div>
+    <div class="grid" id="cards"></div>
+  </section>
+
+  <!-- Elevation -->
+  <section class="section">
+    <div class="section-title">Elevation &amp; Depth — background-shift</div>
+    <div class="elev-row">
+      <div class="elev e0"><div class="lvl">Level 0 — canvas</div>#0a0a0b</div>
+      <div class="elev e1"><div class="lvl">Level 1 — surface</div>#141416</div>
+      <div class="elev e2"><div class="lvl">Level 2 — elevated</div>#1c1c20</div>
+      <div class="elev e3"><div class="lvl">Overlay — modal</div>shadow</div>
+    </div>
+  </section>
+
+  <!-- Spacing -->
+  <section class="section">
+    <div class="section-title">Spacing Scale — base-4</div>
+    <div class="spacing-row" id="spacing"></div>
+  </section>
+
+  <!-- Radius -->
+  <section class="section">
+    <div class="section-title">Corner Radius</div>
+    <div class="radius-row" id="radius"></div>
+  </section>
+
+  <!-- Command block -->
+  <section class="section">
+    <div class="section-title">Command / Install Block</div>
+    <div class="code"><span><span class="sigil">$</span> curl -fsSL agentheon.sh | bash</span><span class="pill">copy</span></div>
+  </section>
+
+  <!-- Do / Don't -->
+  <section class="section">
+    <div class="section-title">Do's &amp; Don'ts</div>
+    <div class="dd">
+      <div class="do">
+        <h3 style="color:var(--success);">Do</h3>
+        <ul>
+          <li>Reserve gold for brand, interaction, and the active deity.</li>
+          <li>Set every heading in Cormorant Garamond.</li>
+          <li>Use mono, uppercase, wide-tracked for eyebrows &amp; roles.</li>
+          <li>Create depth by stepping the background + a hairline border.</li>
+          <li>Keep the gold aura to one hero instance per page.</li>
+        </ul>
+      </div>
+      <div class="dont">
+        <h3 style="color:var(--error);">Don't</h3>
+        <ul>
+          <li>Use pure white #ffffff for text — use #e8e8ea.</li>
+          <li>Set headlines in Inter or body in Cormorant.</li>
+          <li>Add deity accent colors to chrome — content only.</li>
+          <li>Lean on drop shadows for elevation (overlay excepted).</li>
+          <li>Exceed 14px radius on rectangular surfaces.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const core = [
+      ["background", "app canvas", "#0a0a0b"],
+      ["surface", "cards, panels", "#141416"],
+      ["surfaceElevated", "tiles, hover", "#1c1c20"],
+      ["border", "hairline", "#2a2a30"],
+      ["textPrimary", "headings, body", "#e8e8ea"],
+      ["textSecondary", "descriptions", "#9a9aa2"],
+      ["textMuted", "disabled", "#6c6c76"],
+      ["gold", "brand + interaction", "#d4a533"],
+      ["goldBright", "hover", "#e8c063"],
+      ["success", "Artemis sage", "#6fae8e"],
+      ["warning", "Helios sun", "#f2c14e"],
+      ["error", "Hestia flame", "#c8563d"],
+      ["info", "Themis steel", "#5b7fa6"],
+    ];
+    const deities = [
+      ["Hermes","☤","#d4a533","Routing"],["Athena","🦉","#8fb0c8","Architecture"],
+      ["Hephaestus","🔨","#c8734a","Implementation"],["Artemis","🏹","#6fae8e","Testing"],
+      ["Argus","👁","#a98fc8","Security"],["Demeter","🌾","#97a24e","Data"],
+      ["Helios","☀️","#f2c14e","Observability"],["Apollo","📜","#d9c25a","Documentation"],
+      ["Aphrodite","🪞","#d18aa6","Frontend"],["Aglaea","🎨","#c9a227","Design"],
+      ["Asclepius","⚕","#479aa6","Debugging"],["Hestia","🔥","#b8543d","DevOps"],
+      ["Hygieia","🧼","#6bbf8a","Refactoring"],["Iris","📬","#3fb0c9","Community"],
+      ["Kairos","⏳","#e07b39","Product"],["Prometheus","🧠","#7c6bc0","AI/ML"],
+      ["Themis","⚖️","#5b7fa6","Compliance"],
+    ];
+    const spacing = [["xs",4],["sm",8],["md",16],["lg",24],["xl",32],["2xl",48],["3xl",64],["4xl",96]];
+    const radius = [["sm","5px"],["md","8px"],["lg","10px"],["xl","12px"],["2xl","14px"],["full","999px"]];
+
+    const sw = document.getElementById("swatches");
+    core.forEach(([n,r,h]) => {
+      sw.innerHTML += `<div class="swatch"><div class="chip" style="background:${h}"></div>
+        <div class="name">${n}</div><div class="role">${r}</div><div class="hex">${h}</div></div>`;
+    });
+    const dg = document.getElementById("deities");
+    deities.forEach(([n,e,h,d]) => {
+      dg.innerHTML += `<div class="swatch"><div class="chip" style="background:${h}"></div>
+        <div class="name">${e} ${n}</div><div class="role">${d}</div><div class="hex">${h}</div></div>`;
+    });
+    const cd = document.getElementById("cards");
+    deities.slice(0,6).forEach(([n,e,h,d]) => {
+      cd.innerHTML += `<div class="card" style="--agent:${h}">
+        <div class="top"><div class="glyph">${e}</div>
+          <div><div class="name">${n}</div><div class="role">${d}</div></div></div>
+        <div class="tagline">One domain, one deity. Hands off along defined routes.</div>
+        <div class="pills"><span class="pill">sonnet</span><span class="pill">reasoning: high</span></div></div>`;
+    });
+    const sp = document.getElementById("spacing");
+    spacing.forEach(([n,v]) => {
+      sp.innerHTML += `<div class="sp"><div class="bar" style="width:${v}px;height:${v}px"></div>
+        <div class="lbl">${v}px<br>${n}</div></div>`;
+    });
+    const rd = document.getElementById("radius");
+    radius.forEach(([n,v]) => {
+      rd.innerHTML += `<div class="rad"><div class="box" style="border-radius:${v}"></div>
+        <div class="lbl">${n}<br>${v}</div></div>`;
+    });
+  </script>
+</body>
+</html>

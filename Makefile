@@ -7,6 +7,9 @@ SHELL = /bin/bash -o pipefail
 
 DIR = $(shell pwd)
 
+WEB_DIR = web
+PNPM = pnpm --dir $(WEB_DIR)
+
 # Colors for terminal output
 NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
@@ -66,8 +69,35 @@ install: ## Install all agents into $$HERMES_HOME (file-drop; no hermes CLI requ
 install-dry-run: ## Preview what agentheon.sh install would write (no changes)
 	@./agentheon.sh install --dry-run
 
+##@ Website
+
+.PHONY: web-install
+web-install: check-pnpm ## Install website dependencies (pnpm)
+	@echo -e "$(INFO)$(INFO_COLOR)[Website] Installing dependencies $(NO_COLOR)"
+	@$(PNPM) install
+
+.PHONY: web-dev
+web-dev: check-pnpm ## Start the Astro dev server
+	@echo -e "$(INFO)$(INFO_COLOR)[Website] Starting dev server $(NO_COLOR)"
+	@$(PNPM) run dev
+
+.PHONY: web-build
+web-build: check-pnpm ## Build the website (static output in web/dist)
+	@echo -e "$(INFO)$(INFO_COLOR)[Website] Building $(NO_COLOR)"
+	@$(PNPM) run build
+
+.PHONY: web-preview
+web-preview: check-pnpm ## Preview the production build locally
+	@echo -e "$(INFO)$(INFO_COLOR)[Website] Previewing build $(NO_COLOR)"
+	@$(PNPM) run preview
+
+.PHONY: web-clean
+web-clean: ## Remove website build artifacts (dist, .astro)
+	@echo -e "$(INFO)$(INFO_COLOR)[Website] Cleaning artifacts $(NO_COLOR)"
+	@rm -rf $(WEB_DIR)/dist $(WEB_DIR)/.astro
+
 ##@ Misc
 
 .PHONY: clean
-clean: ## Clean project
+clean: web-clean ## Clean project
 	@echo -e "$(INFO)$(INFO_COLOR)[Clean] Processing $(NO_COLOR)"
