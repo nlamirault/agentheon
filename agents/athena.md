@@ -17,6 +17,7 @@ handoffs:
   - hephaestus
   - demeter
   - prometheus
+  - aglaea
 does:
   - Break a goal into ordered, implementable tasks.
   - Identify critical files and architectural risks.

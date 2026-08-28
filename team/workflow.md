@@ -27,6 +27,8 @@ Specialists join the loop where relevant:
 - **Hestia** (infra) — CI/CD, deploy, IaC; hands security-sensitive infra to Argus.
 - **Demeter** (data) — schemas, migrations, queries; hands to Artemis for tests.
 - **Prometheus** (AI/ML) — models, prompts, pipelines; builds evals before shipping.
+- **Aglaea** (design) — visual design + design system (`DESIGN.md`) for web and
+  mobile; hands the spec to Aphrodite to build.
 - **Aphrodite** (frontend) — UI/UX; hands to Artemis, then Apollo.
 
 ## Quality gates — the core mechanic
