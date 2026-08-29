@@ -1,0 +1,157 @@
+# Grafana Dashboard Linter Configuration
+#
+# This is an example .lint file showing all available rules in the exclusions section.
+# Use this as a template to document why specific rules are excluded for your dashboards.
+#
+# =============================================================================
+# TEMPLATE CONFIGURATION RULES
+# =============================================================================
+
+exclusions:
+  # Template Datasource Rule
+  # Ensures dashboards have exactly one templated datasource variable
+  # template-datasource-rule:
+  #   reason: "Dashboard uses multiple datasource types (e.g., Prometheus + Loki + Elasticsearch) or has hardcoded datasource for specific environment"
+
+  # Template Job Rule
+  # Requires dashboards to have a templated job variable
+  template-job-rule:
+    reason: "Job matcher is hardcoded in recording rules or dashboard is for single specific job only"
+
+  # Template Instance Rule
+  # Verifies dashboards contain a templated instance variable
+  template-instance-rule:
+    reason: "Dashboard shows cluster-wide aggregations only or instance filtering not relevant for this use case"
+
+  # Template Label PromQL Rule
+  # Validates that templated labels use proper PromQL expressions
+  template-label-promql-rule:
+    reason: "Custom label extraction logic or non-standard PromQL required for specific metrics"
+
+  # Template On Time Change Reload Rule
+  # Confirms template variables refresh when time ranges change
+  template-on-time-change-reload-rule:
+    reason: "Static variables that don't need to change with time range or performance optimization for large variable sets"
+
+# =============================================================================
+# PANEL RULES
+# =============================================================================
+
+  # Panel Datasource Rule
+  # Validates that every panel uses templated datasource
+  # panel-datasource-rule:
+  #   reason: "Panel requires specific datasource (e.g., logs must use Loki while metrics use Prometheus) or multi-datasource panel"
+
+  # Panel Title Description Rule
+  # Requires all panels to have both titles and descriptions
+  panel-title-description-rule:
+    reason: "Panel visualization and title are self-explanatory (e.g., simple status indicator) or internal dashboard not requiring documentation"
+    # Example of panel-specific exclusion:
+    # entries:
+    #   - panel: "Status"
+
+  # Panel Units Rule
+  # Ensures panels have valid units defined
+  panel-units-rule:
+    reason: "Panel displays categorical/status values using value mappings or custom non-numeric data without standard units"
+    # Example of panel-specific exclusion:
+    # entries:
+    #   - panel: "Service Health Status"
+
+  # Panel No Targets Rule
+  # Verifies each panel contains at least one query target
+  # panel-no-targets-rule:
+  #   reason: "Dashboard under construction or placeholder panel for future metrics (should be removed before production)"
+
+# =============================================================================
+# QUERY VALIDATION RULES
+# =============================================================================
+
+  # Target LogQL Rule
+  # Validates Loki query targets use syntactically correct LogQL
+  target-logql-rule:
+    reason: "Using experimental LogQL features or custom log parser not yet in stable LogQL syntax"
+
+  # Target LogQL Auto Rule
+  # Ensures Loki targets use $__auto for range vectors
+  target-logql-auto-rule:
+    reason: "Fixed time window required for specific SLO calculations or compliance reporting (e.g., exact 24-hour periods)"
+    # Example of panel-specific exclusion:
+    # entries:
+    #   - panel: "Daily Error Budget"
+    #     targetIdx: 0
+
+  # Target PromQL Rule
+  # Validates Prometheus targets use correct PromQL syntax
+  target-promql-rule:
+    reason: "Using experimental PromQL features or custom functions not yet in stable PromQL syntax"
+
+  # Target Rate Interval Rule
+  # Requires rate/irate/increase to use $__rate_interval
+  target-rate-interval-rule:
+    reason: "Fixed interval required for specific SLO/SLA calculations, regulatory compliance, or exact time-window analysis"
+    # Example of panel-specific exclusion:
+    # entries:
+    #   - panel: "Hourly SLO Compliance"
+    #     targetIdx: 0
+    #   - panel: "24-Hour Error Rate"
+    #     targetIdx: 0
+
+  # Target Job Rule
+  # Enforces job label matchers in every PromQL query
+  target-job-rule:
+    reason: "Cluster-wide aggregations across all jobs or recording rules that pre-aggregate job labels"
+    # Example of panel-specific exclusion:
+    # entries:
+    #   - panel: "Total Cluster CPU"
+    #     targetIdx: 0
+    #   - panel: "Cluster-Wide Request Rate"
+    #     targetIdx: 0
+
+  # Target Instance Rule
+  # Mandates instance label matchers in all PromQL queries
+  target-instance-rule:
+    reason: "Aggregations across all instances for totals or service-level metrics (not instance-specific)"
+    # Example of panel-specific exclusion:
+    # entries:
+    #   - panel: "Total Requests Per Second"
+    #     targetIdx: 0
+    #   - panel: "Service Error Rate"
+    #     targetIdx: 0
+    #   - panel: "Cluster Memory Usage"
+    #     targetIdx: 1
+
+  # Target Counter Aggregation Rule
+  # Requires counter metrics (*_total) use rate/irate/increase
+  target-counter-agg-rule:
+    reason: "Intentionally displaying raw counter value for debugging or troubleshooting monotonic increases"
+    # Example of panel-specific exclusion:
+    # entries:
+    #   - panel: "Debug: Raw Counter Value"
+    #     targetIdx: 0
+
+# =============================================================================
+# DASHBOARD CONFIGURATION RULES
+# =============================================================================
+
+  # Uneditable Dashboard Rule
+  # Confirms dashboards are protected against accidental modifications
+  uneditable-dashboard:
+    reason: "Development/staging environment where editing is required or personal dashboard under active development"
+
+# =============================================================================
+# WARNINGS (Rules downgraded from errors to warnings)
+# =============================================================================
+
+# Uncomment rules below to downgrade them to warnings instead of errors
+# This is useful when gradually adopting standards or for non-critical rules
+
+warnings:
+  # Example: Allow missing instance variable but warn about it
+  # template-instance-rule:
+
+  # Example: Warn about missing descriptions but don't fail
+  panel-title-description-rule:
+
+  # Example: Warn about hardcoded datasource but don't fail
+  # panel-datasource-rule:

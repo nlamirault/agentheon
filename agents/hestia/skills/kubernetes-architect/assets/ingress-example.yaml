@@ -1,0 +1,209 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Kubernetes Ingress Examples
+# Demonstrates ingress configurations with TLS and routing
+# Reference: @references/networking.md
+
+---
+# Basic Ingress with TLS
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-app-ingress
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Main ingress for example application"
+    # NGINX Ingress Controller annotations
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # Rate limiting
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    # CORS
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://example.com"
+    # Security headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Frame-Options: DENY";
+      more_set_headers "X-Content-Type-Options: nosniff";
+      more_set_headers "X-XSS-Protection: 1; mode=block";
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - app.example.com
+    - api.example.com
+    secretName: example-app-tls
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: example-app
+            port:
+              name: http
+  - host: api.example.com
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: example-app-api
+            port:
+              number: 80
+
+---
+# Path-based Routing Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-app-paths
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - services.example.com
+    secretName: services-tls
+  rules:
+  - host: services.example.com
+    http:
+      paths:
+      - path: /app(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: example-app
+            port:
+              number: 80
+      - path: /api(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: example-api
+            port:
+              number: 80
+      - path: /admin(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: example-admin
+            port:
+              number: 80
+
+---
+# Ingress with Basic Auth
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-app-auth
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Example App'
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - admin.example.com
+    secretName: admin-tls
+  rules:
+  - host: admin.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: example-app-admin
+            port:
+              number: 80
+
+---
+# AWS ALB Ingress Controller Example
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-app-alb
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+  annotations:
+    # AWS ALB Ingress Controller annotations
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:123456789012:certificate/abc123
+    alb.ingress.kubernetes.io/security-groups: sg-12345678
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '30'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+spec:
+  ingressClassName: alb
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: example-app
+            port:
+              number: 80
+
+---
+# GKE Ingress with Google Cloud CDN
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-app-gke
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+  annotations:
+    # GKE Ingress annotations
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "example-app-ip"
+    ingress.gcp.kubernetes.io/pre-shared-cert: "example-app-cert"
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "example-backend-config"}'
+spec:
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: example-app
+            port:
+              number: 80

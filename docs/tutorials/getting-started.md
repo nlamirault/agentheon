@@ -26,7 +26,7 @@ SPDX-License-Identifier: Apache-2.0
 
 Every request enters through **Zeus**, the orchestrator. Zeus never does
 specialist work — it reads the request and routes it. Open
-[`agents/zeus.md`](../../agents/zeus.md) and note its `domain` and `tools`.
+[`agents/zeus/README.md`](../../agents/zeus/README.md) and note its `domain` and `tools`.
 
 *You should see:* a routing-only agent with `Task`, `Read`, and `Grep`.
 

@@ -1,0 +1,298 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Kubernetes NetworkPolicy Examples
+# Demonstrates network security and pod-to-pod traffic control
+# Reference: @references/networking.md, @references/security.md
+
+---
+# Default Deny All Ingress and Egress
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Default deny all ingress and egress traffic"
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+# Allow Frontend to Backend Communication
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Allow frontend pods to communicate with backend pods"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: example-app
+      app.kubernetes.io/component: network
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: example-app
+          app.kubernetes.io/component: frontend
+    ports:
+    - protocol: TCP
+      port: 8080
+
+---
+# Allow Backend to Database Communication
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-to-database
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+      app.kubernetes.io/component: database
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: example-app
+          app.kubernetes.io/component: network
+    ports:
+    - protocol: TCP
+      port: 5432
+
+---
+# Allow Ingress from Namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-ingress-namespace
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Allow traffic from ingress controller namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: example-app
+      app.kubernetes.io/component: frontend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+
+---
+# Allow DNS and External HTTPS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-and-https
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Allow DNS queries and external HTTPS connections"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: example-app
+  policyTypes:
+  - Egress
+  egress:
+  # Allow DNS
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    - podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow external HTTPS
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 169.254.169.254/32  # Exclude metadata service
+    ports:
+    - protocol: TCP
+      port: 443
+
+---
+# Allow Prometheus Scraping
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-scraping
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Allow Prometheus to scrape metrics"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: example-app
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    ports:
+    - protocol: TCP
+      port: 9090
+
+---
+# Multi-tier Application Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: multi-tier-app-policy
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: example-app
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow from frontend
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/component: frontend
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow health checks from kubelet
+  - from:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  # Allow to database
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/component: database
+    ports:
+    - protocol: TCP
+      port: 5432
+  # Allow to cache
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/component: cache
+    ports:
+    - protocol: TCP
+      port: 6379
+  # Allow DNS
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+
+---
+# Restrict Access by IP Range
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-specific-ip-ranges
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Restrict access to admin interface by IP range"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: admin-app
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 10.0.0.0/8  # Internal corporate network
+    - ipBlock:
+        cidr: 172.16.0.0/12  # VPN network
+    ports:
+    - protocol: TCP
+      port: 443

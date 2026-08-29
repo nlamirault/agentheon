@@ -1,0 +1,238 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Production Recording Rules for Prometheus
+# These pre-aggregate expensive queries for faster dashboard rendering
+
+groups:
+  # API Service Metrics
+  - name: api_aggregations
+    interval: 30s
+    rules:
+      # Request rate per service (5m window)
+      - record: job:http_requests:rate5m
+        expr: sum(rate(http_requests_total[5m])) by (job)
+
+      # Request rate per service and method
+      - record: job_method:http_requests:rate5m
+        expr: sum(rate(http_requests_total[5m])) by (job, method)
+
+      # Error ratio per service
+      - record: job:http_errors:ratio5m
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m])) by (job)
+          /
+          sum(rate(http_requests_total[5m])) by (job)
+
+      # P50, P90, P99 latency per service
+      - record: job:http_request_duration:p50
+        expr: |
+          histogram_quantile(0.50,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (job, le)
+          )
+
+      - record: job:http_request_duration:p90
+        expr: |
+          histogram_quantile(0.90,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (job, le)
+          )
+
+      - record: job:http_request_duration:p99
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (job, le)
+          )
+
+  # Node/Infrastructure Metrics
+  - name: node_aggregations
+    interval: 30s
+    rules:
+      # CPU usage per instance
+      - record: instance:node_cpu:usage:rate5m
+        expr: |
+          1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) by (instance)
+
+      # CPU usage cluster-wide
+      - record: cluster:node_cpu:usage:rate5m
+        expr: avg(instance:node_cpu:usage:rate5m)
+
+      # Memory usage per instance (percentage)
+      - record: instance:node_memory:usage:ratio
+        expr: |
+          1 - (
+            node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes
+          )
+
+      # Disk usage per instance per mountpoint
+      - record: instance_mountpoint:node_disk:usage:ratio
+        expr: |
+          1 - (
+            node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs"}
+            /
+            node_filesystem_size_bytes{fstype!~"tmpfs|fuse.lxcfs"}
+          )
+
+      # Network traffic per instance (bytes/sec)
+      - record: instance:node_network:receive:rate5m
+        expr: sum(rate(node_network_receive_bytes_total[5m])) by (instance)
+
+      - record: instance:node_network:transmit:rate5m
+        expr: sum(rate(node_network_transmit_bytes_total[5m])) by (instance)
+
+  # Database Metrics
+  - name: database_aggregations
+    interval: 30s
+    rules:
+      # Query rate per database
+      - record: database:queries:rate5m
+        expr: sum(rate(database_queries_total[5m])) by (database, operation)
+
+      # Query error rate
+      - record: database:query_errors:ratio5m
+        expr: |
+          sum(rate(database_queries_total{status="error"}[5m])) by (database)
+          /
+          sum(rate(database_queries_total[5m])) by (database)
+
+      # Connection pool utilization
+      - record: database:connection_pool:usage:ratio
+        expr: |
+          database_connection_pool_active
+          /
+          database_connection_pool_max
+
+      # Query duration percentiles
+      - record: database:query_duration:p99
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(database_query_duration_seconds_bucket[5m])) by (database, le)
+          )
+
+  # Kubernetes Metrics
+  - name: kubernetes_aggregations
+    interval: 30s
+    rules:
+      # Pod CPU usage
+      - record: pod:container_cpu:usage:rate5m
+        expr: |
+          sum(rate(container_cpu_usage_seconds_total{pod!=""}[5m]))
+          by (namespace, pod)
+
+      # Pod memory usage
+      - record: pod:container_memory:usage:bytes
+        expr: |
+          sum(container_memory_working_set_bytes{pod!=""})
+          by (namespace, pod)
+
+      # Namespace resource usage
+      - record: namespace:container_cpu:usage:rate5m
+        expr: sum(pod:container_cpu:usage:rate5m) by (namespace)
+
+      - record: namespace:container_memory:usage:bytes
+        expr: sum(pod:container_memory:usage:bytes) by (namespace)
+
+      # Container restarts rate
+      - record: namespace_pod:container_restarts:rate5m
+        expr: |
+          rate(kube_pod_container_status_restarts_total[5m])
+
+  # Message Queue Metrics
+  - name: queue_aggregations
+    interval: 30s
+    rules:
+      # Message publish rate
+      - record: queue:messages_published:rate5m
+        expr: sum(rate(queue_messages_published_total[5m])) by (queue)
+
+      # Message consume rate
+      - record: queue:messages_consumed:rate5m
+        expr: sum(rate(queue_messages_consumed_total[5m])) by (queue)
+
+      # Queue depth (backlog)
+      - record: queue:depth:current
+        expr: sum(queue_depth_messages) by (queue)
+
+      # Message processing time
+      - record: queue:message_processing_duration:p99
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(queue_message_processing_duration_seconds_bucket[5m])) by (queue, le)
+          )
+
+  # Cache Metrics
+  - name: cache_aggregations
+    interval: 30s
+    rules:
+      # Cache hit rate
+      - record: cache:hit:ratio5m
+        expr: |
+          sum(rate(cache_hits_total[5m])) by (cache)
+          /
+          (
+            sum(rate(cache_hits_total[5m])) by (cache)
+            +
+            sum(rate(cache_misses_total[5m])) by (cache)
+          )
+
+      # Cache operation rate
+      - record: cache:operations:rate5m
+        expr: |
+          sum(rate(cache_operations_total[5m])) by (cache, operation)
+
+  # SLI Metrics (for SLO calculations)
+  - name: sli_aggregations
+    interval: 30s
+    rules:
+      # Availability SLI (successful requests / total requests)
+      - record: sli:availability:ratio5m
+        expr: |
+          sum(rate(http_requests_total{status!~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+
+      # Latency SLI (requests under threshold / total requests)
+      - record: sli:latency:ratio5m
+        expr: |
+          sum(rate(http_request_duration_seconds_bucket{le="0.5"}[5m]))
+          /
+          sum(rate(http_request_duration_seconds_count[5m]))
+
+      # Quality SLI (non-error responses / total responses)
+      - record: sli:quality:ratio5m
+        expr: |
+          sum(rate(http_requests_total{status=~"2..|3.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+
+  # Business Metrics
+  - name: business_aggregations
+    interval: 1m
+    rules:
+      # User signups per minute
+      - record: business:user_signups:rate1m
+        expr: sum(rate(user_signups_total[1m]))
+
+      # Transactions per minute
+      - record: business:transactions:rate1m
+        expr: sum(rate(transactions_total[1m])) by (type)
+
+      # Revenue per minute (if tracked)
+      - record: business:revenue:rate1m
+        expr: sum(rate(revenue_dollars_total[1m]))
+
+  # Multi-level aggregations (cluster -> datacenter -> global)
+  - name: hierarchical_aggregations
+    interval: 30s
+    rules:
+      # Instance level (already have from above)
+      # Cluster level
+      - record: cluster:http_requests:rate5m
+        expr: sum(job:http_requests:rate5m) by (cluster)
+
+      # Datacenter/Region level
+      - record: datacenter:http_requests:rate5m
+        expr: sum(cluster:http_requests:rate5m) by (datacenter)
+
+      # Global level
+      - record: global:http_requests:rate5m
+        expr: sum(datacenter:http_requests:rate5m)

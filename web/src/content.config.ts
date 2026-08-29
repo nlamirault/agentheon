@@ -2,9 +2,16 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 // Agent profiles live at the repo root in ../agents, OUTSIDE the Astro app,
-// so they stay copy-pasteable and act as the single source of truth.
+// so they stay copy-pasteable and act as the single source of truth. Each agent
+// is a directory (agents/<name>/README.md) with its vendored skills alongside in
+// agents/<name>/skills/; the loader matches only the README and strips the
+// suffix so the collection id stays the bare agent name (e.g. `zeus`).
 const agents = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: '../agents' }),
+  loader: glob({
+    pattern: '*/README.md',
+    base: '../agents',
+    generateId: ({ entry }) => entry.replace(/\/README\.md$/, ''),
+  }),
   schema: z.object({
     name: z.string(),
     title: z.string(),

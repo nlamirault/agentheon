@@ -12,14 +12,14 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Goal
 
-Run `agentheon.sh` to turn `agents/*.md` into Hermes profiles under
+Run `agentheon.sh` to turn `agents/*/README.md` into Hermes profiles under
 `$HERMES_HOME/profiles/`, seed the shared team context, and rebuild the routing
 matrix — on a VPS that hosts Hermes Agent, or on your own machine.
 
 ## What it produces
 
 `agentheon.sh` derives everything from a single source of truth — the
-frontmatter in each `agents/*.md`. For every agent it writes:
+frontmatter in each `agents/*/README.md`. For every agent it writes:
 
 | File                           | Purpose                                                                                      |
 | ------------------------------ | -------------------------------------------------------------------------------------------- |
@@ -124,7 +124,7 @@ cat $HERMES_HOME/team/company/routing.md  # the regenerated routing matrix
 hermes profile list                       # (if the CLI is installed)
 ```
 
-You should see one profile directory per `agents/*.md`, and `routing.md`
+You should see one profile directory per `agents/*/README.md`, and `routing.md`
 listing every agent with its domain, model, and handoffs.
 
 ## Related

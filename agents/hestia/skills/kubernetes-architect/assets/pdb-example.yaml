@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Kubernetes PodDisruptionBudget Examples
+# Protects workloads during voluntary disruptions (node drains, cluster upgrades,
+# maintenance windows). Ensures a minimum number of pods remain available.
+# Reference: @references/reliability.md
+---
+# Option A: minAvailable — absolute floor of pods that must stay Running.
+# Use when you need a guaranteed minimum (e.g., always keep 2 replicas up for quorum).
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: example-app-pdb
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  # Keep at least 2 pods running at all times.
+  # For replicas: 3, this allows at most 1 pod to be disrupted simultaneously.
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: example-app
+      app.kubernetes.io/instance: example-app-prod
+---
+# Option B: maxUnavailable — expresses disruption as a fraction of desired replicas.
+# Use when you want the budget to scale automatically with replica count.
+#
+# Uncomment this block and remove Option A if you prefer percentage-based disruption:
+#
+# apiVersion: policy/v1
+# kind: PodDisruptionBudget
+# metadata:
+#   name: example-app-pdb
+#   namespace: production
+#   labels:
+#     app.kubernetes.io/name: example-app
+#     app.kubernetes.io/instance: example-app-prod
+#     app.kubernetes.io/component: backend
+#     app.kubernetes.io/part-of: example-system
+#     app.kubernetes.io/managed-by: kubectl
+# spec:
+#   # Allow at most 1 pod to be unavailable at a time (or use "25%" for percentage).
+#   maxUnavailable: 1
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/name: example-app
+#       app.kubernetes.io/instance: example-app-prod
