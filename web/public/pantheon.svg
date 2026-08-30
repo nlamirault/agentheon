@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="The Pantheon">
+  <g fill="none" stroke="#d4a533" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- pediment -->
+    <path d="M60,16 L100,44 L20,44 Z"/>
+    <!-- architrave / entablature -->
+    <line x1="18" y1="52" x2="102" y2="52"/>
+    <!-- columns -->
+    <line x1="30" y1="56" x2="30" y2="90"/>
+    <line x1="45" y1="56" x2="45" y2="90"/>
+    <line x1="60" y1="56" x2="60" y2="90"/>
+    <line x1="75" y1="56" x2="75" y2="90"/>
+    <line x1="90" y1="56" x2="90" y2="90"/>
+    <!-- stylobate / steps -->
+    <line x1="22" y1="96" x2="98" y2="96"/>
+    <line x1="16" y1="103" x2="104" y2="103"/>
+  </g>
+  <!-- pediment acroterion -->
+  <circle cx="60" cy="14" r="3.4" fill="#d4a533"/>
+</svg>
