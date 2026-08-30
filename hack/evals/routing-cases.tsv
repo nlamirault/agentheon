@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+#
+# Routing golden set: prompt <TAB> expected primary agent (slug).
+# One row = one request Zeus should route to that specialist. Lines starting
+# with '#' and blank lines are ignored. Keep at least one case per specialist.
+# Run: ./hack/eval-routing.sh  (static)  |  ./hack/eval-routing.sh --live
+Break this epic into ordered, implementable tasks with risks	athena
+Turn these fuzzy requirements into an architecture plan	athena
+Implement the login endpoint from this plan	hephaestus
+Write the code for the CSV parser	hephaestus
+Write tests for the payment module and check coverage	artemis
+Do these tests cover the edge cases?	artemis
+Review this pull request for correctness and security	argus
+Audit this IAM policy for privilege escalation	argus
+The build passes locally but fails in CI with no clear cause	asclepius
+Production is throwing 500s — find the root cause	asclepius
+Does this release meet our licensing and DCO policy?	themis
+Check this change for compliance and governance issues	themis
+Design an eval suite for our RAG pipeline	prometheus
+Optimize this prompt and pick a model for classification	prometheus
+Design the database schema and write the migration	demeter
+This SQL query is slow — optimize the indexes	demeter
+Set up SLOs, dashboards, and alerts for the checkout service	helios
+Instrument this service with OpenTelemetry traces	helios
+Write the CI/CD pipeline and Dockerfile for deployment	hestia
+Author the Terraform for the staging environment	hestia
+Audit this module for tech debt and dead code	hygieia
+Refactor this file to reduce duplication	hygieia
+Build the settings screen UI and wire up the form	aphrodite
+Improve the UX of this checkout flow	aphrodite
+Define the design system tokens and color palette	aglaea
+Create a DESIGN.md for the mobile app	aglaea
+Write the getting-started tutorial for this project	apollo
+Document this API in the reference docs	apollo
+Triage these open issues and cut a release	iris
+Respond to this contributor's pull request	iris
+Should we build this feature, and what are the acceptance criteria?	kairos
+Prioritize the backlog for next quarter	kairos
+Our AWS bill doubled — find the waste and where to cut	plutus
+Recommend rightsizing and reserved-instance coverage	plutus
+Design the load-balancing and DNS topology across regions	poseidon
+Set up service-mesh routing between these microservices	poseidon
+Load-test the API and find the throughput bottleneck	atlas
+Profile this endpoint and set a latency target	atlas
+Generate an SBOM and sign our release artifacts	nemesis
+Add SLSA provenance and pin our dependencies	nemesis

@@ -31,6 +31,10 @@ Each agent is one Greek deity owning one domain. Zeus is the only entrypoint.
 | Aglaea     | The Adornment   | Design & Design Systems       | sonnet |
 | Apollo     | The Chronicler  | Documentation & Knowledge     | sonnet |
 | Iris       | The Messenger   | Open Source & Community       | sonnet |
+| Plutus     | The Provider    | FinOps & Cost Engineering     | sonnet |
+| Poseidon   | The Navigator   | Networking & Connectivity     | sonnet |
+| Atlas      | The Bearer      | Performance Engineering       | sonnet |
+| Nemesis    | The Enforcer    | Release & Supply Chain        | sonnet |
 
 ## Profile frontmatter schema
 

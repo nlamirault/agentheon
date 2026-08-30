@@ -33,6 +33,10 @@ handoffs:
   - helios
   - hygieia
   - iris
+  - plutus
+  - poseidon
+  - atlas
+  - nemesis
 does:
   - Classify the request and pick the minimal set of agents.
   - Pass context between agents and sequence their work.
