@@ -109,6 +109,12 @@ nav .links a:hover { color: var(--text); text-decoration: none; }
 
 /* ---- section heading ---- */
 .section { padding: 4rem 0; }
+.section .section-mark {
+  display: block;
+  width: 72px; height: 72px;
+  margin: 0 auto 1rem;
+  filter: drop-shadow(0 0 18px rgba(212, 165, 51, 0.22));
+}
 .section h2 {
   font-family: var(--font-display); font-weight: 500;
   font-size: 2.4rem; margin: 0 0 .4rem; text-align: center;
