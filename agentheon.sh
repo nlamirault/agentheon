@@ -18,8 +18,11 @@ set -euo pipefail
 #                  pointer, then the agent body — inside a managed block so hand
 #                  edits OUTSIDE the block survive regeneration.
 #
-# It also seeds shared team context (team/*.md) into $HERMES_HOME/team/company/
-# and rebuilds the routing matrix that Zeus uses to dispatch work.
+# It also installs each agent's vendored skills (agents/<name>/skills/*) into that
+# profile's own skill store ($HERMES_HOME/profiles/<name>/skills/agentheon/),
+# scopes them via config.yaml `skills:`, seeds shared team context (team/*.md)
+# into $HERMES_HOME/team/company/, and rebuilds the routing matrix that Zeus uses
+# to dispatch work.
 #
 # Aliases: each agent may declare `aliases:` in its frontmatter — alternate
 # names that resolve to the profile (e.g. `hermes -p design ...` → aglaea).
@@ -156,6 +159,32 @@ split_model() { # "provider/model" -> "provider" "model"
   printf '%s %s' "${1%%/*}" "${1#*/}"
 }
 
+# Install an agent's vendored skills into that profile's own Hermes skill store
+# so `hermes -p <slug>` actually loads them. Hermes resolves profile skills from
+# the profile home (<pdir>/skills/), NOT the shared ~/.hermes/skills/ store, so
+# each agents/<slug>/skills/<name>/ dir (with SKILL.md) is copied to
+# <pdir>/skills/agentheon/<name>/, where Hermes discovers it as a local, enabled
+# skill. Skills listed in frontmatter but NOT vendored (e.g. Hermes built-ins)
+# are left alone — they resolve from the built-in store.
+install_skills() { # agent-dir  dest-dir  skill-name...
+  local adir="$1" dest="$2"; shift 2
+  local s src
+  for s in "$@"; do
+    src="${adir}/skills/${s}"
+    if [[ ! -f "${src}/SKILL.md" ]]; then
+      echo "   ${WARN} skill '${s}' not vendored under ${src} — assuming built-in, skipping copy"
+      continue
+    fi
+    if [[ "$DRY_RUN" == 1 ]]; then
+      echo "   would: install skill '${s}' → ${dest}/${s}/"
+    else
+      rm -rf "${dest:?}/${s}"
+      cp -R "$src" "${dest}/${s}"
+      echo "   ${OK} skill '${s}' → ${dest}/${s}/"
+    fi
+  done
+}
+
 # --- pass 1: sibling lookup for handoff routes ----------------------------
 
 declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS ALIASES
@@ -251,6 +280,15 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   pdir="${PROFILES_DIR}/${slug}"
   run mkdir -p "$pdir"
 
+  # Install the agent's vendored skills into this profile's own skill store, then
+  # scope them via the config.yaml `skills:` key below. Without this, `skills:`
+  # names nothing on disk and `hermes -p <slug>` loads no skills.
+  skills_dest="${pdir}/skills/agentheon"
+  if [[ ${#skills[@]} -gt 0 ]]; then
+    run mkdir -p "$skills_dest"
+    install_skills "$(dirname "$file")" "$skills_dest" "${skills[@]}"
+  fi
+
   # Register with the CLI when available, so it lands in `hermes profile list`.
   if [[ "$HAVE_HERMES" == 1 ]]; then
     if hermes profile list 2>/dev/null | grep -qw "$slug"; then
@@ -290,7 +328,7 @@ model:
   model: ${model}
   reasoning_effort: ${reasoning}
 toolsets:
-$(for ts in $toolsets; do echo "  - ${ts}"; done)
+$(for ts in $toolsets; do echo "  - ${ts}"; done)$([[ ${#skills[@]} -gt 0 ]] && printf '\nskills: %s' "$(IFS=,; echo "${skills[*]}")")
 memory:
   memory_enabled: true
 YAML
