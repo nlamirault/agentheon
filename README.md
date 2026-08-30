@@ -14,8 +14,9 @@ defined routes, advancing only through PASS/FAIL quality gates.
 ## Features
 
 - **Single entrypoint** — Zeus routes every request; it never does specialist work.
-- **Single-domain agents** — 17 deities, one domain each (planning, build, test,
-  review, security, data, observability, docs, and more).
+- **Single-domain agents** — 21 deities, one domain each (planning, build, test,
+  review, security, data, observability, docs, cost, networking, performance,
+  supply chain, and more).
 - **Quality gates** — plan → build → test → review → comply, each with a
   PASS/FAIL verdict. Nothing ships unverified.
 - **Context-preserving handoffs** — every transition carries full context via a

@@ -53,6 +53,30 @@ check-%:
 		echo -e "$(ERROR_COLOR)$(KO)$(NO_COLOR) $*"; \
 	fi
 
+##@ Agents
+
+.PHONY: agents-validate
+agents-validate: ## Lint all agent profiles against the frontmatter schema
+	@echo -e "$(INFO)$(INFO_COLOR)[Agents] Validating profiles $(NO_COLOR)"
+	@./hack/validate-agents.sh
+
+.PHONY: agents-routing
+agents-routing: ## Regenerate team/routing.md from agent frontmatter
+	@echo -e "$(INFO)$(INFO_COLOR)[Agents] Generating routing matrix $(NO_COLOR)"
+	@./hack/gen-routing.sh
+
+.PHONY: agents-routing-check
+agents-routing-check: ## Fail if team/routing.md is out of sync with frontmatter
+	@./hack/gen-routing.sh --check
+
+.PHONY: agents-eval
+agents-eval: ## Run the Zeus routing eval golden set (static; --live for LLM)
+	@echo -e "$(INFO)$(INFO_COLOR)[Agents] Routing evals $(NO_COLOR)"
+	@./hack/eval-routing.sh
+
+.PHONY: agents-check
+agents-check: agents-validate agents-routing-check agents-eval ## Run all agent checks (validate + routing sync + evals)
+
 ##@ Hermes
 
 .PHONY: hermes-profiles

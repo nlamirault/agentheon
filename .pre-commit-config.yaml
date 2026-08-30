@@ -43,6 +43,29 @@ repos:
     pass_filenames: true
     files: \.toml$
     args: []
+- repo: local
+  hooks:
+  - id: agents-validate
+    name: "🏛️ agentheon / Validate agent profiles"
+    entry: ./hack/validate-agents.sh
+    language: script
+    pass_filenames: false
+    files: ^(agents/[^/]+/README\.md|hack/(validate-agents|lib-frontmatter)\.sh)$
+    stages: [pre-commit]
+  - id: agents-routing
+    name: "🏛️ agentheon / Routing matrix in sync"
+    entry: ./hack/gen-routing.sh --check
+    language: script
+    pass_filenames: false
+    files: ^(agents/[^/]+/README\.md|team/routing\.md|hack/(gen-routing|lib-frontmatter)\.sh)$
+    stages: [pre-commit]
+  - id: agents-eval
+    name: "🏛️ agentheon / Routing evals (static)"
+    entry: ./hack/eval-routing.sh
+    language: script
+    pass_filenames: false
+    files: ^(agents/[^/]+/README\.md|hack/(eval-routing\.sh|evals/routing-cases\.tsv))$
+    stages: [pre-commit]
 - repo: https://github.com/google/yamlfmt
   rev: v0.19.0
   hooks:

@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Agents
+
+on: # yamllint disable-line rule:truthy
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+  pull_request:
+    paths:
+    - 'agents/**'
+    - 'team/**'
+    - 'hack/**'
+    - '.github/workflows/agents.yml'
+
+permissions: read-all
+
+jobs:
+  validate:
+    name: Validate profiles, routing, and evals
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+    - name: Validate agent profiles
+      run: ./hack/validate-agents.sh
+
+    - name: Routing matrix in sync
+      run: ./hack/gen-routing.sh --check
+
+    - name: Routing evals (static)
+      run: ./hack/eval-routing.sh

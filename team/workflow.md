@@ -45,6 +45,14 @@ Specialists join the loop where relevant:
 - **Iris** (open source/community) — the project's external interface: triages
   issues and PRs, cuts releases, routes feature requests to Kairos, code review
   to Argus, and bugs to Asclepius.
+- **Plutus** (FinOps/cost) — attributes cloud spend, finds waste, and recommends
+  rightsizing; hands infra changes to Hestia and cost/value trade-offs to Kairos.
+- **Poseidon** (networking) — designs topology, routing, and connectivity; hands
+  provisioning to Hestia and network security policy to Argus.
+- **Atlas** (performance) — load-tests and profiles for throughput/latency
+  targets; hands fixes to Hephaestus and prod monitoring to Helios.
+- **Nemesis** (release/supply chain) — SBOMs, signing, and SLSA provenance;
+  hands the published release to Iris and code review to Argus.
 
 ## Quality gates — the core mechanic
 
