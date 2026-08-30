@@ -122,4 +122,4 @@ tribal routing knowledge that peer-to-peer would require.
 - [`docs/explanation/architecture.md`](../explanation/architecture.md) — orchestration, handoffs, and gates
 - [`team/company.md`](../../team/company.md) — shared team principles
 - [`team/workflow.md`](../../team/workflow.md) — the plan → build → test → review → comply loop
-- [`agents/zeus.md`](../../agents/zeus.md) — the orchestrator profile
+- [`agents/zeus/README.md`](../../agents/zeus/README.md) — the orchestrator profile

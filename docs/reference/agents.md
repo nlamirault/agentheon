@@ -6,7 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 # Agent Catalog and Profile Schema
 
 > **Reference** — factual and comprehensive. The canonical source is each
-> `agents/*.md` file; this page mirrors it for quick lookup.
+> `agents/*/README.md` file; this page mirrors it for quick lookup.
 
 ## Agent catalog
 
@@ -34,7 +34,7 @@ Each agent is one Greek deity owning one domain. Zeus is the only entrypoint.
 
 ## Profile frontmatter schema
 
-Every `agents/<name>.md` opens with YAML frontmatter:
+Every `agents/<name>/README.md` opens with YAML frontmatter:
 
 | Field       | Type   | Description                                               |
 | ----------- | ------ | --------------------------------------------------------- |
@@ -65,7 +65,7 @@ Every `agents/<name>.md` opens with YAML frontmatter:
 
 ## Profile generator
 
-`hack/gen-hermes-profiles.sh` turns each `agents/*.md` into a Hermes profile.
+`hack/gen-hermes-profiles.sh` turns each `agents/*/README.md` into a Hermes profile.
 
 | Env var           | Default                   | Purpose                                 |
 | ----------------- | ------------------------- | --------------------------------------- |

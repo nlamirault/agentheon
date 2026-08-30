@@ -56,7 +56,7 @@ check-%:
 ##@ Hermes
 
 .PHONY: hermes-profiles
-hermes-profiles: check-hermes ## Generate a Hermes agent profile for each agent (agents/*.md)
+hermes-profiles: check-hermes ## Generate a Hermes agent profile for each agent (agents/*/README.md)
 	@echo -e "$(INFO)$(INFO_COLOR)[Hermes] Generating profiles $(NO_COLOR)"
 	@./hack/gen-hermes-profiles.sh
 

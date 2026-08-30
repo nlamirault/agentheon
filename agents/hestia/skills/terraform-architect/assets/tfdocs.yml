@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+---
+formatter: "markdown"
+
+content: ""
+
+output:
+  file: README.md
+  mode: inject
+  template: |-
+    <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+    {{ .Content }}
+    <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

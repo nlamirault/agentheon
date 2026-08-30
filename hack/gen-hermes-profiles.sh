@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-# gen-hermes-profiles.sh — turn each Agentheon agent (agents/*.md) into a
+# gen-hermes-profiles.sh — turn each Agentheon agent (agents/*/README.md) into a
 # Hermes agent profile (https://hermes-agent.nousresearch.com).
 #
 # Tested against Hermes Agent v0.20.5. For every agent it:
@@ -83,7 +83,7 @@ profile_exists() { hermes profile list 2>/dev/null | grep -qw "$1"; }
 
 declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS ALIASES
 shopt -s nullglob
-for file in "${AGENTS_DIR}"/*.md; do
+for file in "${AGENTS_DIR}"/*/README.md; do
   n="$(fm_scalar "$file" name)"; [[ -z "$n" ]] && continue
   s="$(echo "$n" | tr '[:upper:]' '[:lower:]')"
   NAME[$s]="$n"; DOMAIN[$s]="$(fm_scalar "$file" domain)"; TAGLINE[$s]="$(fm_scalar "$file" tagline)"
@@ -140,7 +140,7 @@ fi
 
 [[ "${NO_ALIAS:-0}" == 1 ]] && extra_create=(--no-alias) || extra_create=()
 
-for file in "${AGENTS_DIR}"/*.md; do
+for file in "${AGENTS_DIR}"/*/README.md; do
   name="$(fm_scalar "$file" name)"
   [[ -z "$name" ]] && { echo "⚠  no name in $file, skipping"; continue; }
 
@@ -188,7 +188,7 @@ for file in "${AGENTS_DIR}"/*.md; do
   # Build the managed block into a temp file, then merge it into SOUL.md.
   gen="$(mktemp)"
   {
-    echo "<!-- AGENTHEON:BEGIN — generated from agents/${slug}.md by hack/gen-hermes-profiles.sh; do not edit inside this block, it is overwritten. -->"
+    echo "<!-- AGENTHEON:BEGIN — generated from agents/${slug}/README.md by hack/gen-hermes-profiles.sh; do not edit inside this block, it is overwritten. -->"
     echo "# ${name} — ${title}"
     echo
     echo "**Domain:** ${domain}"

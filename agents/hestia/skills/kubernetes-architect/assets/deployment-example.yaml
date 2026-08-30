@@ -1,0 +1,133 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Kubernetes Deployment Example
+# This demonstrates best practices for Kubernetes deployments
+# Reference: @references/best-practices.md @references/reliability.md
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Example application deployment following Kubernetes best practices"
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0  # never terminate a pod before its replacement is Ready
+      maxSurge: 1        # required when maxUnavailable: 0 to avoid rollout deadlock
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: example-app
+      app.kubernetes.io/instance: example-app-prod
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: example-app
+        app.kubernetes.io/instance: example-app-prod
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/part-of: example-system
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      terminationGracePeriodSeconds: 30  # must exceed app drain time; see preStop below
+      serviceAccountName: example-app
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: app
+        image: example-registry/example-app:1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: ENV
+          value: "production"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: host
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "5"]  # wait for kube-proxy to remove pod from iptables before SIGTERM
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: cache
+          mountPath: /app/cache
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: cache
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: example-app
+              topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: example-app

@@ -1,0 +1,112 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Kubernetes Service Examples
+# Demonstrates different service types and best practices
+# Reference: @references/networking.md
+
+---
+# ClusterIP Service (Internal only)
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-app
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Internal service for example application"
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+    protocol: TCP
+  sessionAffinity: None
+
+---
+# LoadBalancer Service (External access)
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-app-external
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "External load balancer for example application"
+    # AWS-specific annotations
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    # GCP-specific annotations (commented)
+    # cloud.google.com/neg: '{"ingress": true}'
+    # cloud.google.com/load-balancer-type: "Internal"
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+  ports:
+  - name: https
+    port: 443
+    targetPort: http
+    protocol: TCP
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  loadBalancerSourceRanges:
+  - "10.0.0.0/8"
+  - "172.16.0.0/12"
+
+---
+# Headless Service (StatefulSet support)
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-app-headless
+  namespace: production
+  labels:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: example-system
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Headless service for StatefulSet pods"
+spec:
+  type: ClusterIP
+  clusterIP: None  # Makes this a headless service
+  selector:
+    app.kubernetes.io/name: example-app
+    app.kubernetes.io/instance: example-app-prod
+  ports:
+  - name: db
+    port: 5432
+    targetPort: db
+    protocol: TCP
+  publishNotReadyAddresses: true  # Important for StatefulSet discovery

@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 
+# Vendored third-party skill packages under agents/*/skills/ are excluded from
+# every hook — they keep their upstream formatting, licensing, and headers.
+exclude: ^agents/[^/]+/skills/
+
 repos:
 # Core
 - repo: https://github.com/pre-commit/pre-commit-hooks

@@ -1,0 +1,608 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Helm Values Examples
+# Demonstrates common Helm chart value patterns and best practices
+# Reference: @references/helm.md, @references/best-practices.md
+
+---
+# Basic Application Values
+# Minimal values file for a web application
+nameOverride: ""
+fullnameOverride: ""
+
+# Image configuration
+image:
+  repository: registry.example.com/example-app
+  pullPolicy: IfNotPresent
+  tag: "1.0.0"  # Overrides the image tag whose default is chart appVersion
+
+imagePullSecrets: []
+  # - name: registry-secret
+
+# Service account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+  automountServiceAccountToken: true
+
+# Pod annotations
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/metrics"
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 3000
+  fsGroup: 2000
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container security context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+    - ALL
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: http
+  annotations: {}
+  labels: {}
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: app-tls
+      hosts:
+        - app.example.com
+
+# Resource limits and requests
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Autoscaling
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Replica count (if autoscaling is disabled)
+replicaCount: 3
+
+# Node selector
+nodeSelector: {}
+  # kubernetes.io/os: linux
+  # node.kubernetes.io/instance-type: m5.large
+
+# Tolerations
+tolerations: []
+  # - key: "dedicated"
+  #   operator: "Equal"
+  #   value: "backend"
+  #   effect: "NoSchedule"
+
+# Affinity
+affinity: {}
+  # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #   - weight: 100
+  #     podAffinityTerm:
+  #       labelSelector:
+  #         matchLabels:
+  #           app.kubernetes.io/name: example-app
+  #       topologyKey: kubernetes.io/hostname
+
+# Topology spread constraints
+topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   whenUnsatisfiable: ScheduleAnyway
+  #   labelSelector:
+  #     matchLabels:
+  #       app.kubernetes.io/name: example-app
+
+# Liveness probe
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Readiness probe
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 2
+
+# Startup probe (for slow-starting containers)
+startupProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 30
+
+# Environment variables
+env:
+  - name: LOG_LEVEL
+    value: "info"
+  - name: ENVIRONMENT
+    value: "production"
+
+# Environment variables from ConfigMap
+envFrom: []
+  # - configMapRef:
+  #     name: app-config
+  # - secretRef:
+  #     name: app-secrets
+
+# Volumes
+volumes: []
+  # - name: config
+  #   configMap:
+  #     name: app-config
+  # - name: secrets
+  #   secret:
+  #     secretName: app-secrets
+
+# Volume mounts
+volumeMounts: []
+  # - name: config
+  #   mountPath: /etc/app/config
+  #   readOnly: true
+
+# Additional containers (sidecars)
+extraContainers: []
+  # - name: log-forwarder
+  #   image: fluent/fluent-bit:latest
+  #   volumeMounts:
+  #   - name: logs
+  #     mountPath: /var/log
+
+# Init containers
+initContainers: []
+  # - name: migration
+  #   image: registry.example.com/migrations:1.0.0
+  #   command: ["migrate", "up"]
+
+---
+# Production Values (values-prod.yaml)
+# Override base values for production environment
+
+replicaCount: 5
+
+image:
+  tag: "v1.0.0"
+  pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 5
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 75
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Frame-Options: DENY";
+      more_set_headers "X-Content-Type-Options: nosniff";
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: app-prod-tls
+      hosts:
+        - app.example.com
+
+env:
+  - name: LOG_LEVEL
+    value: "warn"
+  - name: ENVIRONMENT
+    value: "production"
+  - name: DATABASE_POOL_SIZE
+    value: "50"
+  - name: CACHE_ENABLED
+    value: "true"
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: example-app
+        topologyKey: kubernetes.io/hostname
+
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: example-app
+
+---
+# Staging Values (values-staging.yaml)
+replicaCount: 2
+
+image:
+  tag: "staging-latest"
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+ingress:
+  enabled: true
+  hosts:
+    - host: staging.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: app-staging-tls
+      hosts:
+        - staging.example.com
+
+env:
+  - name: LOG_LEVEL
+    value: "info"
+  - name: ENVIRONMENT
+    value: "staging"
+  - name: ENABLE_DEBUG_ENDPOINTS
+    value: "true"
+
+---
+# Development Values (values-dev.yaml)
+replicaCount: 1
+
+image:
+  tag: "dev-latest"
+  pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+service:
+  type: NodePort
+  nodePort: 30080
+
+ingress:
+  enabled: false
+
+env:
+  - name: LOG_LEVEL
+    value: "debug"
+  - name: ENVIRONMENT
+    value: "development"
+  - name: ENABLE_DEBUG_ENDPOINTS
+    value: "true"
+  - name: HOT_RELOAD
+    value: "true"
+
+---
+# Database Values Example
+# For a database chart (e.g., PostgreSQL)
+postgresql:
+  enabled: true
+  auth:
+    username: appuser
+    database: appdb
+    existingSecret: postgres-secret
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: "gp3"
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 512Mi
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 1001
+      runAsNonRoot: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 30s
+
+---
+# Redis Cache Values Example
+redis:
+  enabled: true
+  architecture: replication
+  auth:
+    enabled: true
+    existingSecret: redis-secret
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+  replica:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 8Gi
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+---
+# Monitoring Values Example
+# Prometheus ServiceMonitor and PodMonitor
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      prometheus: kube-prometheus
+    relabelings:
+      - sourceLabels: [__meta_kubernetes_pod_name]
+        targetLabel: pod
+    metricRelabelings:
+      - sourceLabels: [__name__]
+        regex: '(request_duration_seconds.*)'
+        action: keep
+
+  podMonitor:
+    enabled: true
+    interval: 30s
+    podMetricsEndpoints:
+      - port: metrics
+        path: /metrics
+        interval: 30s
+
+---
+# Network Policy Values Example
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/name: frontend
+      ports:
+      - protocol: TCP
+        port: 8080
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: ingress-nginx
+      ports:
+      - protocol: TCP
+        port: 8080
+  egress:
+    # Allow DNS
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            name: kube-system
+      - podSelector:
+          matchLabels:
+            k8s-app: kube-dns
+      ports:
+      - protocol: UDP
+        port: 53
+    # Allow database
+    - to:
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/name: postgresql
+      ports:
+      - protocol: TCP
+        port: 5432
+    # Allow external HTTPS
+    - to:
+      - ipBlock:
+          cidr: 0.0.0.0/0
+          except:
+            - 169.254.169.254/32
+      ports:
+      - protocol: TCP
+        port: 443
+
+---
+# Pod Disruption Budget Values Example
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+  # maxUnavailable: 1
+
+---
+# ConfigMap Values Example
+configMap:
+  enabled: true
+  data:
+    app.properties: |
+      server.port=8080
+      server.shutdown=graceful
+      management.endpoints.web.exposure.include=health,info,metrics
+    logging.properties: |
+      logging.level.root=INFO
+      logging.level.com.example=DEBUG
+
+---
+# External Secrets Operator Integration
+externalSecrets:
+  enabled: false
+  backend: aws-secretsmanager  # or vault, gcpsm, azurekv
+  secretStore:
+    name: aws-secretsmanager
+    kind: SecretStore  # or ClusterSecretStore
+  secrets:
+    - name: database-credentials
+      secretKey: prod/database/credentials
+      property: password
+      targetKey: DB_PASSWORD
+    - name: api-keys
+      secretKey: prod/api/keys
+      property: api_key
+      targetKey: API_KEY
+
+---
+# Cloud Provider Specific Values
+
+# AWS Specific
+aws:
+  region: us-west-2
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/example-app-role
+  loadBalancer:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+
+# GCP Specific
+gcp:
+  project: example-project
+  region: us-central1
+  serviceAccount:
+    annotations:
+      iam.gke.io/gcp-service-account: example-app@example-project.iam.gserviceaccount.com
+  backendConfig:
+    enabled: true
+    cdn:
+      enabled: true
+      cachePolicy:
+        includeHost: true
+        includeProtocol: true
+
+# Azure Specific
+azure:
+  resourceGroup: example-rg
+  location: eastus
+  serviceAccount:
+    annotations:
+      azure.workload.identity/client-id: 12345678-1234-1234-1234-123456789012
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: azure/application-gateway
+
+---
+# Advanced: Multi-Container Pod Values
+multiContainer:
+  enabled: false
+  containers:
+    - name: api
+      image:
+        repository: registry.example.com/api
+        tag: "1.0.0"
+      ports:
+        - name: http
+          containerPort: 8080
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 512Mi
+    - name: worker
+      image:
+        repository: registry.example.com/worker
+        tag: "1.0.0"
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+
+---
+# Testing Values (values-test.yaml)
+# Used for running Helm tests
+tests:
+  enabled: true
+  image: curlimages/curl:latest
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi

@@ -14,13 +14,22 @@ SPDX-License-Identifier: Apache-2.0
 Add a new Greek-deity agent to `agents/`, wire it into the routing graph, and
 regenerate the Hermes profiles.
 
+Each agent is a directory:
+
+```text
+agents/<name>/
+  README.md        # SPDX header + frontmatter + persona body (the profile)
+  skills/          # vendored skill packages this agent uses
+    <skill>/SKILL.md
+```
+
 ## Steps
 
 ### 1. Create the profile file
 
-Add `agents/<name>.md` (lowercase deity name). Start with the SPDX header, then
-the frontmatter. Copy the shape from an existing profile such as
-[`agents/athena.md`](../../agents/athena.md):
+Add `agents/<name>/README.md` (lowercase deity name for the directory). Start
+with the SPDX header, then the frontmatter. Copy the shape from an existing
+profile such as [`agents/athena/README.md`](../../agents/athena/README.md):
 
 ```yaml
 ---
@@ -41,9 +50,14 @@ does:
 does_not:
   - <Explicit boundary — defer X to Y>
 skills:
-  - <skill-name>
+  - <skill-name>          # basename of a package under this agent's skills/
 ---
 ```
+
+Vendor each skill the agent needs into `agents/<name>/skills/<skill>/` (a
+directory containing at least a `SKILL.md`), and list its basename under
+`skills:`. Skills served at runtime by an installed plugin (e.g. the Grafana
+`testing` or `ml-ai` skills) may be listed by name without a vendored copy.
 
 ### 2. Keep the agent inside one domain
 
@@ -70,7 +84,7 @@ seeds shared context into `$HERMES_HOME/team/company/`, and rebuilds
 
 ```bash
 pre-commit run --all-files    # license, secrets, whitespace, shebang
-git add agents/<name>.md
+git add agents/<name>/
 git commit -s -m "feat(<name>): add <Deity> for <domain>"
 ```
 

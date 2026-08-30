@@ -1,6 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 
+# Vendored third-party skill packages — leave their TOML untouched.
+exclude = ["agents/*/skills/**"]
+
 [formatting]
 align_entries = false
 align_comments = true
