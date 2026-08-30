@@ -115,6 +115,27 @@ We accept the Cloudflare account and `wrangler` dependency because edge content
 negotiation is the feature that makes an agent site legible to agents, and
 reusing Pilotariak's proven Worker keeps the cost of that capability near zero.
 
+### Workers Builds configuration
+
+Deployment runs through **Workers Builds** (the git-connected CI), which clones
+the repository and runs the build and deploy commands from a configured working
+directory. Because the Worker config lives in the `web/` subdirectory rather
+than the repository root, the **Root directory** must be set to `web`; otherwise
+`wrangler deploy` runs at the repo root, finds no `wrangler.jsonc`, and fails
+with *"Missing entry-point to Worker script or to assets directory."*
+
+Configure the Worker under **Workers & Pages → Settings → Builds**:
+
+| Setting        | Value                 | Why                                                        |
+| -------------- | --------------------- | ---------------------------------------------------------- |
+| Root directory | `web`                 | So `wrangler` resolves `web/wrangler.jsonc` and `web/dist` |
+| Build command  | `pnpm run build`      | Runs `astro build` (pnpm detected from `pnpm-lock.yaml`)   |
+| Deploy command | `npx wrangler deploy` | Publishes the Worker and its static assets                 |
+
+Local deploys use the same two steps via `make web-deploy` (which runs
+`web-build` then `wrangler deploy` with `--dir web`); Workers Builds is the
+equivalent for commit-driven releases.
+
 ## Consequences
 
 ### Positive
