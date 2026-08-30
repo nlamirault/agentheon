@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.0](https://github.com/nlamirault/agentheon/compare/v0.1.0...v0.2.0) (2026-08-30)
+
+
+### 🚀 Features
+
+* **agents:** add profile aliases and rename orchestrator to Zeus ([#14](https://github.com/nlamirault/agentheon/issues/14)) ([1da8c4e](https://github.com/nlamirault/agentheon/commit/1da8c4e44f079bc806032e7414dd4cebaaeaf2ff))
+* **agents:** restructure into per-agent dirs with vendored skills ([#17](https://github.com/nlamirault/agentheon/issues/17)) ([113908f](https://github.com/nlamirault/agentheon/commit/113908f9f0f459d1988e369d90cac50f4b176a71))
+* **web:** add pantheon temple icon to homepage ([#19](https://github.com/nlamirault/agentheon/issues/19)) ([43f03c2](https://github.com/nlamirault/agentheon/commit/43f03c2143bfd1b5ee5cb4e1348c18e20ea8de3d))
+* **web:** deploy website to Cloudflare Workers ([#12](https://github.com/nlamirault/agentheon/issues/12)) ([299f83d](https://github.com/nlamirault/agentheon/commit/299f83d0d7cb955dd9e87aceee52cb450dfcb5d8))
+
+
+### 📚 Documentation
+
+* **web:** document Workers Builds root directory setting ([#18](https://github.com/nlamirault/agentheon/issues/18)) ([a89f281](https://github.com/nlamirault/agentheon/commit/a89f281187eafe8e28229b908f6b9cd2563c3d08))
+
 ## 0.1.0 (2026-08-28)
 
 ### 🚀 Features
