@@ -6,6 +6,8 @@ const {
   description = 'An open-source agentic agency. A pantheon of specialist AI agent profiles, orchestrated by Zeus.',
 } = Astro.props;
 import { withBase } from '../lib/url';
+import manifest from '../../../.release-please-manifest.json';
+const version = manifest['.'];
 ---
 <!doctype html>
 <html lang="en">
@@ -49,6 +51,7 @@ import { withBase } from '../lib/url';
         <div class="row">
           <span>Agentheon — open source under Apache-2.0.</span>
           <span>Built with Astro. Guided by Zeus.</span>
+          <a class="version" href={`https://github.com/nlamirault/agentheon/releases/tag/v${version}`}>v{version}</a>
         </div>
       </footer>
     </div>
