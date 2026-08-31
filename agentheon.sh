@@ -51,8 +51,8 @@ HOME_DIR="${HERMES_HOME:-${HOME}/.hermes}"
 COMPANY_DIR="${HOME_DIR}/team/company"
 PROFILES_DIR="${HOME_DIR}/profiles"
 
-MODEL_OPUS="${MODEL_OPUS:-anthropic/claude-opus}"
-MODEL_SONNET="${MODEL_SONNET:-anthropic/claude-sonnet}"
+MODEL_OPUS="${MODEL_OPUS:-nous-portal/tencent/hy3:free}"
+MODEL_SONNET="${MODEL_SONNET:-nous-portal/tencent/hy3:free}"
 
 MODE="filedrop"   # filedrop | cli
 DRY_RUN=0
@@ -81,8 +81,8 @@ Options:
 
 Env overrides:
   HERMES_HOME     profiles root parent               (default: ~/.hermes)
-  MODEL_OPUS      provider/model for `model: opus`    (default: anthropic/claude-opus)
-  MODEL_SONNET    provider/model for `model: sonnet`  (default: anthropic/claude-sonnet)
+  MODEL_OPUS      provider/model for `model: opus`    (default: nous-portal/tencent/hy3:free)
+  MODEL_SONNET    provider/model for `model: sonnet`  (default: nous-portal/tencent/hy3:free)
 
 Secrets (.env) are NEVER touched — add keys with `hermes -p <name> setup`.
 EOF
