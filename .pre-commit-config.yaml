@@ -66,6 +66,20 @@ repos:
     pass_filenames: false
     files: ^(agents/[^/]+/README\.md|hack/(eval-routing\.sh|evals/routing-cases\.tsv))$
     stages: [pre-commit]
+  - id: crons-validate
+    name: "🏛️ agentheon / Validate crons"
+    entry: ./hack/validate-crons.sh
+    language: script
+    pass_filenames: false
+    files: ^(agents/[^/]+/(crons/[^/]+\.md|README\.md)|hack/(validate-crons|lib-frontmatter)\.sh)$
+    stages: [pre-commit]
+  - id: crons-matrix
+    name: "🏛️ agentheon / Cron schedule in sync"
+    entry: ./hack/gen-crons.sh --check
+    language: script
+    pass_filenames: false
+    files: ^(agents/[^/]+/crons/[^/]+\.md|team/crons\.md|hack/(gen-crons|lib-frontmatter)\.sh)$
+    stages: [pre-commit]
 - repo: https://github.com/google/yamlfmt
   rev: v0.19.0
   hooks:

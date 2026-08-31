@@ -77,6 +77,25 @@ agents-eval: ## Run the Zeus routing eval golden set (static; --live for LLM)
 .PHONY: agents-check
 agents-check: agents-validate agents-routing-check agents-eval ## Run all agent checks (validate + routing sync + evals)
 
+##@ Crons
+
+.PHONY: crons-validate
+crons-validate: ## Lint all scheduled tasks against the cron frontmatter schema
+	@echo -e "$(INFO)$(INFO_COLOR)[Crons] Validating scheduled tasks $(NO_COLOR)"
+	@./hack/validate-crons.sh
+
+.PHONY: crons-matrix
+crons-matrix: ## Regenerate team/crons.md from cron frontmatter
+	@echo -e "$(INFO)$(INFO_COLOR)[Crons] Generating cron schedule $(NO_COLOR)"
+	@./hack/gen-crons.sh
+
+.PHONY: crons-matrix-check
+crons-matrix-check: ## Fail if team/crons.md is out of sync with cron frontmatter
+	@./hack/gen-crons.sh --check
+
+.PHONY: crons-check
+crons-check: crons-validate crons-matrix-check ## Run all cron checks (validate + schedule sync)
+
 ##@ Hermes
 
 .PHONY: hermes-profiles

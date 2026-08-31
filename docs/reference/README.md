@@ -12,6 +12,7 @@ field, or a convention.
 ## Available Reference
 
 - [Agent catalog and profile schema](agents.md)
+- [Cron catalog and schedule schema](crons.md)
 
 ## What's Reference Documentation?
 
