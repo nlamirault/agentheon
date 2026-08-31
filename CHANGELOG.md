@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.0](https://github.com/nlamirault/agentheon/compare/v0.2.0...v0.3.0) (2026-08-31)
+
+
+### 🚀 Features
+
+* **agents:** add four deities and profile validation tooling ([#24](https://github.com/nlamirault/agentheon/issues/24)) ([a2aef6b](https://github.com/nlamirault/agentheon/commit/a2aef6bd5211983cbae943c35edc46089c91f5dd))
+* **agents:** vendor missing skills for atlas, nemesis, plutus, poseidon ([#25](https://github.com/nlamirault/agentheon/issues/25)) ([8cdc23a](https://github.com/nlamirault/agentheon/commit/8cdc23a3b59b9a7352d18eb51e069e4d25d4a128))
+* **web:** merge caduceus and pantheon into the brand logo ([#23](https://github.com/nlamirault/agentheon/issues/23)) ([4f83708](https://github.com/nlamirault/agentheon/commit/4f83708e0f5a858d5fb089984001a644746d5372))
+
+
+### 🐛 Bug Fixes
+
+* **agents:** vendor skills declared in frontmatter but missing on disk ([#22](https://github.com/nlamirault/agentheon/issues/22)) ([5043a25](https://github.com/nlamirault/agentheon/commit/5043a254793581dab7c8b71feb664c2a6c8e5e8d))
+* **install:** install vendored skills into per-profile store ([#20](https://github.com/nlamirault/agentheon/issues/20)) ([e158e87](https://github.com/nlamirault/agentheon/commit/e158e87c1a221a83e7819897d543cc4475879216))
+
 ## [0.2.0](https://github.com/nlamirault/agentheon/compare/v0.1.0...v0.2.0) (2026-08-30)
 
 
