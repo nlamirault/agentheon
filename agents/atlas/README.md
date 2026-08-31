@@ -2,7 +2,6 @@
 name: Atlas
 aliases:
   - performance
-  - perf
 title: The Bearer
 domain: Performance Engineering
 emoji: "🏔️"
