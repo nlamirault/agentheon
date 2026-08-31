@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { withBase } from '../../lib/url';
+import { DOC_CATEGORIES, docCategory, docTitle, docSummary } from '../../lib/docs';
+
+const docs = await getCollection('docs');
+const groups = DOC_CATEGORIES.map((c) => ({
+  ...c,
+  items: docs
+    .filter((d) => docCategory(d.id) === c.key)
+    .sort((a, b) => a.id.localeCompare(b.id)),
+})).filter((g) => g.items.length > 0);
+---
+<Base
+  title="Documentation · Agentheon"
+  description="Agentheon documentation, organised the Diátaxis way — tutorials, how-to guides, reference, and explanation."
+>
+  <section class="wrap section" id="docs">
+    <h2>Documentation</h2>
+    <p class="sub">
+      Organised the Diátaxis way — tutorials to learn, how-to guides to get
+      things done, reference to look things up, explanation to understand.
+    </p>
+    {groups.map((g) => (
+      <div class="doc-group">
+        <h3 class="doc-cat">{g.label}</h3>
+        <p class="doc-blurb">{g.blurb}</p>
+        <div class="grid">
+          {g.items.map((d) => (
+            <a class="card" href={withBase(`docs/${d.id}/`)}>
+              <div class="name">{docTitle(d.body, d.id)}</div>
+              <p class="tagline">{docSummary(d.body)}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</Base>

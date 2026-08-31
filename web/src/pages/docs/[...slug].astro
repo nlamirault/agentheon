@@ -1,0 +1,28 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { withBase } from '../../lib/url';
+import { docTitle, docCategory, categoryLabel } from '../../lib/docs';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map((doc) => ({
+    params: { slug: doc.id },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+const title = docTitle(doc.body, doc.id);
+const category = categoryLabel(docCategory(doc.id));
+---
+<Base title={`${title} · Agentheon docs`} description={title}>
+  <section class="wrap detail doc">
+    <a class="back" href={withBase('docs/')}>← all docs</a>
+    <div class="meta"><span class="pill">{category}</span></div>
+    <div class="prose">
+      <Content />
+    </div>
+  </section>
+</Base>
