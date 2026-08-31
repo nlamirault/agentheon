@@ -25,8 +25,8 @@ set -euo pipefail
 #
 # Env overrides:
 #   HERMES_HOME       profiles root parent (default: ~/.hermes)
-#   MODEL_OPUS        concrete id for `model: opus`   (default: anthropic/claude-opus)
-#   MODEL_SONNET      concrete id for `model: sonnet` (default: anthropic/claude-sonnet)
+#   MODEL_OPUS        concrete id for `model: opus`   (default: tencent/hy3:free)
+#   MODEL_SONNET      concrete id for `model: sonnet` (default: tencent/hy3:free)
 #   NO_ALIAS=1        pass --no-alias (skip ~/.local/bin wrapper scripts)
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -35,8 +35,8 @@ TEAM_DIR="${ROOT}/team"
 HOME_DIR="${HERMES_HOME:-${HOME}/.hermes}"
 COMPANY_DIR="${HOME_DIR}/team/company"
 
-MODEL_OPUS="${MODEL_OPUS:-anthropic/claude-opus}"
-MODEL_SONNET="${MODEL_SONNET:-anthropic/claude-sonnet}"
+MODEL_OPUS="${MODEL_OPUS:-tencent/hy3:free}"
+MODEL_SONNET="${MODEL_SONNET:-tencent/hy3:free}"
 
 command -v hermes >/dev/null 2>&1 || { echo "✗ hermes CLI not found — install Hermes Agent first"; exit 1; }
 
