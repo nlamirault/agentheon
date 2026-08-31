@@ -30,5 +30,5 @@ Zeus uses this to route work. Ordered by role; hand-offs per agent.
 | Iris | community, oss | Open Source & Community | sonnet | medium | kairos, argus, asclepius |
 | Plutus | finops, cost | FinOps & Cost Engineering | sonnet | medium | hestia, kairos |
 | Poseidon | networking, network | Networking & Connectivity | sonnet | medium | hestia, argus |
-| Atlas | performance, perf | Performance Engineering | sonnet | medium | hephaestus, helios |
+| Atlas | performance | Performance Engineering | sonnet | medium | hephaestus, helios |
 | Nemesis | release, supply-chain | Release & Supply Chain | sonnet | medium | hestia, argus, iris |

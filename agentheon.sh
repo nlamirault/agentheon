@@ -306,7 +306,7 @@ for file in "${AGENTS_DIR}"/*/README.md; do
     if [[ "$HAVE_HERMES" == 1 ]]; then
       for a in "${aliases[@]}"; do
         run hermes profile alias "$slug" --name "$a" \
-          || echo "${WARN} alias '${a}' → '${slug}' not set (already exists?)"
+          || echo "${WARN} alias '${a}' → '${slug}' not set (see CLI error above)"
       done
     else
       echo "${WARN} aliases for '${slug}' need the hermes CLI — skipping (${aliases[*]})"
