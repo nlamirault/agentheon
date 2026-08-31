@@ -31,4 +31,25 @@ const agents = defineCollection({
   }),
 });
 
-export const collections = { agents };
+// Documentation lives at the repo root in ../docs, OUTSIDE the Astro app, so it
+// stays readable on GitHub and acts as the single source of truth (same deal as
+// agents/). Diátaxis-structured (tutorials/how-to/reference/explanation) plain
+// markdown with no frontmatter — titles are parsed from the H1 at build time
+// (see lib/docs.ts). Decisions (ADRs) are intentionally excluded. README files
+// collapse to their directory slug so URLs stay clean:
+//   docs/README.md              -> id "overview"
+//   docs/tutorials/README.md    -> id "tutorials"
+//   docs/reference/agents.md    -> id "reference/agents"
+const docs = defineCollection({
+  loader: glob({
+    pattern: ['**/*.md', '!decisions/**'],
+    base: '../docs',
+    generateId: ({ entry }) => {
+      const slug = entry.replace(/\.md$/, '');
+      if (slug === 'README') return 'overview';
+      return slug.replace(/\/README$/, '');
+    },
+  }),
+});
+
+export const collections = { agents, docs };

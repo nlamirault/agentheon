@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@astrojs/markdown-satteri':
+        specifier: 0.3.4
+        version: 0.3.4
       astro:
         specifier: ^7.1.1
         version: 7.1.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(rollup@4.62.5)
@@ -1580,8 +1583,8 @@ snapshots:
     dependencies:
       '@napi-rs/wasm-runtime': 1.2.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
     transitivePeerDependencies:
-      - '@emnapi/core'
-      - '@emnapi/runtime'
+    - '@emnapi/core'
+    - '@emnapi/runtime'
     optional: true
 
   '@astrojs/compiler-binding-win32-arm64-msvc@0.3.2':
@@ -1602,15 +1605,15 @@ snapshots:
       '@astrojs/compiler-binding-win32-arm64-msvc': 0.3.2
       '@astrojs/compiler-binding-win32-x64-msvc': 0.3.2
     transitivePeerDependencies:
-      - '@emnapi/core'
-      - '@emnapi/runtime'
+    - '@emnapi/core'
+    - '@emnapi/runtime'
 
   '@astrojs/compiler-rs@0.3.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)':
     dependencies:
       '@astrojs/compiler-binding': 0.3.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
     transitivePeerDependencies:
-      - '@emnapi/core'
-      - '@emnapi/runtime'
+    - '@emnapi/core'
+    - '@emnapi/runtime'
 
   '@astrojs/internal-helpers@0.10.1':
     dependencies:
@@ -2199,39 +2202,39 @@ snapshots:
     optionalDependencies:
       sharp: 0.35.4
     transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@emnapi/core'
-      - '@emnapi/runtime'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@types/node'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/functions'
-      - '@vercel/kv'
-      - '@vitejs/devtools'
-      - aws4fetch
-      - db0
-      - idb-keyval
-      - ioredis
-      - jiti
-      - less
-      - rollup
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - uploadthing
-      - yaml
+    - '@azure/app-configuration'
+    - '@azure/cosmos'
+    - '@azure/data-tables'
+    - '@azure/identity'
+    - '@azure/keyvault-secrets'
+    - '@azure/storage-blob'
+    - '@capacitor/preferences'
+    - '@deno/kv'
+    - '@emnapi/core'
+    - '@emnapi/runtime'
+    - '@netlify/blobs'
+    - '@planetscale/database'
+    - '@types/node'
+    - '@upstash/redis'
+    - '@vercel/blob'
+    - '@vercel/functions'
+    - '@vercel/kv'
+    - '@vitejs/devtools'
+    - aws4fetch
+    - db0
+    - idb-keyval
+    - ioredis
+    - jiti
+    - less
+    - rollup
+    - sass
+    - sass-embedded
+    - stylus
+    - sugarss
+    - terser
+    - tsx
+    - uploadthing
+    - yaml
 
   axobject-query@4.1.0: {}
 
