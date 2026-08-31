@@ -34,3 +34,9 @@ jobs:
 
     - name: Routing evals (static)
       run: ./hack/eval-routing.sh
+
+    - name: Validate crons
+      run: ./hack/validate-crons.sh
+
+    - name: Cron schedule in sync
+      run: ./hack/gen-crons.sh --check
