@@ -44,6 +44,9 @@ tagline: <One line — the deity's myth mapped to the domain>
 order: <N>
 reasoning: high        # or medium / low
 tone: <How this agent speaks>
+archetype: <Two.Or.Three.Dot-joined.Tokens>   # optional persona: character in a phrase
+big_five: "O70 C90 E60 A40 N15"               # optional persona: OCEAN traits, 0–100
+comm_style: <Dot.Joined.Tokens>               # optional persona: how it phrases things
 handoffs: [hephaestus, argus]   # who it can route work to
 does:
   - <Concrete capability>
@@ -53,6 +56,13 @@ skills:
   - <skill-name>          # basename of a package under this agent's skills/
 ---
 ```
+
+The three persona fields (`archetype`, `big_five`, `comm_style`) are optional
+but recommended: the generator renders them into the profile's `SOUL.md` as a
+**Persona** block, giving each deity a distinct, consistent voice.
+`big_five` must be `O<n> C<n> E<n> A<n> N<n>` (OCEAN, 0–100); `archetype` and
+`comm_style` are dot-joined tokens with no spaces. `validate-agents.sh` enforces
+the format.
 
 Vendor each skill the agent needs into `agents/<name>/skills/<skill>/` (a
 directory containing at least a `SKILL.md`), and list its basename under

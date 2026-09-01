@@ -156,6 +156,9 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   domain="$(fm_scalar "$file" domain)"
   tagline="$(fm_scalar "$file" tagline)"
   tone="$(fm_scalar "$file" tone)"
+  archetype="$(fm_scalar "$file" archetype)"
+  big_five="$(fm_scalar "$file" big_five)"
+  comm_style="$(fm_scalar "$file" comm_style)"
   reasoning="$(fm_scalar "$file" reasoning)"
   toolsets="$(fm_tools "$file" | map_toolsets)"
   mapfile -t does      < <(fm_list "$file" does)
@@ -196,6 +199,16 @@ for file in "${AGENTS_DIR}"/*/README.md; do
     echo
     echo "> ${tagline}"
     echo
+    # Persona — a distinct, consistent voice per deity (see agents/*/README.md).
+    if [[ -n "$archetype" || -n "$big_five" || -n "$comm_style" ]]; then
+      echo "## Persona"
+      [[ -n "$archetype" ]]  && echo "- **Archetype:** ${archetype}"
+      [[ -n "$big_five" ]]   && echo "- **Big Five (OCEAN, 0–100):** ${big_five}"
+      [[ -n "$comm_style" ]] && echo "- **Communication:** ${comm_style}"
+      echo "Stay in character: let these traits shape tone, verbosity, and how you"
+      echo "weigh risk — never at the cost of correctness or the quality gate below."
+      echo
+    fi
     if [[ ${#does[@]} -gt 0 ]]; then
       echo "## You do"; for d in "${does[@]}"; do echo "- ${d}"; done; echo
     fi
@@ -221,6 +234,16 @@ for file in "${AGENTS_DIR}"/*/README.md; do
     if [[ ${#skills[@]} -gt 0 ]]; then
       echo "## Recommended skills"; for s in "${skills[@]}"; do echo "- ${s}"; done; echo
     fi
+    # Finalization gate — every profile self-checks before returning a result.
+    echo "## Before you finish (finalization gate)"
+    echo "Do not return a result until all of these are true:"
+    echo "- [ ] The request is actually answered — not deflected, not partial."
+    echo "- [ ] You were the right agent; if not, hand off instead of guessing."
+    echo "- [ ] Required shared context (above) was loaded."
+    echo "- [ ] Any handoff carries a filled \`handoff-template.md\` block."
+    echo "- [ ] Every claim is backed by evidence (output, diff, screenshot) — not assertion."
+    echo "- [ ] The user is told what was done and what happens next."
+    echo
     echo "---"
     echo
     agent_body "$file"

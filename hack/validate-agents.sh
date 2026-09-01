@@ -68,6 +68,23 @@ for file in "${files[@]}"; do
   color="$(fm_scalar "$file" color)"
   [[ "$color" =~ ^#[0-9a-fA-F]{6}$ ]] || err "${rel}: color '${color}' is not a #rrggbb hex value"
 
+  # Persona fields are optional, but if present must be well-formed so the
+  # generated SOUL.md persona block stays consistent across all agents.
+  big_five="$(fm_scalar "$file" big_five)"
+  if [[ -n "$big_five" ]]; then
+    [[ "$big_five" =~ ^O[0-9]{1,3}\ C[0-9]{1,3}\ E[0-9]{1,3}\ A[0-9]{1,3}\ N[0-9]{1,3}$ ]] \
+      || err "${rel}: big_five '${big_five}' must be 'O<n> C<n> E<n> A<n> N<n>' with n in 0–100"
+  else
+    warn "${rel}: no big_five — persona block will be thinner"
+  fi
+  archetype="$(fm_scalar "$file" archetype)"
+  [[ -z "$archetype" ]] && warn "${rel}: no archetype — persona block will be thinner"
+  [[ -n "$archetype" && "$archetype" == *" "* ]] \
+    && err "${rel}: archetype '${archetype}' must be dot-joined tokens, no spaces"
+  comm_style="$(fm_scalar "$file" comm_style)"
+  [[ -n "$comm_style" && "$comm_style" == *" "* ]] \
+    && err "${rel}: comm_style '${comm_style}' must be dot-joined tokens, no spaces"
+
   order="$(fm_scalar "$file" order)"
   if [[ "$order" =~ ^[0-9]+$ ]]; then
     [[ -n "${ORDERS[$order]:-}" ]] && err "${rel}: duplicate order '${order}' (also ${ORDERS[$order]})"

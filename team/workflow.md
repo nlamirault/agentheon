@@ -80,8 +80,27 @@ For each unit of work:
 
 ## Rules for Zeus (orchestrator)
 
+- **Route by confidence.** Score the best-matching agent 0.0–1.0: dispatch at
+  ≥ 0.5; below 0.5, ask one clarifying question before routing rather than
+  guessing. A wrong route costs more than a short question.
 - Route to the **minimal** set of agents. Do not fan out work one agent can do.
 - Every dispatch carries a filled handoff (`handoff-template.md`).
 - Enforce the gates — do not mark a task done on an author's say-so.
 - Own escalations: after three failed attempts, decide, don't loop.
 - Synthesize partial results into one answer; never do specialist work yourself.
+
+## Per-agent finalization gate
+
+Beyond the workflow gates above, **every** agent self-checks before returning a
+result (this block is generated into each profile's `SOUL.md`): the request is
+actually answered, the right agent handled it, shared context was loaded,
+handoffs are filled, claims carry evidence, and the user is told what's next.
+The workflow gates catch work moving *between* agents; the finalization gate
+catches a single agent returning something half-done.
+
+## Security: red and blue (Argus)
+
+Argus reviews from both sides. `security-red-team` finds and proves the exploit
+path; `security-blue-team` hardens, adds a regression guard, and verifies the
+scenario is closed (and ships a runnable `secret-scan`). Offense finds, defense
+fixes, offense re-confirms.
