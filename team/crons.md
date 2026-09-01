@@ -12,4 +12,9 @@ owns it and is delivered to one channel. Sorted by name.
 
 | Cron | Schedule | Agent | Skill | Deliver | Summary |
 |------|----------|-------|-------|---------|---------|
+| broken-link-check | `0 9 * * 3` | apollo | documentation-and-adrs | telegram | Weekly docs link check — crawl README and docs for dead links across all repos. |
+| dependency-audit | `0 8 * * 1` | nemesis | audit-and-reduce-dependencies | telegram | Weekly supply-chain scan — open Dependabot alerts and outdated dependencies across all repos. |
+| flaky-test-report | `0 9 * * 5` | artemis | testing | telegram | Weekly CI reliability report — flaky and slow test signals from recent workflow runs. |
+| security-sweep | `0 7 * * 1` | argus | security-and-hardening | telegram | Weekly security posture sweep — code scanning and secret scanning alerts across all repos. |
+| stale-issue-triage | `0 9 * * *` | iris | git-workflow | telegram | Daily sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close. |
 | weekly-digest | `0 18 * * 0` | iris | git-workflow | telegram | Weekly rollup across all GitHub owners — PRs, issues, supply-chain, compliance. |
