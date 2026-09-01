@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import DeityMark from '../components/DeityMark.astro';
 import { withBase } from '../lib/url';
 
 const agents = (await getCollection('agents')).sort(
@@ -33,7 +34,7 @@ const agents = (await getCollection('agents')).sort(
       {agents.map((a) => (
         <a class="card" href={withBase(`agents/${a.id}/`)} style={`--agent:${a.data.color}`}>
           <div class="top">
-            <div class="glyph">{a.data.emoji}</div>
+            <div class="glyph"><DeityMark color={a.data.color} /></div>
             <div>
               <div class="name">{a.data.name}</div>
               <div class="role">{a.data.title}</div>
