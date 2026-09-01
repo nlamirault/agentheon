@@ -20,9 +20,14 @@ the owner, never a frontmatter field.
 
 ## Cron catalog
 
-| Cron            | Schedule     | Agent | Skill          | Deliver  |
-| --------------- | ------------ | ----- | -------------- | -------- |
-| `weekly-digest` | `0 18 * * 0` | Iris  | `git-workflow` | telegram |
+| Cron                 | Schedule     | Agent   | Skill                           | Deliver  |
+| -------------------- | ------------ | ------- | ------------------------------- | -------- |
+| `broken-link-check`  | `0 9 * * 3`  | Apollo  | `documentation-and-adrs`        | telegram |
+| `dependency-audit`   | `0 8 * * 1`  | Nemesis | `audit-and-reduce-dependencies` | telegram |
+| `flaky-test-report`  | `0 9 * * 5`  | Artemis | `testing`                       | telegram |
+| `security-sweep`     | `0 7 * * 1`  | Argus   | `security-and-hardening`        | telegram |
+| `stale-issue-triage` | `0 9 * * *`  | Iris    | `git-workflow`                  | telegram |
+| `weekly-digest`      | `0 18 * * 0` | Iris    | `git-workflow`                  | telegram |
 
 ## Cron frontmatter schema
 
