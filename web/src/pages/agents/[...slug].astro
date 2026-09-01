@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import DeityMark from '../../components/DeityMark.astro';
 import { withBase } from '../../lib/url';
 
 export async function getStaticPaths() {
@@ -19,7 +20,7 @@ const d = agent.data;
   <section class="wrap detail" style={`--agent:${d.color}`}>
     <a class="back" href={withBase('#agents')}>← back to the pantheon</a>
     <div class="head">
-      <div class="glyph">{d.emoji}</div>
+      <div class="glyph"><DeityMark color={d.color} title={`${d.name} — ${d.title}`} /></div>
       <div>
         <h1>{d.name}</h1>
         <div class="role" style={`color:${d.color}`}>{d.title} · {d.domain}</div>
