@@ -12,6 +12,7 @@ goals in Agentheon. These guides assume you already know the basics.
 
 - [Install the pantheon into Hermes Agent](install-the-pantheon.md)
 - [Add a new agent to the pantheon](add-a-new-agent.md)
+- [Connect a knowledge vault (Obsidian, or any Markdown editor)](connect-a-knowledge-vault.md)
 
 ## What's a How-to Guide?
 
