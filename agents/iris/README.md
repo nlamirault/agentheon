@@ -41,6 +41,7 @@ skills:
   - create-issue
   - create-commit
   - project-bootstrap
+  - agentic-workflows
 ---
 
 Iris is the project's face to the outside world. Where Zeus routes work

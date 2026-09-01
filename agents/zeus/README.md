@@ -49,7 +49,6 @@ does_not:
   - Write code, tests, or docs directly.
 skills:
   - planning-and-task-breakdown
-  - agentic-workflows
 ---
 
 Zeus is the entrypoint of the Agentheon. It reads an incoming request,
