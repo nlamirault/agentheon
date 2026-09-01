@@ -65,6 +65,7 @@ MODE="filedrop"   # filedrop | cli
 DRY_RUN=0
 
 OK="🟢"; INFO="🔵"; WARN="🟠"; KO="🔴"
+SKILL="🧩"; CRON="⏰"
 
 usage() {
   cat <<'EOF'
@@ -189,7 +190,7 @@ install_skills() { # agent-dir  dest-dir  skill-name...
     else
       rm -rf "${dest:?}/${s}"
       cp -R "$src" "${dest}/${s}"
-      echo "   ${OK} skill '${s}' → ${dest}/${s}/"
+      echo "   ${SKILL} skill '${s}' → ${dest}/${s}/"
     fi
   done
 }
@@ -241,7 +242,7 @@ install_crons() { # agent-dir  slug  crons-home
       echo "   ${WARN} cron '${cname}' needs the hermes CLI to register — wrote spec only"
     fi
 
-    echo "   ${OK} cron '${cname}' → ${chome}/${cname}.yaml  (schedule='${cschedule}', deliver=${cdeliver}, skill=${cskill})"
+    echo "   ${CRON} cron '${cname}' → ${chome}/${cname}.yaml  (schedule='${cschedule}', deliver=${cdeliver}, skill=${cskill})"
   done
 }
 
