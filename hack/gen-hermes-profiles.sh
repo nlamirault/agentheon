@@ -10,10 +10,14 @@ set -euo pipefail
 # Tested against Hermes Agent v0.20.5. For every agent it:
 #   1. creates a profile home under $HERMES_HOME/profiles/<name>
 #   2. sets model, toolsets, reasoning, and skills in config.yaml
-#   3. writes the profile's SOUL.md — persona, scope boundaries (do / do not),
-#      handoff routes to sibling agents, shared-context pointer — inside a
-#      managed block so hand-edits OUTSIDE the block survive regeneration
-#   4. records domain + tagline as the profile --description (kanban routing)
+#   3. writes the profile's SOUL.md — identity ONLY (who it is, how it speaks,
+#      what it avoids: Identity / Style / Avoid / Defaults), per the Hermes SOUL
+#      guide; persona fields are translated into prose voice
+#   4. writes AGENTS.md — the project operating guide (scope, handoff routes,
+#      shared-context pointers, skills, finalization gate, agent body); this is
+#      where the SOUL guide says project mechanics belong, not in SOUL.md
+#      Both use a managed block so hand-edits OUTSIDE it survive regeneration
+#   5. records domain + tagline as the profile --description (kanban routing)
 # It also seeds the shared team context (team/company.md) into
 # $HERMES_HOME/team/company/agentheon.md, which every SOUL.md points to.
 #
@@ -79,6 +83,57 @@ map_toolsets() {
 
 profile_exists() { hermes profile list 2>/dev/null | grep -qw "$1"; }
 
+# --- persona derivation: frontmatter traits -> SOUL voice -----------------
+# SOUL.md is identity (who the agent is, how it speaks, what it avoids). These
+# helpers turn the machine-readable persona fields into prose voice; project
+# mechanics are kept OUT of SOUL.md and written to AGENTS.md instead.
+
+# Dot-joined tokens -> spaced, lower-cased prose. "Decisive.Regal.Sparse" ->
+# "decisive, regal, sparse"; "NoFiller" -> "no filler".
+humanize_tokens() {
+  printf '%s' "$1" | sed -e 's/\([a-z0-9]\)\([A-Z]\)/\1 \2/g' -e 's/\./, /g' \
+    | tr '[:upper:]' '[:lower:]'
+}
+
+# "O70 C90 E65 A40 N15" -> voice traits. Only clearly high (>=60) or low (<=40)
+# dimensions become traits; mid values stay unsaid so the voice reads specific.
+big_five_to_voice() {
+  local tok dim val phrase joined=""
+  for tok in $1; do
+    dim="${tok:0:1}"; val="${tok:1}"
+    [[ "$val" =~ ^[0-9]+$ ]] || continue
+    phrase=""
+    case "$dim" in
+      O) if   ((val>=60)); then phrase="open to novel approaches"; elif ((val<=40)); then phrase="conventional and proven"; fi ;;
+      C) if   ((val>=60)); then phrase="precise and thorough";     elif ((val<=40)); then phrase="flexible and improvisational"; fi ;;
+      E) if   ((val>=60)); then phrase="outgoing and expressive";  elif ((val<=40)); then phrase="reserved, economical with words"; fi ;;
+      A) if   ((val>=60)); then phrase="warm and accommodating";   elif ((val<=40)); then phrase="blunt and direct"; fi ;;
+      N) if   ((val>=60)); then phrase="cautious, quick to flag risk"; elif ((val<=40)); then phrase="calm and confident under pressure"; fi ;;
+    esac
+    [[ -n "$phrase" ]] && joined+="${joined:+, }${phrase}"
+  done
+  printf '%s' "$joined"
+}
+
+# comm_style + big_five -> stylistic "Avoid" bullets (voice only). Always yields
+# at least one bullet.
+persona_avoid() {
+  local cs="$1" bf="$2" a c n
+  local -a out=()
+  if [[ "$cs" =~ [Nn]o[Ff]iller|[Cc]risp|[Ss]parse|[Tt]erse ]]; then
+    out+=("Filler, hedging, and long preambles.")
+  fi
+  a="$(printf '%s' "$bf" | grep -oE 'A[0-9]+' | tr -dc '0-9' || true)"
+  c="$(printf '%s' "$bf" | grep -oE 'C[0-9]+' | tr -dc '0-9' || true)"
+  n="$(printf '%s' "$bf" | grep -oE 'N[0-9]+' | tr -dc '0-9' || true)"
+  if [[ -n "$a" ]] && ((a<=40)); then out+=("Softening a clear judgment — say the direct thing."); fi
+  if [[ -n "$a" ]] && ((a>=60)); then out+=("Bluntness that reads as cold — stay warm."); fi
+  if [[ -n "$c" ]] && ((c>=80)); then out+=("Vague, hand-wavy answers — be specific and exact."); fi
+  if [[ -n "$n" ]] && ((n<=30)); then out+=("Manufacturing false urgency or alarm."); fi
+  if [[ ${#out[@]} -eq 0 ]]; then out+=("Generic filler like 'be helpful' or 'be clear' — commit to a specific voice."); fi
+  printf '%s\n' "${out[@]}"
+}
+
 # --- pass 1: build the sibling lookup used to render handoff routes --------
 
 declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS ALIASES
@@ -127,6 +182,21 @@ write_soul() { # pdir  gen-block-file
   fi
 }
 
+# AGENTS.md is entirely ours (project mechanics) — no pristine-Hermes default to
+# detect, so just regenerate the managed block and preserve hand edits outside it.
+write_agents() { # pdir  gen-block-file
+  local f="$1/AGENTS.md" gen="$2"
+  if [[ -f "$f" ]] && grep -q "AGENTHEON:BEGIN" "$f" && grep -q "AGENTHEON:END" "$f"; then
+    awk -v genf="$gen" '
+      BEGIN { while ((getline l < genf) > 0) g = g l "\n" }
+      /AGENTHEON:BEGIN/ { printf "%s", g; skip=1; next }
+      /AGENTHEON:END/   { skip=0; next }
+      !skip { print }' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+  else
+    { cat "$gen"; echo; echo "<!-- Add hand-written project notes below this line; they survive regeneration. -->"; } > "$f"
+  fi
+}
+
 # --- team context seed ----------------------------------------------------
 
 if [[ -d "$TEAM_DIR" ]]; then
@@ -159,6 +229,7 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   archetype="$(fm_scalar "$file" archetype)"
   big_five="$(fm_scalar "$file" big_five)"
   comm_style="$(fm_scalar "$file" comm_style)"
+  default="$(fm_scalar "$file" default)"
   reasoning="$(fm_scalar "$file" reasoning)"
   toolsets="$(fm_tools "$file" | map_toolsets)"
   mapfile -t does      < <(fm_list "$file" does)
@@ -188,27 +259,51 @@ for file in "${AGENTS_DIR}"/*/README.md; do
 
   pdir="$(dirname "$(hermes -p "$slug" config path 2>/dev/null)")"
 
-  # Build the managed block into a temp file, then merge it into SOUL.md.
+  # SOUL.md — identity only (Identity / Style / Avoid / Defaults), per the Hermes
+  # SOUL guide. Persona frontmatter is translated into prose voice; project
+  # mechanics go to AGENTS.md below.
+  voice="$(big_five_to_voice "$big_five")"
+  arche="$(humanize_tokens "$archetype")"
+  comm="$(humanize_tokens "$comm_style")"
   gen="$(mktemp)"
   {
     echo "<!-- AGENTHEON:BEGIN — generated from agents/${slug}/README.md by hack/gen-hermes-profiles.sh; do not edit inside this block, it is overwritten. -->"
     echo "# ${name} — ${title}"
     echo
-    echo "**Domain:** ${domain}"
-    [[ -n "$tone" ]] && echo "**Voice:** ${tone}"
+    echo "## Identity"
+    echo "You are ${name}, ${title} of the Agentheon, keeper of ${domain}."
+    [[ -n "$arche" ]] && echo "Your character is ${arche}."
     echo
     echo "> ${tagline}"
     echo
-    # Persona — a distinct, consistent voice per deity (see agents/*/README.md).
-    if [[ -n "$archetype" || -n "$big_five" || -n "$comm_style" ]]; then
-      echo "## Persona"
-      [[ -n "$archetype" ]]  && echo "- **Archetype:** ${archetype}"
-      [[ -n "$big_five" ]]   && echo "- **Big Five (OCEAN, 0–100):** ${big_five}"
-      [[ -n "$comm_style" ]] && echo "- **Communication:** ${comm_style}"
-      echo "Stay in character: let these traits shape tone, verbosity, and how you"
-      echo "weigh risk — never at the cost of correctness or the quality gate below."
-      echo
+    echo "## Style"
+    [[ -n "$tone" ]]  && echo "${tone}"
+    [[ -n "$voice" ]] && echo "You are ${voice}."
+    [[ -n "$comm" ]]  && echo "You communicate in a ${comm} register."
+    echo
+    echo "## Avoid"
+    persona_avoid "$comm_style" "$big_five" | sed 's/^/- /'
+    echo
+    echo "## Defaults"
+    if [[ -n "$default" ]]; then
+      echo "${default}"
+    else
+      echo "When a request is ambiguous, lead with your most likely reading, state the assumption in one line, and proceed — ask only when the ambiguity would change the outcome."
     fi
+    echo "<!-- AGENTHEON:END -->"
+  } > "$gen"
+  write_soul "$pdir" "$gen"
+  rm -f "$gen"
+
+  # AGENTS.md — project operating guide. Everything the Hermes SOUL guide says to
+  # keep OUT of SOUL.md (scope, handoffs, file paths, skills, workflow) lives here.
+  agen="$(mktemp)"
+  {
+    echo "<!-- AGENTHEON:BEGIN — generated from agents/${slug}/README.md by hack/gen-hermes-profiles.sh; do not edit inside this block, it is overwritten. -->"
+    echo "# ${name} — operating guide"
+    echo
+    echo "**Domain:** ${domain}"
+    echo
     if [[ ${#does[@]} -gt 0 ]]; then
       echo "## You do"; for d in "${does[@]}"; do echo "- ${d}"; done; echo
     fi
@@ -248,10 +343,9 @@ for file in "${AGENTS_DIR}"/*/README.md; do
     echo
     agent_body "$file"
     echo "<!-- AGENTHEON:END -->"
-  } > "$gen"
-
-  write_soul "$pdir" "$gen"
-  rm -f "$gen"
+  } > "$agen"
+  write_agents "$pdir" "$agen"
+  rm -f "$agen"
 
   echo "🟢 ${name} → ${pdir}  (model=${model}, reasoning=${reasoning:-default}, toolsets=${toolsets}${aliases:+, aliases=$(IFS=,; echo "${aliases[*]}")})"
 done

@@ -14,9 +14,16 @@ set -euo pipefail
 #                  toolsets, memory. Regenerated every run — never hand-edit.
 #   profile.yaml   Portable descriptor (description + required skills), magnus919
 #                  style, for review/portability. Hermes itself reads config.yaml.
-#   SOUL.md        Persona, scope (do / do not), handoff routes, shared-context
-#                  pointer, then the agent body — inside a managed block so hand
-#                  edits OUTSIDE the block survive regeneration.
+#   SOUL.md        Identity ONLY — who the agent is, how it speaks, what it
+#                  avoids (Identity / Style / Avoid / Defaults), per the Hermes
+#                  SOUL guide. Persona fields (archetype, big_five, comm_style)
+#                  are translated into prose voice. No file paths, skills, or
+#                  workflow here — those weaken a SOUL file.
+#   AGENTS.md      Project operating guide — scope (do / do not), handoff routes,
+#                  shared-context pointers, recommended skills, the finalization
+#                  gate, then the agent body. This is where the Hermes SOUL guide
+#                  says project mechanics belong, not in SOUL.md.
+#                  Both use a managed block so hand edits OUTSIDE it survive.
 #
 # It also installs each agent's vendored skills (agents/<name>/skills/*) into that
 # profile's own skill store ($HERMES_HOME/profiles/<name>/skills/agentheon/),
@@ -72,7 +79,7 @@ usage() {
 agentheon.sh — install the Agentheon pantheon into a Hermes Agent home.
 
 Derives every profile from agents/*/README.md frontmatter and installs it under
-$HERMES_HOME/profiles/<name>/ (config.yaml + profile.yaml + SOUL.md), then
+$HERMES_HOME/profiles/<name>/ (config.yaml + profile.yaml + SOUL.md + AGENTS.md), then
 seeds shared team context and rebuilds the routing matrix. Each agent's
 scheduled tasks (agents/<name>/crons/*.md) are installed into $HERMES_HOME/crons/
 (and registered with the hermes CLI when present).
@@ -167,6 +174,59 @@ map_toolsets() {
 
 split_model() { # "provider/model" -> "provider" "model"
   printf '%s %s' "${1%%/*}" "${1#*/}"
+}
+
+# --- persona derivation: frontmatter traits -> SOUL voice -----------------
+# SOUL.md is identity: who the agent is, how it speaks, what it avoids (Hermes
+# SOUL guide). These helpers turn the machine-readable persona fields into prose
+# voice. Project mechanics (scope, handoffs, skills, workflow) are kept OUT of
+# SOUL.md and written to AGENTS.md instead.
+
+# Dot-joined tokens -> spaced, lower-cased prose. "Decisive.Regal.Sparse" ->
+# "decisive, regal, sparse"; "NoFiller" -> "no filler".
+humanize_tokens() {
+  printf '%s' "$1" | sed -e 's/\([a-z0-9]\)\([A-Z]\)/\1 \2/g' -e 's/\./, /g' \
+    | tr '[:upper:]' '[:lower:]'
+}
+
+# "O70 C90 E65 A40 N15" -> "precise and thorough, reserved..., blunt and direct".
+# Only clearly high (>=60) or low (<=40) dimensions become traits; mid values are
+# left unsaid so the voice reads specific, not like filler.
+big_five_to_voice() {
+  local tok dim val phrase joined=""
+  for tok in $1; do
+    dim="${tok:0:1}"; val="${tok:1}"
+    [[ "$val" =~ ^[0-9]+$ ]] || continue
+    phrase=""
+    case "$dim" in
+      O) if   ((val>=60)); then phrase="open to novel approaches"; elif ((val<=40)); then phrase="conventional and proven"; fi ;;
+      C) if   ((val>=60)); then phrase="precise and thorough";     elif ((val<=40)); then phrase="flexible and improvisational"; fi ;;
+      E) if   ((val>=60)); then phrase="outgoing and expressive";  elif ((val<=40)); then phrase="reserved, economical with words"; fi ;;
+      A) if   ((val>=60)); then phrase="warm and accommodating";   elif ((val<=40)); then phrase="blunt and direct"; fi ;;
+      N) if   ((val>=60)); then phrase="cautious, quick to flag risk"; elif ((val<=40)); then phrase="calm and confident under pressure"; fi ;;
+    esac
+    [[ -n "$phrase" ]] && joined+="${joined:+, }${phrase}"
+  done
+  printf '%s' "$joined"
+}
+
+# comm_style + big_five -> stylistic "Avoid" bullets (voice only, never project
+# scope). Always yields at least one bullet.
+persona_avoid() {
+  local cs="$1" bf="$2" a c n
+  local -a out=()
+  if [[ "$cs" =~ [Nn]o[Ff]iller|[Cc]risp|[Ss]parse|[Tt]erse ]]; then
+    out+=("Filler, hedging, and long preambles.")
+  fi
+  a="$(printf '%s' "$bf" | grep -oE 'A[0-9]+' | tr -dc '0-9' || true)"
+  c="$(printf '%s' "$bf" | grep -oE 'C[0-9]+' | tr -dc '0-9' || true)"
+  n="$(printf '%s' "$bf" | grep -oE 'N[0-9]+' | tr -dc '0-9' || true)"
+  if [[ -n "$a" ]] && ((a<=40)); then out+=("Softening a clear judgment — say the direct thing."); fi
+  if [[ -n "$a" ]] && ((a>=60)); then out+=("Bluntness that reads as cold — stay warm."); fi
+  if [[ -n "$c" ]] && ((c>=80)); then out+=("Vague, hand-wavy answers — be specific and exact."); fi
+  if [[ -n "$n" ]] && ((n<=30)); then out+=("Manufacturing false urgency or alarm."); fi
+  if [[ ${#out[@]} -eq 0 ]]; then out+=("Generic filler like 'be helpful' or 'be clear' — commit to a specific voice."); fi
+  printf '%s\n' "${out[@]}"
 }
 
 # Install an agent's vendored skills into that profile's own Hermes skill store
@@ -291,6 +351,23 @@ write_soul() { # pdir  gen-block-file
   fi
 }
 
+# AGENTS.md is entirely ours (project mechanics), so there is no pristine-Hermes
+# default to detect — just regenerate the managed block and preserve any hand
+# edits outside it.
+write_agents() { # pdir  gen-block-file
+  local f="$1/AGENTS.md" gen="$2"
+  if [[ "$DRY_RUN" == 1 ]]; then echo "   would: write ${f}"; return; fi
+  if [[ -f "$f" ]] && grep -q "AGENTHEON:BEGIN" "$f" && grep -q "AGENTHEON:END" "$f"; then
+    awk -v genf="$gen" '
+      BEGIN { while ((getline l < genf) > 0) g = g l "\n" }
+      /AGENTHEON:BEGIN/ { printf "%s", g; skip=1; next }
+      /AGENTHEON:END/   { skip=0; next }
+      !skip { print }' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+  else
+    { cat "$gen"; echo; echo "<!-- Add hand-written project notes below this line; they survive regeneration. -->"; } > "$f"
+  fi
+}
+
 # --- team context seed ----------------------------------------------------
 
 if [[ -d "$TEAM_DIR" ]]; then
@@ -329,6 +406,10 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   domain="$(fm_scalar "$file" domain)"
   tagline="$(fm_scalar "$file" tagline)"
   tone="$(fm_scalar "$file" tone)"
+  archetype="$(fm_scalar "$file" archetype)"
+  big_five="$(fm_scalar "$file" big_five)"
+  comm_style="$(fm_scalar "$file" comm_style)"
+  default="$(fm_scalar "$file" default)"
   reasoning="$(fm_scalar "$file" reasoning)"; reasoning="${reasoning:-medium}"
   mapfile -t toolset_arr < <(fm_list "$file" tools)
   toolsets="$(printf '%s\n' "${toolset_arr[@]}" | map_toolsets)"
@@ -417,16 +498,50 @@ YAML
     } > "$pdir/profile.yaml"
   fi
 
-  # SOUL.md — persona + managed block.
+  # SOUL.md — identity only (who you are, how you speak, what you avoid), per the
+  # Hermes SOUL guide. Persona frontmatter is translated into prose voice here;
+  # project mechanics go to AGENTS.md below, never into SOUL.md.
+  voice="$(big_five_to_voice "$big_five")"
+  arche="$(humanize_tokens "$archetype")"
+  comm="$(humanize_tokens "$comm_style")"
   gen="$(mktemp)"
   {
     echo "<!-- AGENTHEON:BEGIN — generated from agents/${slug}/README.md by agentheon.sh; do not edit inside this block, it is overwritten. -->"
     echo "# ${name} — ${title}"
     echo
-    echo "**Domain:** ${domain}"
-    [[ -n "$tone" ]] && echo "**Voice:** ${tone}"
+    echo "## Identity"
+    echo "You are ${name}, ${title} of the Agentheon, keeper of ${domain}."
+    [[ -n "$arche" ]] && echo "Your character is ${arche}."
     echo
     echo "> ${tagline}"
+    echo
+    echo "## Style"
+    [[ -n "$tone" ]]  && echo "${tone}"
+    [[ -n "$voice" ]] && echo "You are ${voice}."
+    [[ -n "$comm" ]]  && echo "You communicate in a ${comm} register."
+    echo
+    echo "## Avoid"
+    persona_avoid "$comm_style" "$big_five" | sed 's/^/- /'
+    echo
+    echo "## Defaults"
+    if [[ -n "$default" ]]; then
+      echo "${default}"
+    else
+      echo "When a request is ambiguous, lead with your most likely reading, state the assumption in one line, and proceed — ask only when the ambiguity would change the outcome."
+    fi
+    echo "<!-- AGENTHEON:END -->"
+  } > "$gen"
+  write_soul "$pdir" "$gen"
+  rm -f "$gen"
+
+  # AGENTS.md — project operating guide. Everything the Hermes SOUL guide says to
+  # keep OUT of SOUL.md (scope, handoffs, file paths, skills, workflow) lives here.
+  agen="$(mktemp)"
+  {
+    echo "<!-- AGENTHEON:BEGIN — generated from agents/${slug}/README.md by agentheon.sh; do not edit inside this block, it is overwritten. -->"
+    echo "# ${name} — operating guide"
+    echo
+    echo "**Domain:** ${domain}"
     echo
     if [[ ${#does[@]} -gt 0 ]]; then
       echo "## You do"; for d in "${does[@]}"; do echo "- ${d}"; done; echo
@@ -453,13 +568,22 @@ YAML
     if [[ ${#skills[@]} -gt 0 ]]; then
       echo "## Recommended skills"; for s in "${skills[@]}"; do echo "- ${s}"; done; echo
     fi
+    echo "## Before you finish (finalization gate)"
+    echo "Do not return a result until all of these are true:"
+    echo "- [ ] The request is actually answered — not deflected, not partial."
+    echo "- [ ] You were the right agent; if not, hand off instead of guessing."
+    echo "- [ ] Required shared context (above) was loaded."
+    echo "- [ ] Any handoff carries a filled \`handoff-template.md\` block."
+    echo "- [ ] Every claim is backed by evidence (output, diff, screenshot) — not assertion."
+    echo "- [ ] The user is told what was done and what happens next."
+    echo
     echo "---"
     echo
     agent_body "$file"
     echo "<!-- AGENTHEON:END -->"
-  } > "$gen"
-  write_soul "$pdir" "$gen"
-  rm -f "$gen"
+  } > "$agen"
+  write_agents "$pdir" "$agen"
+  rm -f "$agen"
 
   echo "${OK} ${name} → ${pdir}  (model=${provider}/${model}, reasoning=${reasoning}, toolsets=${toolsets// /,}${aliases:+, aliases=$(IFS=,; echo "${aliases[*]}")})"
   count=$((count + 1))
