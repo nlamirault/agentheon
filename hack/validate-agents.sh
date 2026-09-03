@@ -68,8 +68,9 @@ for file in "${files[@]}"; do
   color="$(fm_scalar "$file" color)"
   [[ "$color" =~ ^#[0-9a-fA-F]{6}$ ]] || err "${rel}: color '${color}' is not a #rrggbb hex value"
 
-  # Persona fields are optional, but if present must be well-formed so the
-  # generated SOUL.md persona block stays consistent across all agents.
+  # Persona fields are optional, but if present must be well-formed so they
+  # translate cleanly into the generated SOUL.md voice (Identity / Style /
+  # Avoid) across all agents.
   big_five="$(fm_scalar "$file" big_five)"
   if [[ -n "$big_five" ]]; then
     [[ "$big_five" =~ ^O[0-9]{1,3}\ C[0-9]{1,3}\ E[0-9]{1,3}\ A[0-9]{1,3}\ N[0-9]{1,3}$ ]] \
