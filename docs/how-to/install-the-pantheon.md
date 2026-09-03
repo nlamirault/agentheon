@@ -72,6 +72,10 @@ hermes -p athena chat     # run the agent
 hermes profile list       # see them all
 ```
 
+Adding a key this way is **per profile** — each deity loads only its own `.env`.
+To keep one key in one place across all profiles, wire in a secret source instead:
+see [Manage provider API keys with Bitwarden](manage-secrets.md).
+
 ## Choosing an install mode
 
 | Mode                | Command                       | Needs `hermes` CLI | Behavior                                                                         |
@@ -94,11 +98,18 @@ install        Install/refresh all profiles (default action).
 
 ## Environment overrides
 
-| Env var           | Default                   | Purpose                                        |
-| ----------------- | ------------------------- | ---------------------------------------------- |
-| `HERMES_HOME`     | `~/.hermes`               | Profiles root parent.                          |
-| `MODEL_OPUS`      | `anthropic/claude-opus`   | Concrete `provider/model` for `model: opus`.   |
-| `MODEL_SONNET`    | `anthropic/claude-sonnet` | Concrete `provider/model` for `model: sonnet`. |
+| Env var             | Default                       | Purpose                                                             |
+| ------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| `HERMES_HOME`       | `~/.hermes`                   | Profiles root parent.                                               |
+| `MODEL_OPUS`        | `anthropic/claude-opus`       | Concrete `provider/model` for `model: opus`.                        |
+| `MODEL_SONNET`      | `anthropic/claude-sonnet`     | Concrete `provider/model` for `model: sonnet`.                      |
+| `AGENTHEON_SECRETS` | *(off)*                       | Secret source to wire in; `bitwarden` emits a config block.         |
+| `BWS_PROJECT_ID`    | —                             | Bitwarden project id (required when `AGENTHEON_SECRETS=bitwarden`). |
+| `BWS_SERVER_URL`    | `https://vault.bitwarden.com` | Bitwarden server URL (US / EU / self-hosted).                       |
+| `BWS_TOKEN_ENV`     | `BWS_ACCESS_TOKEN`            | Name of the env var holding the access token.                       |
+
+See [Manage provider API keys with Bitwarden](manage-secrets.md) for the full
+secret-source workflow.
 
 Example — install into a custom home with a pinned model id:
 
@@ -130,5 +141,6 @@ listing every agent with its domain, model, and handoffs.
 ## Related
 
 - [Add a new agent to the pantheon](add-a-new-agent.md)
+- [Manage provider API keys with Bitwarden](manage-secrets.md)
 - [Agent catalog and profile schema](../reference/agents.md)
 - [Pantheon architecture](../explanation/architecture.md)
