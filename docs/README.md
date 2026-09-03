@@ -33,6 +33,8 @@ Task-oriented guides for specific goals.
 
 - [Install the pantheon into Hermes Agent](how-to/install-the-pantheon.md)
 - [Add a new agent to the pantheon](how-to/add-a-new-agent.md)
+- [Manage provider API keys with Bitwarden](how-to/manage-secrets.md)
+- [Connect a knowledge vault (Obsidian, or any Markdown editor)](how-to/connect-a-knowledge-vault.md)
 
 ## Reference
 
