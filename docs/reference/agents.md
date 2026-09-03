@@ -12,29 +12,30 @@ SPDX-License-Identifier: Apache-2.0
 
 Each agent is one Greek deity owning one domain. Zeus is the only entrypoint.
 
-| Agent      | Title           | Domain                        | Model  |
-| ---------- | --------------- | ----------------------------- | ------ |
-| Zeus       | The King        | Routing & Coordination        | opus   |
-| Kairos     | The Opportune   | Product & Prioritization      | opus   |
-| Athena     | The Strategist  | Architecture & Planning       | opus   |
-| Hephaestus | The Builder     | Implementation                | sonnet |
-| Artemis    | The Hunter      | Testing & QA                  | sonnet |
-| Argus      | The Watcher     | Security & Review             | opus   |
-| Asclepius  | The Healer      | Debugging & Incident Response | opus   |
-| Themis     | The Arbiter     | Compliance & Governance       | sonnet |
-| Prometheus | The Forethinker | AI & ML Engineering           | opus   |
-| Demeter    | The Cultivator  | Data & Database Engineering   | sonnet |
-| Helios     | The All-Seeing  | Observability & SRE           | sonnet |
-| Hestia     | The Keeper      | DevOps & Infrastructure       | sonnet |
-| Hygieia    | The Purifier    | Code Health & Refactoring     | sonnet |
-| Aphrodite  | The Aesthete    | Frontend & UX                 | sonnet |
-| Aglaea     | The Adornment   | Design & Design Systems       | sonnet |
-| Apollo     | The Chronicler  | Documentation & Knowledge     | sonnet |
-| Iris       | The Messenger   | Open Source & Community       | sonnet |
-| Plutus     | The Provider    | FinOps & Cost Engineering     | sonnet |
-| Poseidon   | The Navigator   | Networking & Connectivity     | sonnet |
-| Atlas      | The Bearer      | Performance Engineering       | sonnet |
-| Nemesis    | The Enforcer    | Release & Supply Chain        | sonnet |
+| Agent      | Title           | Domain                         | Model  |
+| ---------- | --------------- | ------------------------------ | ------ |
+| Zeus       | The King        | Routing & Coordination         | opus   |
+| Kairos     | The Opportune   | Product & Prioritization       | opus   |
+| Athena     | The Strategist  | Architecture & Planning        | opus   |
+| Hephaestus | The Builder     | Implementation                 | sonnet |
+| Artemis    | The Hunter      | Testing & QA                   | sonnet |
+| Argus      | The Watcher     | Security & Review              | opus   |
+| Asclepius  | The Healer      | Debugging & Incident Response  | opus   |
+| Themis     | The Arbiter     | Compliance & Governance        | sonnet |
+| Prometheus | The Forethinker | AI & ML Engineering            | opus   |
+| Demeter    | The Cultivator  | Data & Database Engineering    | sonnet |
+| Helios     | The All-Seeing  | Observability & SRE            | sonnet |
+| Hestia     | The Keeper      | DevOps & Infrastructure        | sonnet |
+| Hygieia    | The Purifier    | Code Health & Refactoring      | sonnet |
+| Aphrodite  | The Aesthete    | Frontend & UX                  | sonnet |
+| Aglaea     | The Adornment   | Design & Design Systems        | sonnet |
+| Apollo     | The Chronicler  | Documentation & Knowledge      | sonnet |
+| Iris       | The Messenger   | Open Source & Community        | sonnet |
+| Plutus     | The Provider    | FinOps & Cost Engineering      | sonnet |
+| Poseidon   | The Navigator   | Networking & Connectivity      | sonnet |
+| Atlas      | The Bearer      | Performance Engineering        | sonnet |
+| Nemesis    | The Enforcer    | Release & Supply Chain         | sonnet |
+| Daedalus   | The Artificer   | Developer Experience & Tooling | sonnet |
 
 ## Profile frontmatter schema
 
