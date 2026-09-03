@@ -11,7 +11,7 @@ Zeus uses this to route work. Ordered by role; hand-offs per agent.
 
 | Agent | Aliases | Domain | Model | Reasoning | Hands off to |
 |-------|---------|--------|-------|-----------|--------------|
-| Zeus | orchestrator, router | Routing & Coordination | opus | high | athena, hephaestus, artemis, argus, apollo, asclepius, hestia, demeter, prometheus, aphrodite, aglaea, kairos, themis, helios, hygieia, iris, plutus, poseidon, atlas, nemesis |
+| Zeus | orchestrator, router | Routing & Coordination | opus | high | athena, hephaestus, artemis, argus, apollo, asclepius, hestia, demeter, prometheus, aphrodite, aglaea, kairos, themis, helios, hygieia, iris, plutus, poseidon, atlas, nemesis, daedalus |
 | Athena | architecture, planning | Architecture & Planning | opus | high | hephaestus, demeter, prometheus, aglaea |
 | Hephaestus | implementation, build | Implementation | sonnet | medium | artemis, aphrodite, demeter |
 | Apollo | docs, documentation | Documentation & Knowledge | sonnet | medium | — |
@@ -32,3 +32,4 @@ Zeus uses this to route work. Ordered by role; hand-offs per agent.
 | Poseidon | networking, network | Networking & Connectivity | sonnet | medium | hestia, argus |
 | Atlas | performance | Performance Engineering | sonnet | medium | hephaestus, helios |
 | Nemesis | release, supply-chain | Release & Supply Chain | sonnet | medium | hestia, argus, iris |
+| Daedalus | dx, tooling | Developer Experience & Tooling | sonnet | medium | hephaestus, hestia |

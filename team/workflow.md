@@ -53,6 +53,9 @@ Specialists join the loop where relevant:
   targets; hands fixes to Hephaestus and prod monitoring to Helios.
 - **Nemesis** (release/supply chain) — SBOMs, signing, and SLSA provenance;
   hands the published release to Iris and code review to Argus.
+- **Daedalus** (developer experience/tooling) — runs off the loop: builds the
+  scaffolds, generators, and task runners the other gods use; hands product code
+  to Hephaestus and CI/CD infrastructure to Hestia.
 
 ## Quality gates — the core mechanic
 

@@ -45,3 +45,5 @@ Load-test the API and find the throughput bottleneck	atlas
 Profile this endpoint and set a latency target	atlas
 Generate an SBOM and sign our release artifacts	nemesis
 Add SLSA provenance and pin our dependencies	nemesis
+Scaffold a new service from our golden-path template	daedalus
+Build a CLI to generate boilerplate and speed up the dev loop	daedalus
