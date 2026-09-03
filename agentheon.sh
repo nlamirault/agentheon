@@ -50,7 +50,11 @@ set -euo pipefail
 #   --cli      delegate to hack/gen-hermes-profiles.sh (imperative, requires the
 #              hermes CLI; sets config through `hermes config set`).
 #
-# Secrets (.env) are NEVER touched — add keys with `hermes -p <name> setup`.
+# Secrets: plaintext .env is NEVER touched (add keys with `hermes -p <name>
+# setup`). Optionally set AGENTHEON_SECRETS=bitwarden (+ BWS_PROJECT_ID) to emit
+# a `secrets.bitwarden` block into every config.yaml, so provider keys live once
+# in a Bitwarden project instead of per-profile .env. See ADR-0003. The access
+# token stays in the shell (BWS_ACCESS_TOKEN), never written to any file here.
 #
 # Usage:
 #   ./agentheon.sh [install] [--cli|--no-cli] [--dry-run] [--home DIR]
@@ -67,6 +71,17 @@ PROFILES_DIR="${HOME_DIR}/profiles"
 
 MODEL_OPUS="${MODEL_OPUS:-nous-portal/tencent/hy3:free}"
 MODEL_SONNET="${MODEL_SONNET:-nous-portal/tencent/hy3:free}"
+
+# External secret source (ADR-0003). Off by default: profiles keep the plain
+# .env flow. Set AGENTHEON_SECRETS=bitwarden to emit a `secrets.bitwarden` block
+# into every profile's config.yaml so provider keys live once in a Bitwarden
+# project instead of duplicated per-profile. The access TOKEN is never written
+# here — only the name of the env var that holds it (resolved from the shell at
+# runtime); project_id/server_url come from env so no personal IDs are committed.
+SECRETS_BACKEND="${AGENTHEON_SECRETS:-}"                       # ""=off | bitwarden
+BWS_PROJECT_ID="${BWS_PROJECT_ID:-}"
+BWS_SERVER_URL="${BWS_SERVER_URL:-https://vault.bitwarden.com}"
+BWS_TOKEN_ENV="${BWS_TOKEN_ENV:-BWS_ACCESS_TOKEN}"
 
 MODE="filedrop"   # filedrop | cli
 DRY_RUN=0
@@ -100,8 +115,15 @@ Env overrides:
   HERMES_HOME     profiles root parent               (default: ~/.hermes)
   MODEL_OPUS      provider/model for `model: opus`    (default: nous-portal/tencent/hy3:free)
   MODEL_SONNET    provider/model for `model: sonnet`  (default: nous-portal/tencent/hy3:free)
+  AGENTHEON_SECRETS  secret source to wire in          (default: off; "bitwarden")
+  BWS_PROJECT_ID     Bitwarden project id              (required if bitwarden)
+  BWS_SERVER_URL     Bitwarden server URL              (default: https://vault.bitwarden.com)
+  BWS_TOKEN_ENV      env var holding the access token  (default: BWS_ACCESS_TOKEN)
 
-Secrets (.env) are NEVER touched — add keys with `hermes -p <name> setup`.
+Secrets: plaintext .env is NEVER touched (add keys with `hermes -p <name>
+setup`). With AGENTHEON_SECRETS=bitwarden, a `secrets.bitwarden` block is emitted
+into every config.yaml so provider keys resolve from a Bitwarden project at
+runtime; the access token stays in the shell, never written to a file. ADR-0003.
 EOF
   exit "${1:-0}"
 }
@@ -388,6 +410,31 @@ HAVE_HERMES=0
 command -v hermes >/dev/null 2>&1 && HAVE_HERMES=1
 [[ "$HAVE_HERMES" == 0 ]] && echo "${WARN} hermes CLI not found — writing files only (profiles won't auto-register in \`hermes profile list\`)"
 
+# Build the external-secret-source block once — it is identical for every
+# profile (secrets are matched by name from the Bitwarden project at runtime),
+# so adding a provider never touches this file: add a named secret in the vault.
+# See ADR-0003. Empty unless AGENTHEON_SECRETS selects a backend.
+SECRETS_BLOCK=""
+if [[ "$SECRETS_BACKEND" == "bitwarden" ]]; then
+  [[ -n "$BWS_PROJECT_ID" ]] || { echo "${KO} AGENTHEON_SECRETS=bitwarden requires BWS_PROJECT_ID"; exit 1; }
+  # Leading newline baked in here (ANSI-C $'\n' works in assignment context but
+  # NOT inside the config.yaml heredoc below), so it injects as plain ${SECRETS_BLOCK}.
+  SECRETS_BLOCK=$'\n'"$(cat <<YAML
+secrets:
+  bitwarden:
+    enabled: true
+    access_token_env: ${BWS_TOKEN_ENV}
+    project_id: ${BWS_PROJECT_ID}
+    server_url: ${BWS_SERVER_URL}
+    cache_ttl_seconds: 300
+    override_existing: true
+YAML
+)"
+  echo "${INFO} secret source: bitwarden (project ${BWS_PROJECT_ID}, token env ${BWS_TOKEN_ENV}) → emitted into every config.yaml"
+elif [[ -n "$SECRETS_BACKEND" ]]; then
+  echo "${KO} unknown AGENTHEON_SECRETS='${SECRETS_BACKEND}' (supported: bitwarden)"; exit 1
+fi
+
 count=0
 for file in "${AGENTS_DIR}"/*/README.md; do
   name="$(fm_scalar "$file" name)"
@@ -475,7 +522,7 @@ model:
 toolsets:
 $(for ts in $toolsets; do echo "  - ${ts}"; done)$([[ ${#skills[@]} -gt 0 ]] && printf '\nskills: %s' "$(IFS=,; echo "${skills[*]}")")
 memory:
-  memory_enabled: true
+  memory_enabled: true${SECRETS_BLOCK}
 YAML
   fi
 
@@ -593,6 +640,11 @@ echo
 echo "${OK} installed ${count} profiles into ${PROFILES_DIR}"
 echo
 echo "Next:"
-echo "  hermes -p <name> setup    # add API keys (.env)"
+if [[ "$SECRETS_BACKEND" == "bitwarden" ]]; then
+  echo "  export ${BWS_TOKEN_ENV}=...    # bootstrap token in your shell (never committed)"
+  echo "  # add a provider = add a named secret (e.g. XAI_API_KEY) in Bitwarden project ${BWS_PROJECT_ID}"
+else
+  echo "  hermes -p <name> setup    # add API keys (.env)"
+fi
 echo "  hermes -p <name> chat     # run the agent"
 echo "  hermes profile list       # see them all"
