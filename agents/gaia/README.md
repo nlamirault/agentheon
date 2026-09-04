@@ -42,8 +42,6 @@ does_not:
 skills:
   - executive-methodology
   - strategy-frameworks
-  - planning-and-task-breakdown
-  - context-engineering
 ---
 
 Gaia is the executive who owns the company's vision and long-term strategy. She

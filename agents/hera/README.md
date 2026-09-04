@@ -47,8 +47,6 @@ skills:
   - executive-methodology
   - org-design
   - operational-design
-  - planning-and-task-breakdown
-  - shipping-and-launch
 ---
 
 Hera is the executive who owns operations and delivery: keeping the pantheon's

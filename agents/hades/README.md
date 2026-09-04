@@ -41,7 +41,6 @@ does_not:
 skills:
   - executive-methodology
   - financial-modeling
-  - cost-management
 ---
 
 Hades is the executive who guards capital: budget, allocation, and the bottom
