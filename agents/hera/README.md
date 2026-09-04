@@ -37,7 +37,7 @@ handoffs:
   - iris
 does:
   - Own operational excellence, delivery cadence, and the quality gates.
-  - Ensure work ships: documented, observed, released, compliant, communicated.
+  - Ensure shipped work is documented, observed, released, and compliant.
   - Delegate to Apollo (docs), Helios (observability), Nemesis (release),
     Themis (compliance), and Iris (community).
 does_not:
