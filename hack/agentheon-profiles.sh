@@ -4,10 +4,13 @@
 
 set -euo pipefail
 
-# agentheon-profiles.sh — browse the Agentheon deity catalog from the source of
-# truth (agents/*/README.md), not Hermes. `hermes profile list` only prints
-# aliases; this lists every profile with its slug, title, domain and model, and
-# describes a single profile the way the site does
+# agentheon-profiles.sh — browse the Agentheon deity catalog. Identity fields
+# (slug, title, domain, aliases) come from the source of truth
+# (agents/*/README.md); the MODEL column reports the concrete model resolved in
+# each installed profile's config.yaml
+# ($HERMES_HOME/profiles/<slug>/config.yaml), falling back to the README tier
+# (opus/sonnet) when a profile is not installed yet. `hermes profile list` only
+# prints aliases; this describes a single profile the way the site does
 # (https://agentheon.lamirault.xyz/agents/<slug>/).
 #
 # Usage:
@@ -18,10 +21,13 @@ set -euo pipefail
 # <name> is a slug (athena) or any alias (architecture, planning).
 #
 # Env:
+#   HERMES_HOME  profiles root parent (default: ~/.hermes)
 #   NO_COLOR=1   disable ANSI colour (also auto-off when stdout is not a tty)
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 AGENTS_DIR="${ROOT}/agents"
+HOME_DIR="${HERMES_HOME:-${HOME}/.hermes}"
+PROFILES_DIR="${HOME_DIR}/profiles"
 # shellcheck source=hack/lib-frontmatter.sh
 . "${ROOT}/hack/lib-frontmatter.sh"
 
@@ -35,6 +41,19 @@ fi
 die() { echo "error: $*" >&2; exit 1; }
 
 readme() { echo "${AGENTS_DIR}/$1/README.md"; }
+
+# cfg_model SLUG -> concrete model (model.model) from the installed profile's
+# config.yaml, or empty if the profile is not installed. config.yaml is nested
+# YAML, so read the `model:` scalar inside the top-level `model:` block.
+cfg_model() {
+  local cfg="${PROFILES_DIR}/$1/config.yaml"
+  [[ -f "$cfg" ]] || return 0
+  awk '
+    /^model:[ \t]*$/            { inm=1; next }
+    inm && /^[^ \t]/            { inm=0 }
+    inm && /^[ \t]+model:[ \t]*/ {
+      sub(/^[ \t]+model:[ \t]*/, ""); gsub(/^"|"$/, ""); print; exit }' "$cfg"
+}
 
 # resolve NAME (slug or alias) -> slug, or empty if unknown.
 resolve() {
@@ -53,7 +72,7 @@ resolve() {
 # --- list -------------------------------------------------------------------
 cmd_list() {
   local f slug order name title domain model aliases
-  printf '%s%-4s %-12s %-16s %-32s %-7s %s%s\n' \
+  printf '%s%-4s %-12s %-16s %-32s %-30s %s%s\n' \
     "$B" "#" "SLUG" "TITLE" "DOMAIN" "MODEL" "ALIASES" "$R"
   {
     for f in "${AGENTS_DIR}"/*/README.md; do
@@ -61,13 +80,15 @@ cmd_list() {
       order="$(fm_scalar "$f" order)"; order="${order:-999}"
       title="$(fm_scalar "$f" title)"
       domain="$(fm_scalar "$f" domain)"
-      model="$(fm_scalar "$f" model)"
+      # Concrete model from the installed config.yaml; fall back to the README
+      # tier (opus/sonnet) when the profile is not installed yet.
+      model="$(cfg_model "$slug")"; model="${model:-$(fm_scalar "$f" model)}"
       aliases="$(fm_list "$f" aliases | paste -sd, - 2>/dev/null)"
       printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
         "$order" "$slug" "$title" "$domain" "$model" "$aliases"
     done
   } | sort -n | while IFS=$'\t' read -r order slug title domain model aliases; do
-    printf '%-4s %s%-12s%s %-16s %-32s %-7s %s%s%s\n' \
+    printf '%-4s %s%-12s%s %-16s %-32s %-30s %s%s%s\n' \
       "$order" "$CYAN" "$slug" "$R" "$title" "$domain" "$model" "$DIM" "$aliases" "$R"
   done
   echo
@@ -102,7 +123,9 @@ cmd_describe() {
   [[ -n "$tagline" ]] && printf '%s"%s"%s\n\n' "$YEL" "$tagline" "$R"
 
   printf '  %s%-11s%s %s\n' "$B" "slug" "$R" "$slug"
-  field "$f" model       "model"
+  field "$f" model       "tier"
+  local installed; installed="$(cfg_model "$slug")"
+  [[ -n "$installed" ]] && printf '  %s%-11s%s %s\n' "$B" "model" "$R" "$installed"
   field "$f" reasoning   "reasoning"
   field "$f" order       "order"
   field "$f" archetype   "archetype"
