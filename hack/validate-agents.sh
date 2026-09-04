@@ -14,6 +14,7 @@ set -euo pipefail
 #   - reasoning  in {high, medium, low}
 #   - order      unique positive integer
 #   - color      #rrggbb hex
+#   - tier       in {orchestrator, executive, specialist} (optional; default specialist)
 #   - name slug matches its directory
 #   - name and each alias unique across all agents
 #   - handoffs reference an existing agent, never self
@@ -64,6 +65,12 @@ for file in "${files[@]}"; do
 
   reasoning="$(fm_scalar "$file" reasoning)"
   case "$reasoning" in high | medium | low) ;; *) err "${rel}: reasoning '${reasoning}' not in {high, medium, low}" ;; esac
+
+  # tier is optional; absent means specialist. Only orchestrator/executive are
+  # declared explicitly. Governs the two-tier routing graph (Zeus → executive →
+  # specialist) and how the routing matrix and showcase group agents.
+  tier="$(fm_scalar "$file" tier)"
+  case "$tier" in "" | orchestrator | executive | specialist) ;; *) err "${rel}: tier '${tier}' not in {orchestrator, executive, specialist}" ;; esac
 
   color="$(fm_scalar "$file" color)"
   [[ "$color" =~ ^#[0-9a-fA-F]{6}$ ]] || err "${rel}: color '${color}' is not a #rrggbb hex value"

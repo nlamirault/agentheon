@@ -5,8 +5,29 @@ SPDX-License-Identifier: Apache-2.0
 
 # Agentheon — Workflow & Quality Gates
 
-Zeus orchestrates; specialists execute and hand off. Work moves through gates.
-Nothing advances past a gate it has not passed.
+Zeus orchestrates; executives own domains; specialists execute and hand off.
+Work moves through gates. Nothing advances past a gate it has not passed.
+
+## Two tiers: executives and specialists
+
+The pantheon is two-tier. **Zeus** (orchestrator) routes a request to the
+**executive** who owns its domain; the executive sets the direction and
+delegates **down** to the **specialists** who do the work. Cross-executive
+concerns bounce back to Zeus — executives do not route to each other.
+
+- **Gaia** (CEO) — vision & strategy → delegates to Kairos.
+- **Hyperion** (CTO) — technology strategy → owns the engineering specialists
+  (Athena, Hephaestus, Artemis, Argus, Asclepius, Hestia, Demeter, Prometheus,
+  Poseidon, Atlas, Hygieia, Daedalus).
+- **Hera** (COO) — operations & delivery → owns Apollo, Helios, Nemesis, Themis,
+  Iris.
+- **Hades** (CFO) — finance & capital → owns Plutus (cloud FinOps).
+- **Peitho** (CMO) — marketing & growth → owns Aphrodite, Aglaea.
+- **Tyche** (CRO) — revenue & sales → delegates to Kairos.
+
+Executives decide and delegate; they never write, build, test, or review — the
+same least-privilege stance as Zeus (delegation + read-only inspection, no
+shell). The delivery loop below runs among the specialists an executive dispatches.
 
 ## The main loop
 

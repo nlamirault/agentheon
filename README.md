@@ -8,15 +8,17 @@
 </p>
 
 Agentheon is a pantheon of Greek-deity software-engineering agents. **Zeus**
-orchestrates; each specialist owns one domain and hands off to the next along
-defined routes, advancing only through PASS/FAIL quality gates.
+orchestrates; **executives** own domains and delegate down to **specialists**,
+who each own one domain and hand off along defined routes, advancing only through
+PASS/FAIL quality gates.
 
 ## Features
 
 - **Single entrypoint** — Zeus routes every request; it never does specialist work.
-- **Single-domain agents** — 22 deities, one domain each (planning, build, test,
-  review, security, data, observability, docs, cost, networking, performance,
-  supply chain, developer tooling, and more).
+- **Two-tier pantheon** — 28 deities: Zeus (orchestrator), six executives
+  (CEO/CTO/COO/CFO/CMO/CRO), and specialists who own one domain each (planning,
+  build, test, review, security, data, observability, docs, cost, networking,
+  performance, supply chain, developer tooling, and more).
 - **Quality gates** — plan → build → test → review → comply, each with a
   PASS/FAIL verdict. Nothing ships unverified.
 - **Context-preserving handoffs** — every transition carries full context via a

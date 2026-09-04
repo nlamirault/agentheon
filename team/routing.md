@@ -7,29 +7,36 @@ SPDX-License-Identifier: Apache-2.0
 
 # Agentheon — Routing Matrix
 
-Zeus uses this to route work. Ordered by role; hand-offs per agent.
+Zeus routes to the executive who owns a domain; each executive delegates
+down to its specialists. Grouped by tier, then role; hand-offs per agent.
 
-| Agent | Aliases | Domain | Model | Reasoning | Hands off to |
-|-------|---------|--------|-------|-----------|--------------|
-| Zeus | orchestrator, router | Routing & Coordination | opus | high | athena, hephaestus, artemis, argus, apollo, asclepius, hestia, demeter, prometheus, aphrodite, aglaea, kairos, themis, helios, hygieia, iris, plutus, poseidon, atlas, nemesis, daedalus |
-| Athena | architecture, planning | Architecture & Planning | opus | high | hephaestus, demeter, prometheus, aglaea |
-| Hephaestus | implementation, build | Implementation | sonnet | medium | artemis, aphrodite, demeter |
-| Apollo | docs, documentation | Documentation & Knowledge | sonnet | medium | — |
-| Artemis | testing, qa | Testing & QA | sonnet | medium | asclepius, argus |
-| Argus | security, review | Security & Review | opus | high | hephaestus, themis |
-| Hestia | devops, infra | DevOps & Infrastructure | sonnet | medium | argus, helios |
-| Asclepius | debug, incident | Debugging & Incident Response | opus | high | hephaestus, hestia |
-| Demeter | data, database | Data & Database Engineering | sonnet | medium | artemis |
-| Prometheus | ai, ml | AI & ML Engineering | opus | high | hephaestus, demeter |
-| Aphrodite | frontend, ux | Frontend & UX | sonnet | medium | artemis, apollo |
-| Aglaea | design, designer | Design & Design Systems | sonnet | medium | aphrodite, apollo |
-| Kairos | product, prioritization | Product & Prioritization | opus | high | athena |
-| Themis | compliance, governance | Compliance & Governance | sonnet | medium | hephaestus |
-| Helios | observability, sre | Observability & SRE | sonnet | medium | asclepius, hestia |
-| Hygieia | refactor, codehealth | Code Health & Refactoring | sonnet | medium | hephaestus |
-| Iris | community, oss | Open Source & Community | sonnet | medium | kairos, argus, asclepius |
-| Plutus | finops, cost | FinOps & Cost Engineering | sonnet | medium | hestia, kairos |
-| Poseidon | networking, network | Networking & Connectivity | sonnet | medium | hestia, argus |
-| Atlas | performance | Performance Engineering | sonnet | medium | hephaestus, helios |
-| Nemesis | release, supply-chain | Release & Supply Chain | sonnet | medium | hestia, argus, iris |
-| Daedalus | dx, tooling | Developer Experience & Tooling | sonnet | medium | hephaestus, hestia |
+| Agent | Tier | Aliases | Domain | Model | Reasoning | Hands off to |
+|-------|------|---------|--------|-------|-----------|--------------|
+| Zeus | orchestrator | orchestrator, router | Routing & Coordination | opus | high | gaia, hyperion, hera, hades, peitho, tyche |
+| Gaia | executive | ceo, vision | Vision & Company Strategy | opus | high | kairos |
+| Hyperion | executive | cto, tech-strategy | Technology Strategy | opus | high | athena, hephaestus, artemis, argus, asclepius, hestia, demeter, prometheus, poseidon, atlas, hygieia, daedalus |
+| Hera | executive | coo, operations | Operations & Delivery | opus | high | apollo, helios, nemesis, themis, iris |
+| Hades | executive | cfo, finance | Finance & Capital | opus | high | plutus |
+| Peitho | executive | cmo, marketing | Marketing & Growth | sonnet | high | aphrodite, aglaea |
+| Tyche | executive | cro, revenue | Revenue & Sales | sonnet | high | kairos |
+| Athena | specialist | architecture, planning | Architecture & Planning | opus | high | hephaestus, demeter, prometheus, aglaea |
+| Hephaestus | specialist | implementation, build | Implementation | sonnet | medium | artemis, aphrodite, demeter |
+| Apollo | specialist | docs, documentation | Documentation & Knowledge | sonnet | medium | — |
+| Artemis | specialist | testing, qa | Testing & QA | sonnet | medium | asclepius, argus |
+| Argus | specialist | security, review | Security & Review | opus | high | hephaestus, themis |
+| Hestia | specialist | devops, infra | DevOps & Infrastructure | sonnet | medium | argus, helios |
+| Asclepius | specialist | debug, incident | Debugging & Incident Response | opus | high | hephaestus, hestia |
+| Demeter | specialist | data, database | Data & Database Engineering | sonnet | medium | artemis |
+| Prometheus | specialist | ai, ml | AI & ML Engineering | opus | high | hephaestus, demeter |
+| Aphrodite | specialist | frontend, ux | Frontend & UX | sonnet | medium | artemis, apollo |
+| Aglaea | specialist | design, designer | Design & Design Systems | sonnet | medium | aphrodite, apollo |
+| Kairos | specialist | product, prioritization | Product & Prioritization | opus | high | athena |
+| Themis | specialist | compliance, governance | Compliance & Governance | sonnet | medium | hephaestus |
+| Helios | specialist | observability, sre | Observability & SRE | sonnet | medium | asclepius, hestia |
+| Hygieia | specialist | refactor, codehealth | Code Health & Refactoring | sonnet | medium | hephaestus |
+| Iris | specialist | community, oss | Open Source & Community | sonnet | medium | kairos, argus, asclepius |
+| Plutus | specialist | finops, cost | FinOps & Cost Engineering | sonnet | medium | hestia, kairos |
+| Poseidon | specialist | networking, network | Networking & Connectivity | sonnet | medium | hestia, argus |
+| Atlas | specialist | performance | Performance Engineering | sonnet | medium | hephaestus, helios |
+| Nemesis | specialist | release, supply-chain | Release & Supply Chain | sonnet | medium | hestia, argus, iris |
+| Daedalus | specialist | dx, tooling | Developer Experience & Tooling | sonnet | medium | hephaestus, hestia |

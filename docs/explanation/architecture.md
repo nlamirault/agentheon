@@ -21,15 +21,27 @@ sharp scope is easier to reason about, review, and trust.
 ## Why a single orchestrator
 
 **Zeus is the only entrypoint.** Every request is routed through one place,
-and Zeus itself does no specialist work. This keeps two concerns apart:
+and Zeus itself does no specialist work. This keeps three concerns apart:
 
 - **Routing** — deciding *who* should do the work (Zeus).
+- **Strategy** — owning a domain's direction and delegating it (the executives).
 - **Execution** — actually doing it (the specialists).
 
 Centralizing routing means the map of "who does what" lives in exactly one
 model of the system — the `handoffs` edges declared across the agent profiles,
 compiled into `team/routing.md`. There is no implicit, tribal knowledge of how
 work flows; it is machine-readable.
+
+## Why a strategy tier
+
+The pantheon is **two-tier**. Zeus routes to an **executive** (CEO, CTO, COO,
+CFO, CMO, CRO) who owns a domain; the executive sets direction and delegates
+**down** to the specialists who execute. This mirrors a real org: a C-level owns
+the *why* and the *what*, specialists own the *how*. Executives carry the same
+least-privilege stance as Zeus — delegation plus read-only inspection, no shell —
+so strategy stays structurally separate from execution. Cross-executive concerns
+return to Zeus; executives never route to each other, keeping delegation to two
+levels. See [ADR 0004](../decisions/0004-executive-tier.md).
 
 ## Why gates instead of trust
 
