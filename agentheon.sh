@@ -72,8 +72,8 @@ HOME_DIR="${HERMES_HOME:-${HOME}/.hermes}"
 COMPANY_DIR="${HOME_DIR}/team/company"
 PROFILES_DIR="${HOME_DIR}/profiles"
 
-MODEL_OPUS="${MODEL_OPUS:-nous-portal/tencent/hy3:free}"
-MODEL_SONNET="${MODEL_SONNET:-nous-portal/tencent/hy3:free}"
+MODEL_OPUS="${MODEL_OPUS:-openrouter/meta/muse-spark-1.3}"
+MODEL_SONNET="${MODEL_SONNET:-openrouter/meta/muse-spark-1.3}"
 
 # External secret source (ADR-0003). Off by default: profiles keep the plain
 # .env flow. Set AGENTHEON_SECRETS=bitwarden to emit a `secrets.bitwarden` block
@@ -124,8 +124,8 @@ Options:
 
 Env overrides (flags above take precedence):
   HERMES_HOME     profiles root parent               (default: ~/.hermes)
-  MODEL_OPUS      provider/model for `model: opus`    (default: nous-portal/tencent/hy3:free)
-  MODEL_SONNET    provider/model for `model: sonnet`  (default: nous-portal/tencent/hy3:free)
+  MODEL_OPUS      provider/model for `model: opus`    (default: openrouter/meta/muse-spark-1.3)
+  MODEL_SONNET    provider/model for `model: sonnet`  (default: openrouter/meta/muse-spark-1.3)
   AGENTHEON_SECRETS  secret source to wire in          (required; "bitwarden")
   BWS_PROJECT_ID     Bitwarden project id              (required if bitwarden)
   BWS_SERVER_URL     Bitwarden server URL              (default: https://vault.bitwarden.com)

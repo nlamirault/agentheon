@@ -98,15 +98,15 @@ install        Install/refresh all profiles (default action).
 
 ## Environment overrides
 
-| Env var             | Default                       | Purpose                                                             |
-| ------------------- | ----------------------------- | ------------------------------------------------------------------- |
-| `HERMES_HOME`       | `~/.hermes`                   | Profiles root parent.                                               |
-| `MODEL_OPUS`        | `anthropic/claude-opus`       | Concrete `provider/model` for `model: opus`.                        |
-| `MODEL_SONNET`      | `anthropic/claude-sonnet`     | Concrete `provider/model` for `model: sonnet`.                      |
-| `AGENTHEON_SECRETS` | *(off)*                       | Secret source to wire in; `bitwarden` emits a config block.         |
-| `BWS_PROJECT_ID`    | —                             | Bitwarden project id (required when `AGENTHEON_SECRETS=bitwarden`). |
-| `BWS_SERVER_URL`    | `https://vault.bitwarden.com` | Bitwarden server URL (US / EU / self-hosted).                       |
-| `BWS_TOKEN_ENV`     | `BWS_ACCESS_TOKEN`            | Name of the env var holding the access token.                       |
+| Env var             | Default                          | Purpose                                                             |
+| ------------------- | -------------------------------- | ------------------------------------------------------------------- |
+| `HERMES_HOME`       | `~/.hermes`                      | Profiles root parent.                                               |
+| `MODEL_OPUS`        | `openrouter/meta/muse-spark-1.3` | Concrete `provider/model` for `model: opus`.                        |
+| `MODEL_SONNET`      | `openrouter/meta/muse-spark-1.3` | Concrete `provider/model` for `model: sonnet`.                      |
+| `AGENTHEON_SECRETS` | *(off)*                          | Secret source to wire in; `bitwarden` emits a config block.         |
+| `BWS_PROJECT_ID`    | —                                | Bitwarden project id (required when `AGENTHEON_SECRETS=bitwarden`). |
+| `BWS_SERVER_URL`    | `https://vault.bitwarden.com`    | Bitwarden server URL (US / EU / self-hosted).                       |
+| `BWS_TOKEN_ENV`     | `BWS_ACCESS_TOKEN`               | Name of the env var holding the access token.                       |
 
 See [Manage provider API keys with Bitwarden](manage-secrets.md) for the full
 secret-source workflow.
