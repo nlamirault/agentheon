@@ -51,13 +51,16 @@ set -euo pipefail
 #              hermes CLI; sets config through `hermes config set`).
 #
 # Secrets: plaintext .env is NEVER touched (add keys with `hermes -p <name>
-# setup`). Optionally set AGENTHEON_SECRETS=bitwarden (+ BWS_PROJECT_ID) to emit
-# a `secrets.bitwarden` block into every config.yaml, so provider keys live once
-# in a Bitwarden project instead of per-profile .env. See ADR-0003. The access
-# token stays in the shell (BWS_ACCESS_TOKEN), never written to any file here.
+# setup`). A secret source is REQUIRED — the script refuses to run without one:
+# pass --secrets bitwarden --bws-project-id UUID (or the AGENTHEON_SECRETS +
+# BWS_PROJECT_ID env twins) to emit a `secrets.bitwarden` block into every
+# config.yaml, so provider keys live once in a Bitwarden project instead of
+# per-profile .env. See ADR-0003. The access token stays in the shell
+# (BWS_ACCESS_TOKEN), never written to any file here.
 #
 # Usage:
 #   ./agentheon.sh [install] [--cli|--no-cli] [--dry-run] [--home DIR]
+#                  --secrets bitwarden --bws-project-id UUID
 #   ./agentheon.sh --help
 
 # --- setup ----------------------------------------------------------------
@@ -101,7 +104,12 @@ scheduled tasks (agents/<name>/crons/*.md) are installed into $HERMES_HOME/crons
 
 Usage:
   ./agentheon.sh [install] [--cli|--no-cli] [--dry-run] [--home DIR]
+                 --secrets bitwarden --bws-project-id UUID
   ./agentheon.sh --help
+
+A secret source is REQUIRED. --secrets (or AGENTHEON_SECRETS) must be set, and
+--secrets bitwarden also requires --bws-project-id (or BWS_PROJECT_ID). The
+script errors out if either is missing.
 
 Options:
   install        Install/refresh all profiles (default action).
@@ -109,13 +117,16 @@ Options:
   --cli          Delegate to hack/gen-hermes-profiles.sh (needs hermes CLI).
   --dry-run, -n  Show what would happen; write nothing.
   --home DIR     Hermes home (default: $HERMES_HOME or ~/.hermes).
+  --secrets NAME    (required) Secret source to wire in (same as AGENTHEON_SECRETS; "bitwarden").
+  --bws-project-id UUID  (required with bitwarden) Bitwarden project id (same as
+                         BWS_PROJECT_ID); implies --secrets bitwarden when given.
   -h, --help     This help.
 
-Env overrides:
+Env overrides (flags above take precedence):
   HERMES_HOME     profiles root parent               (default: ~/.hermes)
   MODEL_OPUS      provider/model for `model: opus`    (default: nous-portal/tencent/hy3:free)
   MODEL_SONNET    provider/model for `model: sonnet`  (default: nous-portal/tencent/hy3:free)
-  AGENTHEON_SECRETS  secret source to wire in          (default: off; "bitwarden")
+  AGENTHEON_SECRETS  secret source to wire in          (required; "bitwarden")
   BWS_PROJECT_ID     Bitwarden project id              (required if bitwarden)
   BWS_SERVER_URL     Bitwarden server URL              (default: https://vault.bitwarden.com)
   BWS_TOKEN_ENV      env var holding the access token  (default: BWS_ACCESS_TOKEN)
@@ -137,10 +148,26 @@ while [[ $# -gt 0 ]]; do
     --no-cli)     MODE="filedrop"; shift ;;
     --dry-run|-n) DRY_RUN=1; shift ;;
     --home)       HOME_DIR="$2"; COMPANY_DIR="${HOME_DIR}/team/company"; PROFILES_DIR="${HOME_DIR}/profiles"; shift 2 ;;
+    --secrets)    SECRETS_BACKEND="$2"; shift 2 ;;
+    # Bitwarden project id via flag (overrides $BWS_PROJECT_ID) and, unless a
+    # backend was already chosen, implies --secrets bitwarden so the flag alone
+    # is enough: ./agentheon.sh --bws-project-id <uuid>.
+    --bws-project-id) BWS_PROJECT_ID="$2"; SECRETS_BACKEND="${SECRETS_BACKEND:-bitwarden}"; shift 2 ;;
     -h|--help)    usage 0 ;;
     *)            echo "${KO} unknown argument: $1"; usage 1 ;;
   esac
 done
+
+# --- required secrets configuration ---------------------------------------
+# A secret source is mandatory: the script refuses to run without one. Values
+# may come from the flags (--secrets / --bws-project-id) or their env twins
+# (AGENTHEON_SECRETS / BWS_PROJECT_ID); flags win. This is validated up front,
+# before any profile is written or the --cli path is taken.
+case "$SECRETS_BACKEND" in
+  "")        echo "${KO} --secrets is required (e.g. --secrets bitwarden, or AGENTHEON_SECRETS=bitwarden)"; usage 1 ;;
+  bitwarden) [[ -n "$BWS_PROJECT_ID" ]] || { echo "${KO} --bws-project-id is required with --secrets bitwarden (or set BWS_PROJECT_ID)"; usage 1; } ;;
+  *)         echo "${KO} unknown --secrets '${SECRETS_BACKEND}' (supported: bitwarden)"; usage 1 ;;
+esac
 
 run() { # echo + execute unless dry-run
   if [[ "$DRY_RUN" == 1 ]]; then echo "   would: $*"; else "$@"; fi
