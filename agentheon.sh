@@ -10,7 +10,7 @@ set -euo pipefail
 # Derives every profile from the single source of truth — agents/*/README.md frontmatter
 # — and installs it under $HERMES_HOME/profiles/<name>/. For each agent it writes:
 #
-#   config.yaml    Hermes on-disk config: model (provider/model/reasoning_effort),
+#   config.yaml    Hermes on-disk config: model (provider/model/reasoning_effort/default/base_url),
 #                  toolsets, memory. Regenerated every run — never hand-edit.
 #   profile.yaml   Portable descriptor (description + required skills), magnus919
 #                  style, for review/portability. Hermes itself reads config.yaml.
@@ -74,6 +74,9 @@ PROFILES_DIR="${HOME_DIR}/profiles"
 
 MODEL_OPUS="${MODEL_OPUS:-openrouter/meta/muse-spark-1.3}"
 MODEL_SONNET="${MODEL_SONNET:-openrouter/meta/muse-spark-1.3}"
+# OpenAI-compatible endpoint for the provider above. Emitted verbatim into every
+# config.yaml as model.base_url. Defaults to OpenRouter to match MODEL_*.
+MODEL_BASE_URL="${MODEL_BASE_URL:-https://openrouter.ai/api/v1}"
 
 # External secret source (ADR-0003). Off by default: profiles keep the plain
 # .env flow. Set AGENTHEON_SECRETS=bitwarden to emit a `secrets.bitwarden` block
@@ -126,6 +129,7 @@ Env overrides (flags above take precedence):
   HERMES_HOME     profiles root parent               (default: ~/.hermes)
   MODEL_OPUS      provider/model for `model: opus`    (default: openrouter/meta/muse-spark-1.3)
   MODEL_SONNET    provider/model for `model: sonnet`  (default: openrouter/meta/muse-spark-1.3)
+  MODEL_BASE_URL  OpenAI-compatible endpoint (model.base_url) (default: https://openrouter.ai/api/v1)
   AGENTHEON_SECRETS  secret source to wire in          (required; "bitwarden")
   BWS_PROJECT_ID     Bitwarden project id              (required if bitwarden)
   BWS_SERVER_URL     Bitwarden server URL              (default: https://vault.bitwarden.com)
@@ -555,6 +559,8 @@ model:
   provider: ${provider}
   model: ${model}
   reasoning_effort: ${reasoning}
+  default: ${model}
+  base_url: ${MODEL_BASE_URL}
 toolsets:
 $(for ts in $toolsets; do echo "  - ${ts}"; done)$([[ ${#skills[@]} -gt 0 ]] && printf '\nskills: %s' "$(IFS=,; echo "${skills[*]}")")
 memory:

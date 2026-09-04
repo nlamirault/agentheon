@@ -31,6 +31,7 @@ set -euo pipefail
 #   HERMES_HOME       profiles root parent (default: ~/.hermes)
 #   MODEL_OPUS        concrete id for `model: opus`   (default: openrouter/meta/muse-spark-1.3)
 #   MODEL_SONNET      concrete id for `model: sonnet` (default: openrouter/meta/muse-spark-1.3)
+#   MODEL_BASE_URL    OpenAI-compatible endpoint       (default: https://openrouter.ai/api/v1)
 #   NO_ALIAS=1        pass --no-alias (skip ~/.local/bin wrapper scripts)
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -41,6 +42,7 @@ COMPANY_DIR="${HOME_DIR}/team/company"
 
 MODEL_OPUS="${MODEL_OPUS:-openrouter/meta/muse-spark-1.3}"
 MODEL_SONNET="${MODEL_SONNET:-openrouter/meta/muse-spark-1.3}"
+MODEL_BASE_URL="${MODEL_BASE_URL:-https://openrouter.ai/api/v1}"
 
 command -v hermes >/dev/null 2>&1 || { echo "✗ hermes CLI not found — install Hermes Agent first"; exit 1; }
 
@@ -262,6 +264,7 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   fi
 
   hermes -p "$slug" config set model "$model" >/dev/null
+  hermes -p "$slug" config set base_url "$MODEL_BASE_URL" >/dev/null
   hermes -p "$slug" config set toolsets "$toolsets" >/dev/null
   [[ -n "$reasoning" ]] && hermes -p "$slug" config set reasoning "$reasoning" --force >/dev/null
   [[ ${#skills[@]} -gt 0 ]] && hermes -p "$slug" config set skills "$(IFS=,; echo "${skills[*]}")" --force >/dev/null
