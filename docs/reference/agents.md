@@ -90,11 +90,11 @@ Every `agents/<name>/README.md` opens with YAML frontmatter:
 
 `hack/gen-hermes-profiles.sh` turns each `agents/*/README.md` into a Hermes profile.
 
-| Env var           | Default                   | Purpose                                 |
-| ----------------- | ------------------------- | --------------------------------------- |
-| `HERMES_HOME`     | `~/.hermes`               | Profiles root parent.                   |
-| `MODEL_OPUS`      | `anthropic/claude-opus`   | Concrete id for `model: opus`.          |
-| `MODEL_SONNET`    | `anthropic/claude-sonnet` | Concrete id for `model: sonnet`.        |
+| Env var        | Default                          | Purpose                          |
+| -------------- | -------------------------------- | -------------------------------- |
+| `HERMES_HOME`  | `~/.hermes`                      | Profiles root parent.            |
+| `MODEL_OPUS`   | `openrouter/meta/muse-spark-1.3` | Concrete id for `model: opus`.   |
+| `MODEL_SONNET` | `openrouter/meta/muse-spark-1.3` | Concrete id for `model: sonnet`. |
 
 Outputs: `$HERMES_HOME/profiles/<name>/SOUL.md` (managed block + preserved
 custom additions) and `$HERMES_HOME/team/company/` (seeded shared context and
