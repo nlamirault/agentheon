@@ -44,6 +44,9 @@ does_not:
   - Build or test the product — that is engineering, under Hyperion.
   - Own security review — that is Argus, under Hyperion.
 skills:
+  - executive-methodology
+  - org-design
+  - operational-design
   - planning-and-task-breakdown
   - shipping-and-launch
 ---

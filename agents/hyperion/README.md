@@ -51,6 +51,7 @@ does_not:
   - Write, test, or review code itself — delegate to the specialist.
   - Own a single feature's plan — that is Athena's; Hyperion owns the direction.
 skills:
+  - executive-methodology
   - spec-driven-development
   - api-and-interface-design
 ---

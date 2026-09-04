@@ -39,6 +39,8 @@ does_not:
   - Do the hands-on FinOps cost analysis itself — defer to Plutus.
   - Own product cost/value prioritization — that is Kairos, via its executive.
 skills:
+  - executive-methodology
+  - financial-modeling
   - cost-management
 ---
 

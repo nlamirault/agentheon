@@ -40,6 +40,8 @@ does_not:
   - Build the site or design the assets itself — delegate to the specialist.
   - Own revenue or sales — that is Tyche.
 skills:
+  - executive-methodology
+  - go-to-market
   - frontend-design
 ---
 

@@ -31,6 +31,7 @@ does_not:
   - Design architecture or write code — hand the plan to Athena.
   - Add scope mid-flight without re-prioritizing.
 skills:
+  - product-strategy
   - planning-and-task-breakdown
   - spec-driven-development
   - aidlc-requirements-analysis

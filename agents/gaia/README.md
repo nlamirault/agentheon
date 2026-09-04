@@ -40,6 +40,8 @@ does_not:
   - Write, build, test, or review — defer to the specialists via their executive.
   - Route operational work — that is Zeus's job.
 skills:
+  - executive-methodology
+  - strategy-frameworks
   - planning-and-task-breakdown
   - context-engineering
 ---

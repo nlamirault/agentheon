@@ -39,6 +39,8 @@ does_not:
   - Prioritize or build the product itself — defer to Kairos.
   - Own brand or marketing message — that is Peitho.
 skills:
+  - executive-methodology
+  - go-to-market
   - planning-and-task-breakdown
 ---
 
