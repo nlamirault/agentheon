@@ -26,6 +26,12 @@ const d = agent.data;
         <div class="role" style={`color:${d.color}`}>{d.title} · {d.domain}</div>
       </div>
     </div>
+    {d.aliases.length > 0 && (
+      <div class="aliases">
+        <span class="alias-label">aliases</span>
+        {d.aliases.map((a) => <span class="pill alias">{a}</span>)}
+      </div>
+    )}
     <div class="meta">
       <span class="pill">model: {d.model}</span>
       {d.tools.map((t) => <span class="pill">{t}</span>)}
