@@ -145,6 +145,12 @@ nav .links a:hover { color: var(--text); text-decoration: none; }
   background: var(--surface-2); border: 1px solid var(--border);
   padding: .2rem .55rem; border-radius: 999px;
 }
+.pill.alias {
+  color: var(--agent, var(--gold));
+  border-color: color-mix(in srgb, var(--agent, var(--gold)) 45%, var(--border));
+}
+.detail .aliases { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: 1.2rem 0 0; }
+.alias-label { font-family: var(--font-mono); font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
 
 /* ---- footer ---- */
 footer { border-top: 1px solid var(--border); padding: 2.5rem 0; color: var(--muted); font-size: .88rem; }

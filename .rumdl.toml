@@ -21,6 +21,10 @@ exclude = [
   # Hermes runs), not prose docs — the installer consumes them literally, so
   # don't reflow them.
   "agents/*/crons/*.md",
+  # agents/*/skills/** are vendored third-party skill packages — keep their
+  # upstream formatting intact (same policy as licenserc.toml), so the linter
+  # never reflows content we don't own.
+  "agents/*/skills/**",
 ]
 # Globally disable specific rules
 disable = ["MD033"]

@@ -231,7 +231,16 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   comm_style="$(fm_scalar "$file" comm_style)"
   default="$(fm_scalar "$file" default)"
   reasoning="$(fm_scalar "$file" reasoning)"
-  toolsets="$(fm_tools "$file" | map_toolsets)"
+  # An explicit `toolsets:` frontmatter list is honored verbatim and bypasses
+  # map_toolsets (which force-injects hermes-cli). Use it to build a
+  # least-privilege profile — e.g. Zeus or an executive that must ONLY delegate
+  # and read, never run the CLI/git. Absent the override, derive from `tools:`.
+  mapfile -t toolset_override < <(fm_list "$file" toolsets)
+  if [[ ${#toolset_override[@]} -gt 0 ]]; then
+    toolsets="${toolset_override[*]}"
+  else
+    toolsets="$(fm_tools "$file" | map_toolsets)"
+  fi
   mapfile -t does      < <(fm_list "$file" does)
   mapfile -t does_not  < <(fm_list "$file" does_not)
   mapfile -t handoffs  < <(fm_list "$file" handoffs)

@@ -21,7 +21,7 @@ OUT="${ROOT}/team/routing.md"
 # shellcheck source=hack/lib-frontmatter.sh
 . "${ROOT}/hack/lib-frontmatter.sh"
 
-declare -A NAME DOMAIN MODEL REASON HANDS ALIASES ORDER
+declare -A NAME DOMAIN MODEL REASON HANDS ALIASES ORDER TIER
 shopt -s nullglob
 for file in "${AGENTS_DIR}"/*/README.md; do
   n="$(fm_scalar "$file" name)"; [[ -z "$n" ]] && continue
@@ -31,9 +31,13 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   MODEL[$s]="$(fm_scalar "$file" model)"
   REASON[$s]="$(fm_scalar "$file" reasoning)"
   ORDER[$s]="$(fm_scalar "$file" order)"
+  TIER[$s]="$(fm_scalar "$file" tier)"; TIER[$s]="${TIER[$s]:-specialist}"
   HANDS[$s]="$(fm_list "$file" handoffs | paste -sd, - | sed 's/,/, /g')"
   ALIASES[$s]="$(fm_list "$file" aliases | paste -sd, - | sed 's/,/, /g')"
 done
+
+# Sort rank for tier: orchestrator first, then executives, then specialists.
+tier_rank() { case "$1" in orchestrator) echo 0 ;; executive) echo 1 ;; *) echo 2 ;; esac; }
 
 render() {
   echo "<!--"
@@ -45,13 +49,14 @@ render() {
   echo
   echo "# Agentheon — Routing Matrix"
   echo
-  echo "Zeus uses this to route work. Ordered by role; hand-offs per agent."
+  echo "Zeus routes to the executive who owns a domain; each executive delegates"
+  echo "down to its specialists. Grouped by tier, then role; hand-offs per agent."
   echo
-  echo "| Agent | Aliases | Domain | Model | Reasoning | Hands off to |"
-  echo "|-------|---------|--------|-------|-----------|--------------|"
-  # Sort by numeric order, then slug, so the matrix matches the showcase order.
-  for s in $(for k in "${!NAME[@]}"; do printf '%s\t%s\n' "${ORDER[$k]:-9999}" "$k"; done | sort -n | cut -f2); do
-    echo "| ${NAME[$s]} | ${ALIASES[$s]:-—} | ${DOMAIN[$s]} | ${MODEL[$s]:-?} | ${REASON[$s]:-default} | ${HANDS[$s]:-—} |"
+  echo "| Agent | Tier | Aliases | Domain | Model | Reasoning | Hands off to |"
+  echo "|-------|------|---------|--------|-------|-----------|--------------|"
+  # Sort by tier (orchestrator → executive → specialist), then numeric order.
+  for s in $(for k in "${!NAME[@]}"; do printf '%s\t%s\t%s\n' "$(tier_rank "${TIER[$k]}")" "${ORDER[$k]:-9999}" "$k"; done | sort -n -k1,1 -k2,2 | cut -f3); do
+    echo "| ${NAME[$s]} | ${TIER[$s]} | ${ALIASES[$s]:-—} | ${DOMAIN[$s]} | ${MODEL[$s]:-?} | ${REASON[$s]:-default} | ${HANDS[$s]:-—} |"
   done
 }
 

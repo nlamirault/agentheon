@@ -44,6 +44,7 @@ const agents = (await getCollection('agents')).sort(
           <div class="meta">
             <span class="pill">{a.data.domain}</span>
             <span class="pill">{a.data.model}</span>
+            {a.data.aliases.map((al) => <span class="pill alias">{al}</span>)}
           </div>
         </a>
       ))}

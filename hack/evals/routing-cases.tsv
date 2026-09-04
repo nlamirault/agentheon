@@ -47,3 +47,11 @@ Generate an SBOM and sign our release artifacts	nemesis
 Add SLSA provenance and pin our dependencies	nemesis
 Scaffold a new service from our golden-path template	daedalus
 Build a CLI to generate boilerplate and speed up the dev loop	daedalus
+
+# Executive tier — Zeus routes domain strategy to the owning executive.
+Set our company vision and north-star metric for the year	gaia
+Decide our overall technology strategy and engineering standards	hyperion
+Own delivery cadence and make sure releases ship through their gates	hera
+Set the budget and financial guardrails for the platform	hades
+Own marketing strategy, brand positioning, and growth	peitho
+Set the revenue strategy and sales pipeline targets	tyche

@@ -10,54 +10,72 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Agent catalog
 
-Each agent is one Greek deity owning one domain. Zeus is the only entrypoint.
+Each agent is one Greek deity. The pantheon is **two-tier**: Zeus (the sole
+entrypoint) routes to an **executive** who owns a domain, and each executive
+delegates down to its **specialists**, who own one domain each and do the work.
 
-| Agent      | Title           | Domain                         | Model  |
-| ---------- | --------------- | ------------------------------ | ------ |
-| Zeus       | The King        | Routing & Coordination         | opus   |
-| Kairos     | The Opportune   | Product & Prioritization       | opus   |
-| Athena     | The Strategist  | Architecture & Planning        | opus   |
-| Hephaestus | The Builder     | Implementation                 | sonnet |
-| Artemis    | The Hunter      | Testing & QA                   | sonnet |
-| Argus      | The Watcher     | Security & Review              | opus   |
-| Asclepius  | The Healer      | Debugging & Incident Response  | opus   |
-| Themis     | The Arbiter     | Compliance & Governance        | sonnet |
-| Prometheus | The Forethinker | AI & ML Engineering            | opus   |
-| Demeter    | The Cultivator  | Data & Database Engineering    | sonnet |
-| Helios     | The All-Seeing  | Observability & SRE            | sonnet |
-| Hestia     | The Keeper      | DevOps & Infrastructure        | sonnet |
-| Hygieia    | The Purifier    | Code Health & Refactoring      | sonnet |
-| Aphrodite  | The Aesthete    | Frontend & UX                  | sonnet |
-| Aglaea     | The Adornment   | Design & Design Systems        | sonnet |
-| Apollo     | The Chronicler  | Documentation & Knowledge      | sonnet |
-| Iris       | The Messenger   | Open Source & Community        | sonnet |
-| Plutus     | The Provider    | FinOps & Cost Engineering      | sonnet |
-| Poseidon   | The Navigator   | Networking & Connectivity      | sonnet |
-| Atlas      | The Bearer      | Performance Engineering        | sonnet |
-| Nemesis    | The Enforcer    | Release & Supply Chain         | sonnet |
-| Daedalus   | The Artificer   | Developer Experience & Tooling | sonnet |
+### Orchestrator & executives
+
+| Agent    | Tier         | Title          | Domain                    | Model  |
+| -------- | ------------ | -------------- | ------------------------- | ------ |
+| Zeus     | orchestrator | The King       | Routing & Coordination    | opus   |
+| Gaia     | executive    | The Foundation | Vision & Company Strategy | opus   |
+| Hyperion | executive    | The Overseer   | Technology Strategy       | opus   |
+| Hera     | executive    | The Sovereign  | Operations & Delivery     | opus   |
+| Hades    | executive    | The Treasurer  | Finance & Capital         | opus   |
+| Peitho   | executive    | The Persuader  | Marketing & Growth        | sonnet |
+| Tyche    | executive    | The Fortune    | Revenue & Sales           | sonnet |
+
+### Specialists
+
+Each specialist is delegated to by the executive that owns its domain.
+
+| Agent      | Title           | Domain                         | Model  | Executive     |
+| ---------- | --------------- | ------------------------------ | ------ | ------------- |
+| Kairos     | The Opportune   | Product & Prioritization       | opus   | Gaia / Tyche  |
+| Athena     | The Strategist  | Architecture & Planning        | opus   | Hyperion      |
+| Hephaestus | The Builder     | Implementation                 | sonnet | Hyperion      |
+| Artemis    | The Hunter      | Testing & QA                   | sonnet | Hyperion      |
+| Argus      | The Watcher     | Security & Review              | opus   | Hyperion      |
+| Asclepius  | The Healer      | Debugging & Incident Response  | opus   | Hyperion      |
+| Themis     | The Arbiter     | Compliance & Governance        | sonnet | Hera          |
+| Prometheus | The Forethinker | AI & ML Engineering            | opus   | Hyperion      |
+| Demeter    | The Cultivator  | Data & Database Engineering    | sonnet | Hyperion      |
+| Helios     | The All-Seeing  | Observability & SRE            | sonnet | Hera          |
+| Hestia     | The Keeper      | DevOps & Infrastructure        | sonnet | Hyperion      |
+| Hygieia    | The Purifier    | Code Health & Refactoring      | sonnet | Hyperion      |
+| Aphrodite  | The Aesthete    | Frontend & UX                  | sonnet | Peitho        |
+| Aglaea     | The Adornment   | Design & Design Systems        | sonnet | Peitho        |
+| Apollo     | The Chronicler  | Documentation & Knowledge      | sonnet | Hera          |
+| Iris       | The Messenger   | Open Source & Community        | sonnet | Hera          |
+| Plutus     | The Provider    | FinOps & Cost Engineering      | sonnet | Hades         |
+| Poseidon   | The Navigator   | Networking & Connectivity      | sonnet | Hyperion      |
+| Atlas      | The Bearer      | Performance Engineering        | sonnet | Hyperion      |
+| Nemesis    | The Enforcer    | Release & Supply Chain         | sonnet | Hera          |
+| Daedalus   | The Artificer   | Developer Experience & Tooling | sonnet | Hyperion      |
 
 ## Profile frontmatter schema
 
 Every `agents/<name>/README.md` opens with YAML frontmatter:
 
-| Field       | Type   | Description                                               |
-| ----------- | ------ | --------------------------------------------------------- |
-| `name`      | string | Deity display name (e.g. `Athena`).                       |
-| `title`     | string | Epithet / role (e.g. `The Strategist`).                   |
-| `domain`    | string | The single domain this agent owns.                        |
-| `emoji`     | string | Glyph used in the showcase and profile.                   |
-| `color`     | hex    | Accent color for the showcase card.                       |
-| `model`     | enum   | `opus` or `sonnet` — mapped to a concrete id at gen time. |
-| `tools`     | list   | Tools the agent may use (e.g. `Read`, `Grep`, `Task`).    |
-| `tagline`   | string | The deity's myth mapped to the domain.                    |
-| `order`     | int    | Sort order in the showcase.                               |
-| `reasoning` | enum   | `high` / `medium` / `low`.                                |
-| `tone`      | string | How the agent communicates.                               |
-| `handoffs`  | list   | Agents this one may route work to (routing edges).        |
-| `does`      | list   | Concrete in-scope capabilities.                           |
-| `does_not`  | list   | Explicit out-of-scope boundaries.                         |
-| `skills`    | list   | Named skills the agent draws on.                          |
+| Field       | Type   | Description                                                                   |
+| ----------- | ------ | ----------------------------------------------------------------------------- |
+| `name`      | string | Deity display name (e.g. `Athena`).                                           |
+| `title`     | string | Epithet / role (e.g. `The Strategist`).                                       |
+| `domain`    | string | The single domain this agent owns.                                            |
+| `tier`      | enum   | `orchestrator` / `executive` / `specialist` (optional; default `specialist`). |
+| `emoji`     | string | Glyph used in the showcase and profile.                                       |
+| `color`     | hex    | Accent color for the showcase card.                                           |
+| `model`     | enum   | `opus` or `sonnet` — mapped to a concrete id at gen time.                     |
+| `tools`     | list   | Tools the agent may use (e.g. `Read`, `Grep`, `Task`).                        |
+| `tagline`   | string | The deity's myth mapped to the domain.                                        |
+| `order`     | int    | Sort order in the showcase.                                                   |
+| `reasoning` | enum   | `high` / `medium` / `low`.                                                    |
+| `tone`      | string | How the agent communicates.                                                   |
+| `handoffs`  | list   | Agents this one may route work to (routing edges).                            |
+| `does`      | list   | Concrete in-scope capabilities.                                               |
+| `does_not`  | list   | Explicit out-of-scope boundaries.                                             |
+| `skills`    | list   | Named skills the agent draws on.                                              |
 
 ## Team files
 

@@ -14,6 +14,7 @@ const agents = defineCollection({
   }),
   schema: z.object({
     name: z.string(),
+    aliases: z.array(z.string()).default([]),
     title: z.string(),
     domain: z.string(),
     emoji: z.string(),
