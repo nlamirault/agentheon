@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.4.0](https://github.com/nlamirault/agentheon/compare/v0.3.0...v0.4.0) (2026-09-04)
+
+
+### 🚀 Features
+
+* **agents:** add Daedalus for developer experience and tooling ([#48](https://github.com/nlamirault/agentheon/issues/48)) ([82040da](https://github.com/nlamirault/agentheon/commit/82040da8165b543f2bd204e664e12290332a3d3d))
+* **agents:** add executive tier, C-suite skills, and profile tooling ([#51](https://github.com/nlamirault/agentheon/issues/51)) ([bcb55d1](https://github.com/nlamirault/agentheon/commit/bcb55d16e1028fcd6c6012b0362359f694c92edc))
+* **agents:** add model default and base_url to profile config ([#54](https://github.com/nlamirault/agentheon/issues/54)) ([fc2a464](https://github.com/nlamirault/agentheon/commit/fc2a464b98b2a8899fad15f4cb9cfa6d847120fb))
+* **agents:** add persona, confidence routing, and quality gates ([#41](https://github.com/nlamirault/agentheon/issues/41)) ([fca16ba](https://github.com/nlamirault/agentheon/commit/fca16baf948305a01b3cf0c76db4a70178be185f))
+* **agents:** default profiles to openrouter/meta/muse-spark-1.3 ([#53](https://github.com/nlamirault/agentheon/issues/53)) ([fb858a3](https://github.com/nlamirault/agentheon/commit/fb858a3edd1c127f238f2a402c0a49a314802d97))
+* **agents:** split SOUL.md into identity and AGENTS.md project guide ([#45](https://github.com/nlamirault/agentheon/issues/45)) ([9657b96](https://github.com/nlamirault/agentheon/commit/9657b96f727d47554c44db8a771d8181f463ac23))
+* **avatars:** logo-style deity avatars, generated and used across the site ([#44](https://github.com/nlamirault/agentheon/issues/44)) ([a987e0d](https://github.com/nlamirault/agentheon/commit/a987e0da609977e1f04e240fc49d93372004360c))
+* **crons:** add five high-value OSS maintenance crons ([#39](https://github.com/nlamirault/agentheon/issues/39)) ([b65bbad](https://github.com/nlamirault/agentheon/commit/b65bbad1964dbd38b7cd1296f30326caaf441f70))
+* **crons:** weekly digest cron subsystem (Iris) ([#37](https://github.com/nlamirault/agentheon/issues/37)) ([316c1de](https://github.com/nlamirault/agentheon/commit/316c1de6fb79f870b2fb094de847934e9ea96cd8)), closes [#36](https://github.com/nlamirault/agentheon/issues/36)
+* **profiles:** resolve model column from installed config.yaml ([#55](https://github.com/nlamirault/agentheon/issues/55)) ([87ff50b](https://github.com/nlamirault/agentheon/commit/87ff50b37a063f1a97e0e340c73998ce320dcfed))
+* **script:** use distinct emoji for skill and cron installs ([#40](https://github.com/nlamirault/agentheon/issues/40)) ([0f33fa4](https://github.com/nlamirault/agentheon/commit/0f33fa4583b8a7c55c81574880d66a67d57a4059))
+* **secrets:** require a secret source via new CLI flags ([#49](https://github.com/nlamirault/agentheon/issues/49)) ([82f079a](https://github.com/nlamirault/agentheon/commit/82f079a07998ccaef4fe0c7e0a45e46104ed48c1))
+* **secrets:** wire Bitwarden secret source into profile generator ([#47](https://github.com/nlamirault/agentheon/issues/47)) ([c4d0a92](https://github.com/nlamirault/agentheon/commit/c4d0a923c321e6b825e350534e32316950cf6beb))
+* **web:** display Agentheon version in footer ([#26](https://github.com/nlamirault/agentheon/issues/26)) ([0cabab2](https://github.com/nlamirault/agentheon/commit/0cabab29a88cfb30038245e66cf007b32b64bf6d))
+* **web:** render docs content on the website ([#30](https://github.com/nlamirault/agentheon/issues/30)) ([d11c77d](https://github.com/nlamirault/agentheon/commit/d11c77d563484a93abb19bed457ef21fb69a8293))
+
+
+### 🐛 Bug Fixes
+
+* **agents:** prune orphan skill references from executive READMEs ([#52](https://github.com/nlamirault/agentheon/issues/52)) ([3fcf6da](https://github.com/nlamirault/agentheon/commit/3fcf6da9b262083a44be8866c915234252abfe53))
+* **generator:** default profiles to nous-portal free model ([#29](https://github.com/nlamirault/agentheon/issues/29)) ([dd5f75b](https://github.com/nlamirault/agentheon/commit/dd5f75b9339a268bfc44362f76148e9cd2f6eb95))
+* **zeus:** enforce delegation-only by dropping hermes-cli toolset ([#50](https://github.com/nlamirault/agentheon/issues/50)) ([d83064f](https://github.com/nlamirault/agentheon/commit/d83064f1995fa6e63510ecb21c06d4c63012e361))
+
+
+### 🚨 Maintenance
+
+* **hack:** default profile models to tencent/hy3:free ([#28](https://github.com/nlamirault/agentheon/issues/28)) ([fa366aa](https://github.com/nlamirault/agentheon/commit/fa366aac1b6b9a6d2565cd61db8c8c60162453a8))
+
 ## [0.3.0](https://github.com/nlamirault/agentheon/compare/v0.2.0...v0.3.0) (2026-08-31)
 
 
