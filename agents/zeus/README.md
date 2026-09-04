@@ -11,6 +11,14 @@ model: opus
 tools:
   - Task
   - Read
+# Least-privilege override: Zeus may ONLY delegate (orchestration) and read the
+# routing matrix + handoff template (files). No hermes-cli/shell — so Zeus is
+# structurally incapable of running git/gh, merging PRs, or doing specialist
+# work itself. Every action must go through a Task delegation. Bypasses the
+# generator's forced hermes-cli injection; see map_toolsets in agentheon.sh.
+toolsets:
+  - orchestration
+  - files
 tagline: King of the gods. Routes work to the right agent.
 archetype: "Decisive.Regal.Sparse"
 big_five: "O70 C90 E65 A40 N15"
