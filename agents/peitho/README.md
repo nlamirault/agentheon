@@ -42,7 +42,6 @@ does_not:
 skills:
   - executive-methodology
   - go-to-market
-  - frontend-design
 ---
 
 Peitho is the executive who owns marketing and growth: brand, positioning, the

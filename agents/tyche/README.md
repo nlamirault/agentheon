@@ -41,7 +41,6 @@ does_not:
 skills:
   - executive-methodology
   - go-to-market
-  - planning-and-task-breakdown
 ---
 
 Tyche is the executive who owns revenue: the sales pipeline, go-to-market
