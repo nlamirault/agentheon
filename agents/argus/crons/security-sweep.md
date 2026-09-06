@@ -2,7 +2,7 @@
 name: security-sweep
 schedule: "0 7 * * 1"
 skill: security-and-hardening
-deliver: telegram
+deliver: slack
 summary: Weekly security posture sweep — code scanning and secret scanning alerts across all repos.
 owners:
   - nlamirault

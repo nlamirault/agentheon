@@ -2,7 +2,7 @@
 name: dependency-audit
 schedule: "0 8 * * 1"
 skill: audit-and-reduce-dependencies
-deliver: telegram
+deliver: slack
 summary: Weekly supply-chain scan — open Dependabot alerts and outdated dependencies across all repos.
 owners:
   - nlamirault

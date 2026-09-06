@@ -2,7 +2,7 @@
 name: broken-link-check
 schedule: "0 9 * * 3"
 skill: documentation-and-adrs
-deliver: telegram
+deliver: slack
 summary: Weekly docs link check — crawl README and docs for dead links across all repos.
 owners:
   - nlamirault

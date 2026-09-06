@@ -2,7 +2,7 @@
 name: stale-issue-triage
 schedule: "0 9 * * *"
 skill: git-workflow
-deliver: telegram
+deliver: slack
 summary: Daily sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close.
 owners:
   - nlamirault
