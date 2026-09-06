@@ -2,7 +2,7 @@
 name: flaky-test-report
 schedule: "0 9 * * 5"
 skill: testing
-deliver: telegram
+deliver: slack
 summary: Weekly CI reliability report — flaky and slow test signals from recent workflow runs.
 owners:
   - nlamirault
