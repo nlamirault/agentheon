@@ -269,6 +269,13 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   [[ -n "$reasoning" ]] && hermes -p "$slug" config set reasoning "$reasoning" --force >/dev/null
   [[ ${#skills[@]} -gt 0 ]] && hermes -p "$slug" config set skills "$(IFS=,; echo "${skills[*]}")" --force >/dev/null
 
+  # Every deity is a SATELLITE profile: the single gateway that fires and delivers
+  # crons runs on the `default` profile as a multiplexer (see ADR-0005). Pin each
+  # deity's own gateway off so it shares the default listener and never tries to
+  # bind its own platforms — Hermes refuses a second per-profile gateway while the
+  # multiplexer serves it, and this makes the intent explicit in config.yaml.
+  hermes -p "$slug" config set gateway.enabled false --force >/dev/null
+
   pdir="$(dirname "$(hermes -p "$slug" config path 2>/dev/null)")"
 
   # SOUL.md — identity only (Identity / Style / Avoid / Defaults), per the Hermes
