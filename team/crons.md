@@ -12,13 +12,22 @@ owns it and is delivered to one channel. Sorted by name.
 
 | Cron | Schedule | Agent | Skill | Deliver | Summary |
 |------|----------|-------|-------|---------|---------|
+| a11y-audit | `0 8 * * 2` | aphrodite | web-accessibility | slack | Weekly accessibility audit — axe scan of every published site URL across all repos. |
+| branch-policy-drift | `0 10 * * 1` | themis | security-compliance | slack | Weekly branch-protection consistency audit — required reviews, checks, and signing across all repos. |
 | broken-link-check | `0 9 * * 3` | apollo | documentation-and-adrs | slack | Weekly docs link check — crawl README and docs for dead links across all repos. |
 | community-health-audit | `0 8 1 * *` | iris | project-bootstrap | slack | Monthly audit of community health files (README, LICENSE, CoC, CONTRIBUTING, SECURITY) across all repos. |
 | contributor-funnel | `0 9 * * 2` | iris | git-workflow | slack | Weekly check that each active repo keeps enough open good-first-issue / help-wanted on-ramps. |
+| dep-version-drift | `0 6 1 * *` | daedalus | ci-cd-and-automation | slack | Monthly toolchain drift report — inconsistent or EOL language/tool versions across all repos. |
 | dependency-audit | `0 8 * * 1` | nemesis | audit-and-reduce-dependencies | slack | Weekly supply-chain scan — open Dependabot alerts and outdated dependencies across all repos. |
 | first-response-sla | `0 10 * * 1-5` | iris | git-workflow | slack | Weekday sweep for unanswered issues/PRs from first-time contributors — respond before they bounce. |
 | flaky-test-report | `0 9 * * 5` | artemis | testing | slack | Weekly CI reliability report — flaky and slow test signals from recent workflow runs. |
+| gha-minutes-report | `0 8 1 * *` | plutus | cost-management | slack | Monthly GitHub Actions minutes report — usage vs quota and top-burning repos across all owners. |
+| license-audit | `0 9 1 * *` | themis | security-compliance | slack | Monthly governance audit — LICENSE, SPDX headers, DCO, and contribution files across all repos. |
+| lighthouse-trend | `0 8 * * 4` | aphrodite | web-perf | slack | Weekly Lighthouse trend — performance, SEO, and best-practices scores for every published site URL. |
+| pr-aging-report | `0 11 * * 1` | hephaestus | incremental-implementation | slack | Weekly PR aging report — stale, review-blocked, and approved-but-unmerged PRs across all repos. |
+| priority-triage-digest | `0 9 * * 4` | kairos | planning-and-task-breakdown | slack | Weekly priority digest — high-priority stale issues, milestone slippage, and unlabeled backlog. |
 | release-radar | `0 9 * * 1` | iris | shipping-and-launch | slack | Weekly check for repos with merged work sitting unreleased since the last tag. |
 | security-sweep | `0 7 * * 1` | argus | security-and-hardening | slack | Weekly security posture sweep — code scanning and secret scanning alerts across all repos. |
 | stale-issue-triage | `0 9 * * *` | iris | git-workflow | slack | Daily sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close. |
+| stale-workflow-sweep | `0 7 15 * *` | hestia | cicd-github-actions | slack | Monthly CI hygiene sweep — deprecated runners, tag-pinned actions, and dead workflows across all repos. |
 | weekly-digest | `0 18 * * 0` | iris | git-workflow | slack | Weekly rollup across all GitHub owners — PRs, issues, supply-chain, compliance. |
