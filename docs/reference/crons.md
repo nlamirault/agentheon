@@ -20,14 +20,23 @@ the owner, never a frontmatter field.
 
 ## Cron catalog
 
-| Cron                 | Schedule     | Agent   | Skill                           | Deliver |
-| -------------------- | ------------ | ------- | ------------------------------- | ------- |
-| `broken-link-check`  | `0 9 * * 3`  | Apollo  | `documentation-and-adrs`        | slack   |
-| `dependency-audit`   | `0 8 * * 1`  | Nemesis | `audit-and-reduce-dependencies` | slack   |
-| `flaky-test-report`  | `0 9 * * 5`  | Artemis | `testing`                       | slack   |
-| `security-sweep`     | `0 7 * * 1`  | Argus   | `security-and-hardening`        | slack   |
-| `stale-issue-triage` | `0 9 * * *`  | Iris    | `git-workflow`                  | slack   |
-| `weekly-digest`      | `0 18 * * 0` | Iris    | `git-workflow`                  | slack   |
+| Cron                     | Schedule      | Agent      | Skill                           | Deliver |
+| ------------------------ | ------------- | ---------- | ------------------------------- | ------- |
+| `a11y-audit`             | `0 8 * * 2`   | Aphrodite  | `web-accessibility`             | slack   |
+| `branch-policy-drift`    | `0 10 * * 1`  | Themis     | `security-compliance`           | slack   |
+| `broken-link-check`      | `0 9 * * 3`   | Apollo     | `documentation-and-adrs`        | slack   |
+| `dep-version-drift`      | `0 6 1 * *`   | Daedalus   | `ci-cd-and-automation`          | slack   |
+| `dependency-audit`       | `0 8 * * 1`   | Nemesis    | `audit-and-reduce-dependencies` | slack   |
+| `flaky-test-report`      | `0 9 * * 5`   | Artemis    | `testing`                       | slack   |
+| `gha-minutes-report`     | `0 8 1 * *`   | Plutus     | `cost-management`               | slack   |
+| `lighthouse-trend`       | `0 8 * * 4`   | Aphrodite  | `web-perf`                      | slack   |
+| `license-audit`          | `0 9 1 * *`   | Themis     | `security-compliance`           | slack   |
+| `pr-aging-report`        | `0 11 * * 1`  | Hephaestus | `incremental-implementation`    | slack   |
+| `priority-triage-digest` | `0 9 * * 4`   | Kairos     | `planning-and-task-breakdown`   | slack   |
+| `security-sweep`         | `0 7 * * 1`   | Argus      | `security-and-hardening`        | slack   |
+| `stale-issue-triage`     | `0 9 * * *`   | Iris       | `git-workflow`                  | slack   |
+| `stale-workflow-sweep`   | `0 7 15 * *`  | Hestia     | `cicd-github-actions`           | slack   |
+| `weekly-digest`          | `0 18 * * 0`  | Iris       | `git-workflow`                  | slack   |
 
 ## Cron frontmatter schema
 
