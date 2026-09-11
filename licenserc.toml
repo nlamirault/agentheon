@@ -1,8 +1,13 @@
 # SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 
-headerPath = "hack/header.txt"
+[header]
+path = "hack/header.txt"
+# A file already carries our header when this token is present; without a
+# keyword hawkeye cannot tell a license header from an ordinary comment.
+keywords = ["SPDX-License-Identifier"]
 
+[files]
 includes = ["*.yml", "*.yaml", "*.toml", "*.sh", "Makefile"]
 
 # agents/*/skills/** are vendored third-party skill packages — keep their upstream
@@ -10,6 +15,7 @@ includes = ["*.yml", "*.yaml", "*.toml", "*.sh", "Makefile"]
 excludes = [
   "hack/header.txt",
   "*.json",
+  "pnpm-lock.yaml",
   "vendor/*",
   "node_modules/*",
   "target/*",
