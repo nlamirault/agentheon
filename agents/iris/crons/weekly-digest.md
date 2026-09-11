@@ -4,15 +4,11 @@ schedule: "0 18 * * 0"
 skill: git-workflow
 deliver: slack
 summary: Weekly rollup across all GitHub owners — PRs, issues, supply-chain, compliance.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Produce a weekly digest across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Steps:
 1. Open PRs:       gh search prs   --owner nlamirault --owner portefaix --owner pilotariak --state open   --limit 50 --json repository,number,title,author,updatedAt

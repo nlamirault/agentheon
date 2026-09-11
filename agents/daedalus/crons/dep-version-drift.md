@@ -4,15 +4,11 @@ schedule: "0 6 1 * *"
 skill: ci-cd-and-automation
 deliver: slack
 summary: Monthly toolchain drift report — inconsistent or EOL language/tool versions across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Report toolchain version drift across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Repos pin language and tool versions in many places; they drift apart and reach
 end-of-life silently. This is the version-consistency lens — not security (that

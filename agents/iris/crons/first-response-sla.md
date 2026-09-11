@@ -4,15 +4,11 @@ schedule: "0 10 * * 1-5"
 skill: git-workflow
 deliver: slack
 summary: Weekday sweep for unanswered issues/PRs from first-time contributors — respond before they bounce.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Find issues and PRs awaiting a first response across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Read-only. I reply myself.
 

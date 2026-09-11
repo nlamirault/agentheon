@@ -4,15 +4,11 @@ schedule: "0 7 15 * *"
 skill: cicd-github-actions
 deliver: slack
 summary: Monthly CI hygiene sweep — deprecated runners, tag-pinned actions, and dead workflows across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Sweep GitHub Actions workflow hygiene across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Workflows rot: runners reach end-of-life, actions stay pinned by mutable tag
 (supply-chain risk), and files linger with zero runs. Read-only report; do not

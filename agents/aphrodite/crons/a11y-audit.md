@@ -4,15 +4,11 @@ schedule: "0 8 * * 2"
 skill: web-accessibility
 deliver: slack
 summary: Weekly accessibility audit — axe scan of every published site URL across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Audit web accessibility across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Accessibility regresses silently between releases. URLs are derived from the
 repos themselves — no external inventory needed. Read-only report; do not edit

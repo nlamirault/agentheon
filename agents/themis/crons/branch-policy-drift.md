@@ -4,15 +4,11 @@ schedule: "0 10 * * 1"
 skill: security-compliance
 deliver: slack
 summary: Weekly branch-protection consistency audit — required reviews, checks, and signing across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Audit branch-protection consistency across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Argus flags default branches with no protection at all; this audits whether the
 protection that exists is configured *consistently* — same required reviews,

@@ -4,15 +4,11 @@ schedule: "0 11 * * 1"
 skill: incremental-implementation
 deliver: slack
 summary: Weekly PR aging report — stale, review-blocked, and approved-but-unmerged PRs across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Report open pull-request aging across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Iris's weekly digest counts PRs; this is the actionable deep view — which PRs are
 stuck and why, so they get unstuck. Read-only report.

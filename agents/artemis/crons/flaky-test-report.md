@@ -4,15 +4,11 @@ schedule: "0 9 * * 5"
 skill: testing
 deliver: slack
 summary: Weekly CI reliability report — flaky and slow test signals from recent workflow runs.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Report CI reliability across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Flaky tests erode trust in the suite — surface the retry-to-green and the
 consistently red before they get muted. Read-only report over the last 7 days

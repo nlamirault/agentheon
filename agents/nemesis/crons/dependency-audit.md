@@ -4,15 +4,11 @@ schedule: "0 8 * * 1"
 skill: audit-and-reduce-dependencies
 deliver: slack
 summary: Weekly supply-chain scan — open Dependabot alerts and outdated dependencies across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Audit dependency health across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Read-only report. Do not open PRs or push changes — I decide what to bump.
 

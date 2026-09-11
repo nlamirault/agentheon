@@ -4,15 +4,11 @@ schedule: "0 9 * * *"
 skill: git-workflow
 deliver: slack
 summary: Daily sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Triage stale issues and pull requests across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 An item is stale when it has had no update in 30+ days. Do not comment on or
 modify anything — this is a read-only report I act on myself.

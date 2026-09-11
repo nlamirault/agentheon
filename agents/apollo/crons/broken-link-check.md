@@ -4,15 +4,11 @@ schedule: "0 9 * * 3"
 skill: documentation-and-adrs
 deliver: slack
 summary: Weekly docs link check — crawl README and docs for dead links across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Check documentation links across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Docs rot silently — a link is fine at merge and dead months later. Read-only
 report; do not edit any file.

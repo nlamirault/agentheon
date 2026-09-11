@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (C) Nicolas Lamirault <nicolas.lamirault@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# cron-targets.yaml — the single source of truth for which GitHub owners every
+# scheduled task (agents/*/crons/*.md) operates over, and how each owner is
+# scoped. agentheon.sh reads this file once and expands the `{{TARGETS}}`
+# placeholder in each cron prompt into a self-contained "Targets" block, so the
+# owner list is never duplicated across the crons. Edit here, re-run
+# ./agentheon.sh, and every cron picks up the change.
+#
+# scope:
+#   all    — every non-archived repo the owner has (organizations).
+#   active — non-archived, non-fork repos pushed within `active_window_days`.
+#            Used for a personal account with a long tail of dormant repos, so
+#            the crons only spend budget on repos actually being worked on.
+
+# How recent a push must be for an `active`-scoped owner's repo to count.
+active_window_days: 180
+
+owners:
+  nlamirault: active
+  portefaix: all
+  pilotariak: all

@@ -50,12 +50,33 @@ Markdown body that is the prompt Hermes runs:
 | `skill`    | string | The skill Hermes loads for the run.                          |
 | `deliver`  | enum   | Delivery channel: `telegram`, `slack`, `email`, or `stdout`. |
 | `summary`  | string | One-line description used in the generated matrix.           |
-| `owners`   | list   | *(optional)* GitHub owners the prompt operates over.         |
 
 The **owning agent is the directory** the cron lives under
 (`agents/<slug>/crons/`) — there is no `agent:` field. The body below the
 frontmatter is the verbatim prompt — the steps, output format, and any "quiet
 week" fallback the run should follow.
+
+## Targets: the `{{TARGETS}}` placeholder
+
+Crons operate over a fixed set of GitHub owners, and that set is defined **once**
+in [`team/cron-targets.yaml`](../../team/cron-targets.yaml) — never repeated in
+each cron. A cron prompt carries the literal token `{{TARGETS}}` where the owner
+scope belongs; `agentheon.sh` expands it at install time into a self-contained
+"Targets" block (owner/scope table plus the runtime resolution rules) baked into
+`$HERMES_HOME/crons/<name>.yaml`. Edit `cron-targets.yaml`, re-run
+`./agentheon.sh`, and every cron picks up the change.
+
+`cron-targets.yaml` maps each owner to a **scope**:
+
+| Scope    | Meaning                                                                        |
+| -------- | ------------------------------------------------------------------------------ |
+| `all`    | Every non-archived repo the owner has (organizations).                         |
+| `active` | Non-archived, non-fork repos pushed within `active_window_days` (default 180). |
+
+`active` is resolved at **run time** (a live `gh repo list` query in the block),
+so a personal account's dormant repos drop out automatically — no repo list is
+ever frozen into a cron. A cron that reaches GitHub should carry `{{TARGETS}}`;
+`make crons-validate` enforces this.
 
 ## Tooling
 

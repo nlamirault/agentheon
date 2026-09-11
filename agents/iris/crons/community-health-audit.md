@@ -4,15 +4,11 @@ schedule: "0 8 1 * *"
 skill: project-bootstrap
 deliver: slack
 summary: Monthly audit of community health files (README, LICENSE, CoC, CONTRIBUTING, SECURITY) across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Audit community health files across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Read-only.
 

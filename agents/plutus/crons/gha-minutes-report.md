@@ -4,15 +4,11 @@ schedule: "0 8 1 * *"
 skill: cost-management
 deliver: slack
 summary: Monthly GitHub Actions minutes report — usage vs quota and top-burning repos across all owners.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Report GitHub Actions minutes usage across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 CI minutes are the one cloud cost visible without cloud credentials. Runs on the
 1st so it reads the previous billing cycle. Read-only report.

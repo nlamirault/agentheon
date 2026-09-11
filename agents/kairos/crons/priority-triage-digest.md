@@ -4,15 +4,11 @@ schedule: "0 9 * * 4"
 skill: planning-and-task-breakdown
 deliver: slack
 summary: Weekly priority digest — high-priority stale issues, milestone slippage, and unlabeled backlog.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Produce a priority-and-milestone digest across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Iris triages stale issues by age; this is the priority-and-milestone lens — what
 matters most and whether milestones are on track. Read-only report.
