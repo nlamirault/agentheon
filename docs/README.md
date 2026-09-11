@@ -41,6 +41,7 @@ Task-oriented guides for specific goals.
 Complete technical specifications: agent profiles, routing, conventions.
 
 - [Agent catalog and profile schema](reference/agents.md)
+- [Scripts reference: agentheon.sh, set-model.sh, gateway.sh](reference/scripts.md)
 
 ## Explanation
 
