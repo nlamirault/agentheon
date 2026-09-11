@@ -73,6 +73,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AGENTS_DIR="${ROOT}/agents"
 TEAM_DIR="${ROOT}/team"
+CRON_TARGETS="${TEAM_DIR}/cron-targets.yaml"
 HOME_DIR="${HERMES_HOME:-${HOME}/.hermes}"
 COMPANY_DIR="${HOME_DIR}/team/company"
 PROFILES_DIR="${HOME_DIR}/profiles"
@@ -313,13 +314,68 @@ install_skills() { # agent-dir  dest-dir  skill-name...
   done
 }
 
+# Build the shared "Targets" block from team/cron-targets.yaml — the single
+# source of truth for which GitHub owners the crons operate over and how each is
+# scoped. Every cron carries a `{{TARGETS}}` placeholder that install_crons
+# replaces with this block, so the owner list is never duplicated across crons.
+# `all`-scoped owners are used whole; `active`-scoped owners are narrowed at run
+# time to non-archived, non-fork repos pushed within active_window_days, so the
+# crons never spend budget on a personal account's dormant repos.
+resolve_targets() {
+  [[ -f "$CRON_TARGETS" ]] || { echo "   ${WARN} $CRON_TARGETS missing — crons keep {{TARGETS}} unexpanded" >&2; return 1; }
+  local window rows owner scope
+  window="$(awk -F': *' '/^active_window_days:/ {print $2; exit}' "$CRON_TARGETS")"
+  window="${window:-180}"
+  # owner: scope pairs indented under the `owners:` key.
+  rows="$(awk '
+    /^owners:/ { inb=1; next }
+    inb && /^[A-Za-z]/ { inb=0 }
+    inb && /^[ \t]+[A-Za-z0-9_-]+:/ { gsub(/[ \t]/, ""); print }' "$CRON_TARGETS")"
+  [[ -z "$rows" ]] && { echo "   ${WARN} no owners in $CRON_TARGETS" >&2; return 1; }
+
+  local table="" has_active=0
+  while IFS=: read -r owner scope; do
+    [[ -z "$owner" ]] && continue
+    if [[ "$scope" == active ]]; then
+      table+="| ${owner} | active repos only |"$'\n'
+      has_active=1
+    else
+      table+="| ${owner} | all non-archived repos |"$'\n'
+    fi
+  done <<< "$rows"
+
+  printf '%s\n' "## Targets — the GitHub owners this cron operates over"
+  printf '%s\n\n' "Apply this scope to every GitHub query below. Do not widen it."
+  printf '%s\n' "| Owner | Scope |"
+  printf '%s\n' "|-------|-------|"
+  printf '%s' "$table"
+  [[ "$has_active" == 1 ]] && {
+    printf '\n%s\n' "\"Active\" = non-archived, non-fork, pushed within the last ${window} days. For"
+    printf '%s\n\n' "each active-scoped owner, resolve its active set ONCE at the start of the run:"
+    printf '%s\n' '```'
+    printf '%s\n' "gh repo list <owner> --no-archived --source --limit 300 --json name,pushedAt \\"
+    printf '%s\n' "  --jq \"[.[] | select(.pushedAt >= (now - ${window}*86400 | strftime(\\\"%Y-%m-%dT%H:%M:%SZ\\\"))) | .name]\""
+    printf '%s\n\n' '```'
+    printf '%s\n' "Applying the scope:"
+    printf '%s\n' "- Steps that list repos per owner (\`gh repo list <owner> ...\`): for an"
+    printf '%s\n' "  active-scoped owner use only repos in its active set; for an all-scoped"
+    printf '%s\n' "  owner use every non-archived repo as written."
+    printf '%s\n' "- Steps that use \`gh search ... --owner <o>\`: gh search cannot restrict an"
+    printf '%s\n' "  owner to a subset, so keep the --owner flags, then DROP any result whose"
+    printf '%s\n' "  repo belongs to an active-scoped owner but is not in that owner's active set."
+  }
+}
+
+TARGETS_BLOCK="$(resolve_targets)" || TARGETS_BLOCK=""
+
 # Install an agent's scheduled tasks (agents/<slug>/crons/*.md). Each is a
 # portable spec written to $HERMES_HOME/crons/<name>.yaml (schedule + skill +
 # delivery channel + the verbatim prompt) and, when the hermes CLI is present,
 # registered with the runtime as that agent via `hermes -p <slug> cron create`.
 # The owning agent is the profile this cron lives under — never a frontmatter
 # field. Without the CLI the spec is written and the register step is skipped
-# with a warning (the same policy as aliases).
+# with a warning (the same policy as aliases). The `{{TARGETS}}` placeholder in
+# each prompt is expanded to the shared targets block (see resolve_targets).
 install_crons() { # agent-dir  slug  crons-home
   local adir="$1" slug="$2" chome="$3"
   local file cname cschedule cskill cdeliver cprompt
@@ -332,6 +388,15 @@ install_crons() { # agent-dir  slug  crons-home
     cdeliver="$(fm_scalar "$file" deliver)"
     # Drop the blank line the frontmatter fence leaves at the top of the body.
     cprompt="$(agent_body "$file" | sed -e '/./,$!d')"
+    # Expand the shared {{TARGETS}} placeholder into the self-contained targets
+    # block so the runtime prompt carries the owner scope without a file include.
+    if [[ "$cprompt" == *'{{TARGETS}}'* ]]; then
+      if [[ -n "$TARGETS_BLOCK" ]]; then
+        cprompt="${cprompt//\{\{TARGETS\}\}/$TARGETS_BLOCK}"
+      else
+        echo "   ${WARN} cron '${cname}' has {{TARGETS}} but targets could not be resolved"
+      fi
+    fi
 
     if [[ "$DRY_RUN" == 1 ]]; then
       echo "   would: write ${chome}/${cname}.yaml"

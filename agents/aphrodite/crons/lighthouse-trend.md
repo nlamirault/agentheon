@@ -4,15 +4,11 @@ schedule: "0 8 * * 4"
 skill: web-perf
 deliver: slack
 summary: Weekly Lighthouse trend — performance, SEO, and best-practices scores for every published site URL.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Track Lighthouse scores across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Performance and SEO drift release to release; a weekly trend catches it. URLs are
 derived from the repos themselves — no external inventory needed. Read-only

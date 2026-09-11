@@ -4,15 +4,11 @@ schedule: "0 9 1 * *"
 skill: security-compliance
 deliver: slack
 summary: Monthly governance audit — LICENSE, SPDX headers, DCO, and contribution files across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Audit repository governance files across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Repo-level compliance hygiene: the files that must exist for an open-source
 project to be well-governed. This is the repo-policy lens — Iris checks DCO at

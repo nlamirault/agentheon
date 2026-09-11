@@ -4,15 +4,11 @@ schedule: "0 9 * * 2"
 skill: git-workflow
 deliver: slack
 summary: Weekly check that each active repo keeps enough open good-first-issue / help-wanted on-ramps.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Audit the contributor on-ramp across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Read-only.
 

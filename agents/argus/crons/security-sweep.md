@@ -4,15 +4,11 @@ schedule: "0 7 * * 1"
 skill: security-and-hardening
 deliver: slack
 summary: Weekly security posture sweep — code scanning and secret scanning alerts across all repos.
-owners:
-  - nlamirault
-  - portefaix
-  - pilotariak
 ---
 
 Sweep the security posture across all my GitHub owners.
 
-Owners: nlamirault, portefaix, pilotariak
+{{TARGETS}}
 
 Read-only report built from GitHub's own scanners. Never print a secret value —
 report only its location and type so a leak is not widened.

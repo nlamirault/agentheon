@@ -36,6 +36,14 @@ DELIVER_CHANNELS=" telegram slack email stdout "
 errors=0
 err() { echo "🔴 $1"; errors=$((errors + 1)); }
 
+# The single source of truth for the owner scope every cron's {{TARGETS}}
+# placeholder expands to (see docs/reference/crons.md).
+TARGETS_FILE="${ROOT}/team/cron-targets.yaml"
+[[ -f "$TARGETS_FILE" ]] \
+  || err "team/cron-targets.yaml is missing — crons cannot resolve their owner scope"
+[[ -f "$TARGETS_FILE" ]] && ! grep -q '^owners:' "$TARGETS_FILE" \
+  && err "team/cron-targets.yaml has no 'owners:' block"
+
 declare -A SLUGS
 count=0
 shopt -s nullglob
@@ -69,6 +77,11 @@ for file in "${AGENTS_DIR}"/*/crons/*.md; do
 
   [[ -z "$(cron_body "$file" | tr -d '[:space:]')" ]] \
     && err "${rel}: empty body — the cron prompt is required"
+
+  # Owner scope must come from the shared {{TARGETS}} placeholder, never a
+  # hardcoded owner list baked into the prompt.
+  grep -q '{{TARGETS}}' "$file" \
+    || err "${rel}: prompt is missing the {{TARGETS}} placeholder (owner scope comes from team/cron-targets.yaml)"
 done
 
 if [[ "$count" -eq 0 ]]; then
