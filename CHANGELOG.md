@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.5.0](https://github.com/nlamirault/agentheon/compare/v0.4.0...v0.5.0) (2026-09-11)
+
+
+### 🚀 Features
+
+* **crons:** add Iris open-source community crons ([#60](https://github.com/nlamirault/agentheon/issues/60)) ([5394276](https://github.com/nlamirault/agentheon/commit/5394276a660fd9b3bca3b07ae28a54e6a1e33894))
+* **crons:** add operational crons for specialist deities ([#61](https://github.com/nlamirault/agentheon/issues/61)) ([2678657](https://github.com/nlamirault/agentheon/commit/26786570f85d519ca95820235a12744ba608c246))
+* **crons:** scope owners via shared cron-targets.yaml with {{TARGETS}} ([#66](https://github.com/nlamirault/agentheon/issues/66)) ([1b4594d](https://github.com/nlamirault/agentheon/commit/1b4594dd5a8a41f3105aceeda328f70bfe38d85b))
+* **gateway:** add script to manage per-profile gateways ([#58](https://github.com/nlamirault/agentheon/issues/58)) ([57cab9a](https://github.com/nlamirault/agentheon/commit/57cab9a1d075e17f823128a06390458a660aad63))
+* **gateway:** multiplex crons through a single default gateway ([#59](https://github.com/nlamirault/agentheon/issues/59)) ([5717754](https://github.com/nlamirault/agentheon/commit/5717754e67a1f3ac873b57cb265fce747c47a307))
+* **profiles:** add script to set model across all hermes profiles ([#63](https://github.com/nlamirault/agentheon/issues/63)) ([5a97ff5](https://github.com/nlamirault/agentheon/commit/5a97ff536af81e6b798ebb4f6958cf20251840b8))
+* **secrets:** symlink profile .env files to a shared secrets file ([#65](https://github.com/nlamirault/agentheon/issues/65)) ([ecdcd92](https://github.com/nlamirault/agentheon/commit/ecdcd928a9800d9e50a627a0924d1a3f4c5775ce))
+
+
+### 🐛 Bug Fixes
+
+* **crons:** switch cron delivery from telegram to slack ([#56](https://github.com/nlamirault/agentheon/issues/56)) ([320cec8](https://github.com/nlamirault/agentheon/commit/320cec8dec0b0b6cad602384686a5cf01e85a0cb))
+
+
+### 📚 Documentation
+
+* **reference:** document agentheon.sh, set-model.sh and gateway.sh ([#64](https://github.com/nlamirault/agentheon/issues/64)) ([5aac9d3](https://github.com/nlamirault/agentheon/commit/5aac9d314aee2c4c65be25452ddba5265a17d505))
+
 ## [0.4.0](https://github.com/nlamirault/agentheon/compare/v0.3.0...v0.4.0) (2026-09-04)
 
 
