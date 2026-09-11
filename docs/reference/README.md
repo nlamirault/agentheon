@@ -13,6 +13,7 @@ field, or a convention.
 
 - [Agent catalog and profile schema](agents.md)
 - [Cron catalog and schedule schema](crons.md)
+- [Scripts reference (agentheon.sh, set-model.sh, gateway.sh)](scripts.md)
 
 ## What's Reference Documentation?
 
