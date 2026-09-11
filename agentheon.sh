@@ -58,6 +58,11 @@ set -euo pipefail
 # per-profile .env. See ADR-0003. The access token stays in the shell
 # (BWS_ACCESS_TOKEN), never written to any file here.
 #
+# As a plaintext alternative, every profile's .env is symlinked to one shared
+# file ($HERMES_HOME/.shared-secrets.env) at the end of the run, so a single
+# env can serve all profiles. The shared file is created out of band, never
+# written here.
+#
 # Usage:
 #   ./agentheon.sh [install] [--cli|--no-cli] [--dry-run] [--home DIR]
 #                  --secrets bitwarden --bws-project-id UUID
@@ -93,7 +98,7 @@ MODE="filedrop"   # filedrop | cli
 DRY_RUN=0
 
 OK="🟢"; INFO="🔵"; WARN="🟠"; KO="🔴"
-SKILL="🧩"; CRON="⏰"
+SKILL="🧩"; CRON="⏰"; LINK="🔗"
 
 usage() {
   cat <<'EOF'
@@ -680,6 +685,29 @@ done
 
 echo
 echo "${OK} installed ${count} profiles into ${PROFILES_DIR}"
+
+# --- shared secrets for profiles ------------------------------------------
+# Point every named profile's .env at ONE shared env file
+# ($HERMES_HOME/.shared-secrets.env). Named profiles load only their own
+# profiles/<slug>/.env (never the root .env), so without this a plaintext
+# provider key has to be duplicated per profile. Symlinking each profile's
+# .env to a single shared file lets one plaintext env serve them all — the
+# plaintext counterpart to the Bitwarden block above (ADR-0003). The shared
+# file itself is never written here; create it with your keys out of band.
+SHARED_SECRETS="${HOME_DIR}/.shared-secrets.env"
+echo
+echo "${INFO} linking profile .env → ${SHARED_SECRETS}"
+[[ -e "$SHARED_SECRETS" ]] || echo "   ${WARN} ${SHARED_SECRETS} does not exist yet — links dangle until you create it"
+for d in "${PROFILES_DIR}"/*/; do
+  [[ -d "$d" ]] || continue
+  if [[ "$DRY_RUN" == 1 ]]; then
+    echo "   would: ln -sf ${SHARED_SECRETS} ${d}.env"
+  else
+    ln -sf "$SHARED_SECRETS" "${d}.env"
+    echo "   ${LINK} $(basename "$d")/.env → shared-secrets"
+  fi
+done
+
 echo
 echo "Next:"
 if [[ "$SECRETS_BACKEND" == "bitwarden" ]]; then
@@ -688,5 +716,6 @@ if [[ "$SECRETS_BACKEND" == "bitwarden" ]]; then
 else
   echo "  hermes -p <name> setup    # add API keys (.env)"
 fi
+echo "  \$EDITOR ${HOME_DIR}/.shared-secrets.env   # one env shared by every profile (symlinked)"
 echo "  hermes -p <name> chat     # run the agent"
 echo "  hermes profile list       # see them all"
