@@ -1,6 +1,6 @@
 ---
 name: flaky-test-report
-schedule: "0 9 * * 5"
+schedule: "15 9 * * 5"
 skill: testing
 deliver: slack
 summary: Weekly CI reliability report — flaky and slow test signals from recent workflow runs.

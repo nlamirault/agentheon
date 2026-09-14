@@ -1,6 +1,6 @@
 ---
 name: broken-link-check
-schedule: "0 9 * * 3"
+schedule: "15 9 * * 3"
 skill: documentation-and-adrs
 deliver: slack
 summary: Weekly docs link check — crawl README and docs for dead links across all repos.

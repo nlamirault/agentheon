@@ -1,6 +1,6 @@
 ---
 name: license-audit
-schedule: "0 9 1 * *"
+schedule: "45 9 1 * *"
 skill: security-compliance
 deliver: slack
 summary: Monthly governance audit — LICENSE, SPDX headers, DCO, and contribution files across all repos.
