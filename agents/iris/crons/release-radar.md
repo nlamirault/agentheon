@@ -1,6 +1,6 @@
 ---
 name: release-radar
-schedule: "0 9 * * 1"
+schedule: "15 9 * * 1"
 skill: shipping-and-launch
 deliver: slack
 summary: Weekly check for repos with merged work sitting unreleased since the last tag.

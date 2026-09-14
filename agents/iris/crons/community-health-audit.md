@@ -1,6 +1,6 @@
 ---
 name: community-health-audit
-schedule: "0 8 1 * *"
+schedule: "15 8 1 * *"
 skill: project-bootstrap
 deliver: slack
 summary: Monthly audit of community health files (README, LICENSE, CoC, CONTRIBUTING, SECURITY) across all repos.
