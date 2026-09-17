@@ -98,23 +98,33 @@ install        Install/refresh all profiles (default action).
 
 ## Environment overrides
 
-| Env var             | Default                          | Purpose                                                             |
-| ------------------- | -------------------------------- | ------------------------------------------------------------------- |
-| `HERMES_HOME`       | `~/.hermes`                      | Profiles root parent.                                               |
-| `MODEL_OPUS`        | `openrouter/meta/muse-spark-1.3` | Concrete `provider/model` for `model: opus`.                        |
-| `MODEL_SONNET`      | `openrouter/meta/muse-spark-1.3` | Concrete `provider/model` for `model: sonnet`.                      |
-| `AGENTHEON_SECRETS` | *(off)*                          | Secret source to wire in; `bitwarden` emits a config block.         |
-| `BWS_PROJECT_ID`    | —                                | Bitwarden project id (required when `AGENTHEON_SECRETS=bitwarden`). |
-| `BWS_SERVER_URL`    | `https://vault.bitwarden.com`    | Bitwarden server URL (US / EU / self-hosted).                       |
-| `BWS_TOKEN_ENV`     | `BWS_ACCESS_TOKEN`               | Name of the env var holding the access token.                       |
+| Env var                                         | Default                          | Purpose                                                                           |
+| ----------------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------- |
+| `HERMES_HOME`                                   | `~/.hermes`                      | Profiles root parent.                                                             |
+| `MODEL_OPUS`                                    | `openrouter/meta/muse-spark-1.3` | Concrete `provider/model` for `model: opus`.                                      |
+| `MODEL_SONNET`                                  | `openrouter/meta/muse-spark-1.3` | Concrete `provider/model` for `model: sonnet`.                                    |
+| `MODEL_PROVIDER` / `MODEL_ID` / `MODEL_DEFAULT` | *(unset)*                        | Global override — flatten **all** agents to one model, past the opus/sonnet tier. |
+| `AGENTHEON_SECRETS`                             | *(off)*                          | Secret source to wire in; `bitwarden` emits a config block.                       |
+| `BWS_PROJECT_ID`                                | —                                | Bitwarden project id (required when `AGENTHEON_SECRETS=bitwarden`).               |
+| `BWS_SERVER_URL`                                | `https://vault.bitwarden.com`    | Bitwarden server URL (US / EU / self-hosted).                                     |
+| `BWS_TOKEN_ENV`                                 | `BWS_ACCESS_TOKEN`               | Name of the env var holding the access token.                                     |
 
 See [Manage provider API keys with Bitwarden](manage-secrets.md) for the full
 secret-source workflow.
 
-Example — install into a custom home with a pinned model id:
+Example — install into a custom home with a pinned per-tier model id:
 
 ```bash
 MODEL_OPUS=anthropic/claude-opus-4 \
+  ./agentheon.sh install --home /srv/hermes
+```
+
+Example — point the **whole** pantheon (and its crons) at one model, past the
+opus/sonnet tier:
+
+```bash
+MODEL_PROVIDER=openrouter MODEL_ID=google/gemma-4-31b-it:free \
+MODEL_DEFAULT=google/gemma-4-31b-it:free \
   ./agentheon.sh install --home /srv/hermes
 ```
 

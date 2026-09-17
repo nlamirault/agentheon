@@ -16,6 +16,7 @@ set -euo pipefail
 #     reasoning_effort: high
 #     default: meta/muse-spark-1.3
 #     base_url: https://openrouter.ai/api/v1
+#     max_tokens: 32768
 #
 # Using `hermes config set` (not a raw YAML patch) keeps this consistent with the
 # rest of hack/ and lets Hermes own the schema. Named profiles are discovered by
@@ -35,6 +36,7 @@ set -euo pipefail
 #   MODEL_REASONING_EFFORT   high
 #   MODEL_DEFAULT            meta/muse-spark-1.3
 #   MODEL_BASE_URL           https://openrouter.ai/api/v1
+#   MODEL_MAX_TOKENS         32768
 #   HERMES_HOME              profiles root parent (default: ~/.hermes)
 #   NO_COLOR=1               disable ANSI colour (also auto-off when not a tty)
 
@@ -47,6 +49,7 @@ MODEL_ID="${MODEL_ID:-meta/muse-spark-1.3}"
 MODEL_REASONING_EFFORT="${MODEL_REASONING_EFFORT:-high}"
 MODEL_DEFAULT="${MODEL_DEFAULT:-meta/muse-spark-1.3}"
 MODEL_BASE_URL="${MODEL_BASE_URL:-https://openrouter.ai/api/v1}"
+MODEL_MAX_TOKENS="${MODEL_MAX_TOKENS:-32768}"
 
 # --- colour -----------------------------------------------------------------
 if [[ -t 1 && "${NO_COLOR:-0}" != 1 ]]; then
@@ -64,8 +67,9 @@ command -v hermes >/dev/null 2>&1 || die "hermes CLI not found — install Herme
 
 DRY_RUN=0
 
-# The five keys of the model block, in the order they appear in config.yaml.
-MODEL_KEYS=(provider model reasoning_effort default base_url)
+# The keys of the model block, in the order they appear in config.yaml. Kept in
+# sync with agentheon.sh so both write a byte-identical block.
+MODEL_KEYS=(provider model reasoning_effort default base_url max_tokens)
 model_val() {
   case "$1" in
     provider)         printf '%s' "$MODEL_PROVIDER" ;;
@@ -73,6 +77,7 @@ model_val() {
     reasoning_effort) printf '%s' "$MODEL_REASONING_EFFORT" ;;
     default)          printf '%s' "$MODEL_DEFAULT" ;;
     base_url)         printf '%s' "$MODEL_BASE_URL" ;;
+    max_tokens)       printf '%s' "$MODEL_MAX_TOKENS" ;;
   esac
 }
 

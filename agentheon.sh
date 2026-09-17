@@ -83,6 +83,23 @@ MODEL_SONNET="${MODEL_SONNET:-openrouter/meta/muse-spark-1.3}"
 # OpenAI-compatible endpoint for the provider above. Emitted verbatim into every
 # config.yaml as model.base_url. Defaults to OpenRouter to match MODEL_*.
 MODEL_BASE_URL="${MODEL_BASE_URL:-https://openrouter.ai/api/v1}"
+# Upper bound on tokens per request, emitted as model.max_tokens. Providers that
+# reserve credits up-front (e.g. OpenRouter) charge against this ceiling, so a
+# cap below the account's affordable limit avoids HTTP 402 "requires more
+# credits" rejections before the call is even made. Default 32768.
+MODEL_MAX_TOKENS="${MODEL_MAX_TOKENS:-32768}"
+
+# Global model override (shares the hack/set-model.sh contract). When set, these
+# override the per-agent opus/sonnet tier for EVERY profile — use them to point
+# the whole pantheon at one model without editing frontmatter. Empty (default)
+# keeps the tiered behavior: model resolves from each agent's `model:` frontmatter
+# via MODEL_OPUS/MODEL_SONNET. Each key is independent: MODEL_ID is emitted
+# verbatim as model.model (slashes kept, never split), provider comes from
+# MODEL_PROVIDER, and reasoning from MODEL_REASONING_EFFORT (else per-agent).
+MODEL_PROVIDER="${MODEL_PROVIDER:-}"
+MODEL_ID="${MODEL_ID:-}"
+MODEL_DEFAULT="${MODEL_DEFAULT:-}"
+MODEL_REASONING_EFFORT="${MODEL_REASONING_EFFORT:-}"
 
 # External secret source (ADR-0003). Off by default: profiles keep the plain
 # .env flow. Set AGENTHEON_SECRETS=bitwarden to emit a `secrets.bitwarden` block
@@ -136,6 +153,11 @@ Env overrides (flags above take precedence):
   MODEL_OPUS      provider/model for `model: opus`    (default: openrouter/meta/muse-spark-1.3)
   MODEL_SONNET    provider/model for `model: sonnet`  (default: openrouter/meta/muse-spark-1.3)
   MODEL_BASE_URL  OpenAI-compatible endpoint (model.base_url) (default: https://openrouter.ai/api/v1)
+  MODEL_MAX_TOKENS per-request token ceiling (model.max_tokens) (default: 32768)
+  MODEL_PROVIDER  global override for model.provider (unset: use opus/sonnet tier)
+  MODEL_ID        global override for model.model, verbatim (unset: use tier)
+  MODEL_DEFAULT   global override for model.default  (unset: falls back to MODEL_ID)
+  MODEL_REASONING_EFFORT  global override for model.reasoning_effort (unset: per-agent)
   AGENTHEON_SECRETS  secret source to wire in          (required; "bitwarden")
   BWS_PROJECT_ID     Bitwarden project id              (required if bitwarden)
   BWS_SERVER_URL     Bitwarden server URL              (default: https://vault.bitwarden.com)
@@ -550,6 +572,14 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   esac
   read -r provider model <<<"$(split_model "$model_id")"
 
+  # Global override (MODEL_PROVIDER/MODEL_ID/MODEL_DEFAULT/MODEL_REASONING_EFFORT):
+  # layered on top of the tier resolution, per key. MODEL_ID is used verbatim (it
+  # may contain slashes, e.g. google/gemma-4-31b-it:free) — NOT run through
+  # split_model. Unset keys keep the tier/frontmatter value.
+  [[ -n "$MODEL_PROVIDER" ]] && provider="$MODEL_PROVIDER"
+  [[ -n "$MODEL_ID" ]]       && model="$MODEL_ID"
+  model_default="${MODEL_DEFAULT:-${MODEL_ID:-$model}}"
+
   title="$(fm_scalar "$file" title)"
   domain="$(fm_scalar "$file" domain)"
   tagline="$(fm_scalar "$file" tagline)"
@@ -559,6 +589,7 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   comm_style="$(fm_scalar "$file" comm_style)"
   default="$(fm_scalar "$file" default)"
   reasoning="$(fm_scalar "$file" reasoning)"; reasoning="${reasoning:-medium}"
+  [[ -n "$MODEL_REASONING_EFFORT" ]] && reasoning="$MODEL_REASONING_EFFORT"
   # An explicit `toolsets:` frontmatter list is honored verbatim and bypasses
   # map_toolsets (which force-injects hermes-cli + memory). Use it to build a
   # least-privilege profile — e.g. an orchestrator that must ONLY delegate and
@@ -629,8 +660,9 @@ model:
   provider: ${provider}
   model: ${model}
   reasoning_effort: ${reasoning}
-  default: ${model}
+  default: ${model_default}
   base_url: ${MODEL_BASE_URL}
+  max_tokens: ${MODEL_MAX_TOKENS}
 toolsets:
 $(for ts in $toolsets; do echo "  - ${ts}"; done)$([[ ${#skills[@]} -gt 0 ]] && printf '\nskills: %s' "$(IFS=,; echo "${skills[*]}")")
 memory:

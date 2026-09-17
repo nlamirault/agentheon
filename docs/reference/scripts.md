@@ -76,16 +76,30 @@ CLI the file-drop path writes the spec and skips registration with a warning.
 
 Flags take precedence over env.
 
-| Variable            | Default                              | Purpose                                        |
-| ------------------- | ------------------------------------ | ---------------------------------------------- |
-| `HERMES_HOME`       | `~/.hermes`                          | Profiles root parent.                          |
-| `MODEL_OPUS`        | `openrouter/meta/muse-spark-1.3`     | provider/model for agents with `model: opus`.  |
-| `MODEL_SONNET`      | `openrouter/meta/muse-spark-1.3`     | provider/model for agents with `model: sonnet`.|
-| `MODEL_BASE_URL`    | `https://openrouter.ai/api/v1`       | OpenAI-compatible endpoint (`model.base_url`). |
-| `AGENTHEON_SECRETS` | *(unset — required)*                 | Secret source (`bitwarden`).                   |
-| `BWS_PROJECT_ID`    | *(unset — required with bitwarden)*  | Bitwarden project id.                          |
-| `BWS_SERVER_URL`    | `https://vault.bitwarden.com`        | Bitwarden server URL.                          |
-| `BWS_TOKEN_ENV`     | `BWS_ACCESS_TOKEN`                   | Name of the env var holding the access token.  |
+| Variable                 | Default                             | Purpose                                               |
+| ------------------------ | ----------------------------------- | ----------------------------------------------------- |
+| `HERMES_HOME`            | `~/.hermes`                         | Profiles root parent.                                 |
+| `MODEL_OPUS`             | `openrouter/meta/muse-spark-1.3`    | provider/model for agents with `model: opus`.         |
+| `MODEL_SONNET`           | `openrouter/meta/muse-spark-1.3`    | provider/model for agents with `model: sonnet`.       |
+| `MODEL_BASE_URL`         | `https://openrouter.ai/api/v1`      | OpenAI-compatible endpoint (`model.base_url`).        |
+| `MODEL_MAX_TOKENS`       | `32768`                             | Per-request token ceiling (`model.max_tokens`).       |
+| `MODEL_PROVIDER`         | *(unset — global override)*         | Overrides `model.provider` for every profile.         |
+| `MODEL_ID`               | *(unset — global override)*         | Overrides `model.model`, verbatim (slashes kept).     |
+| `MODEL_DEFAULT`          | *(unset — global override)*         | Overrides `model.default` (falls back to `MODEL_ID`). |
+| `MODEL_REASONING_EFFORT` | *(unset — global override)*         | Overrides `model.reasoning_effort` (else per-agent).  |
+| `AGENTHEON_SECRETS`      | *(unset — required)*                | Secret source (`bitwarden`).                          |
+| `BWS_PROJECT_ID`         | *(unset — required with bitwarden)* | Bitwarden project id.                                 |
+| `BWS_SERVER_URL`         | `https://vault.bitwarden.com`       | Bitwarden server URL.                                 |
+| `BWS_TOKEN_ENV`          | `BWS_ACCESS_TOKEN`                  | Name of the env var holding the access token.         |
+
+The `MODEL_PROVIDER` / `MODEL_ID` / `MODEL_DEFAULT` / `MODEL_REASONING_EFFORT` overrides
+share the [`set-model.sh`](#hackset-modelsh--set-the-model-across-all-profiles) contract:
+set them to flatten **every** agent to one model regardless of its `model: opus|sonnet`
+tier (e.g. `MODEL_PROVIDER=openrouter MODEL_ID=google/gemma-4-31b-it:free ./agentheon.sh …`);
+leave them unset to keep the per-agent tier resolved from `MODEL_OPUS` / `MODEL_SONNET`.
+`MODEL_ID` is emitted verbatim as `model.model` (its slashes are kept, unlike the
+`provider/model` tier strings). Crons carry no model of their own, so re-pointing the
+profiles re-points their crons too.
 
 ### Secrets
 
@@ -138,6 +152,7 @@ model:
   reasoning_effort: high
   default: meta/muse-spark-1.3
   base_url: https://openrouter.ai/api/v1
+  max_tokens: 32768
 ```
 
 ### Environment overrides
@@ -149,6 +164,7 @@ model:
 | `MODEL_REASONING_EFFORT` | `high`                           |
 | `MODEL_DEFAULT`          | `meta/muse-spark-1.3`            |
 | `MODEL_BASE_URL`         | `https://openrouter.ai/api/v1`   |
+| `MODEL_MAX_TOKENS`       | `32768`                          |
 | `HERMES_HOME`            | `~/.hermes`                      |
 | `NO_COLOR=1`             | disable ANSI colour              |
 
