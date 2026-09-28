@@ -1,6 +1,6 @@
 ---
 adr: 0006
-status: 🚧 Proposed
+status: ✅ Accepted
 deciders: Nicolas Lamirault
 consulted:
 informed:
