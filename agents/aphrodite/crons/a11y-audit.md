@@ -2,7 +2,7 @@
 name: a11y-audit
 schedule: "0 8 * * 2"
 skill: web-accessibility
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly accessibility audit — axe scan of every published site URL across all repos.
 ---
 

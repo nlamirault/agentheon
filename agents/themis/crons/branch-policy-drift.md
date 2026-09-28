@@ -2,7 +2,7 @@
 name: branch-policy-drift
 schedule: "30 10 * * 1"
 skill: security-compliance
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly branch-protection consistency audit — required reviews, checks, and signing across all repos.
 ---
 

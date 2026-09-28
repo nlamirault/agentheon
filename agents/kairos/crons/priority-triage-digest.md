@@ -2,7 +2,7 @@
 name: priority-triage-digest
 schedule: "15 9 * * 4"
 skill: planning-and-task-breakdown
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly priority digest — high-priority stale issues, milestone slippage, and unlabeled backlog.
 ---
 

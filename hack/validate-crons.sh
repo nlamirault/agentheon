@@ -32,7 +32,13 @@ AGENTS_DIR="${ROOT}/agents"
 cron_body() { awk '/^---$/ { c++; next } c>=2 { print }' "$1"; }
 
 REQUIRED=(name schedule skill deliver summary)
-DELIVER_CHANNELS=" telegram slack email stdout "
+# Delivery target grammar as the installed Hermes CLI accepts it
+# (`hermes cron create --deliver`): a bare keyword, or a `base:suffix` form for
+# `platform:chat_id` and `bot-chat[:profile]`. Satellite deities hold no platform
+# token (ADR-0006), so they deliver via `bot-chat:default` — the output is
+# injected into the default (gateway) profile's Bot Chat and the gateway, the sole
+# token holder, transmits it. Validate the BASE keyword; the suffix is free-form.
+DELIVER_CHANNELS=" origin local telegram discord signal platform bot-chat "
 errors=0
 err() { echo "🔴 $1"; errors=$((errors + 1)); }
 
@@ -72,7 +78,10 @@ for file in "${AGENTS_DIR}"/*/crons/*.md; do
   [[ "$fields" == "5" ]] || err "${rel}: schedule '${schedule}' is not a 5-field cron expression"
 
   deliver="$(fm_scalar "$file" deliver)"
-  [[ -n "$deliver" && "$DELIVER_CHANNELS" != *" $deliver "* ]] \
+  # Match the base keyword only; `platform:chat_id` / `bot-chat:profile` carry a
+  # free-form suffix after the first colon.
+  deliver_base="${deliver%%:*}"
+  [[ -n "$deliver" && "$DELIVER_CHANNELS" != *" $deliver_base "* ]] \
     && err "${rel}: deliver '${deliver}' is not a supported channel (${DELIVER_CHANNELS# })"
 
   [[ -z "$(cron_body "$file" | tr -d '[:space:]')" ]] \

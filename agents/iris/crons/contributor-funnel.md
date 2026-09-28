@@ -2,7 +2,7 @@
 name: contributor-funnel
 schedule: "15 9 * * 2"
 skill: git-workflow
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly check that each active repo keeps enough open good-first-issue / help-wanted on-ramps.
 ---
 

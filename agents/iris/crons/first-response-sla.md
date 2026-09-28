@@ -2,7 +2,7 @@
 name: first-response-sla
 schedule: "0 10 * * 1-5"
 skill: git-workflow
-deliver: slack
+deliver: bot-chat:default
 summary: Weekday sweep for unanswered issues/PRs from first-time contributors — respond before they bounce.
 ---
 

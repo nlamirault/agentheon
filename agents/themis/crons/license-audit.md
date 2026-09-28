@@ -2,7 +2,7 @@
 name: license-audit
 schedule: "45 9 1 * *"
 skill: security-compliance
-deliver: slack
+deliver: bot-chat:default
 summary: Monthly governance audit — LICENSE, SPDX headers, DCO, and contribution files across all repos.
 ---
 

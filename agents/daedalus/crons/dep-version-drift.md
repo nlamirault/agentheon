@@ -2,7 +2,7 @@
 name: dep-version-drift
 schedule: "0 6 1 * *"
 skill: ci-cd-and-automation
-deliver: slack
+deliver: bot-chat:default
 summary: Monthly toolchain drift report — inconsistent or EOL language/tool versions across all repos.
 ---
 
