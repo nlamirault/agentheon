@@ -61,7 +61,11 @@ set -euo pipefail
 # As a plaintext alternative, every profile's .env is symlinked to one shared
 # file ($HERMES_HOME/.shared-secrets.env) at the end of the run, so a single
 # env can serve all profiles. The shared file is created out of band, never
-# written here.
+# written here. It holds provider/LLM keys ONLY — platform tokens
+# (SLACK_*, TELEGRAM_*) must never live here, because the shared file feeds
+# every profile and outbound messaging is Zeus's job alone (see ADR-0006):
+# they belong solely in the default profile env ($HERMES_HOME/.env). A leak is
+# flagged after linking.
 #
 # Usage:
 #   ./agentheon.sh [install] [--cli|--no-cli] [--dry-run] [--home DIR]
@@ -103,12 +107,20 @@ MODEL_REASONING_EFFORT="${MODEL_REASONING_EFFORT:-}"
 
 # External secret source (ADR-0003). Off by default: profiles keep the plain
 # .env flow. Set AGENTHEON_SECRETS=bitwarden to emit a `secrets.bitwarden` block
-# into every profile's config.yaml so provider keys live once in a Bitwarden
+# into every deity profile's config.yaml so provider keys live once in a Bitwarden
 # project instead of duplicated per-profile. The access TOKEN is never written
 # here — only the name of the env var that holds it (resolved from the shell at
 # runtime); project_id/server_url come from env so no personal IDs are committed.
+#
+# TWO projects (ADR-0006). BWS_PROJECT_ID is the PROVIDERS project (LLM keys) and
+# is emitted into every deity profile — it must hold NO platform secret. Platform
+# tokens (SLACK_*, TELEGRAM_*) live in a SEPARATE gateway project, wired only into
+# the default profile by hack/gateway.sh (BWS_GATEWAY_PROJECT_ID) — never here,
+# because this block reaches every satellite and a shared platform token trips
+# Hermes' one-credential-one-consumer guard. The two ids MUST differ.
 SECRETS_BACKEND="${AGENTHEON_SECRETS:-}"                       # ""=off | bitwarden
-BWS_PROJECT_ID="${BWS_PROJECT_ID:-}"
+BWS_PROJECT_ID="${BWS_PROJECT_ID:-}"                          # providers project (all deity profiles)
+BWS_GATEWAY_PROJECT_ID="${BWS_GATEWAY_PROJECT_ID:-}"         # platform project (default gateway only; validated here, wired by gateway.sh)
 BWS_SERVER_URL="${BWS_SERVER_URL:-https://vault.bitwarden.com}"
 BWS_TOKEN_ENV="${BWS_TOKEN_ENV:-BWS_ACCESS_TOKEN}"
 
@@ -144,8 +156,14 @@ Options:
   --dry-run, -n  Show what would happen; write nothing.
   --home DIR     Hermes home (default: $HERMES_HOME or ~/.hermes).
   --secrets NAME    (required) Secret source to wire in (same as AGENTHEON_SECRETS; "bitwarden").
-  --bws-project-id UUID  (required with bitwarden) Bitwarden project id (same as
-                         BWS_PROJECT_ID); implies --secrets bitwarden when given.
+  --bws-project-id UUID  (required with bitwarden) PROVIDERS project id (same as
+                         BWS_PROJECT_ID); emitted into every deity profile;
+                         implies --secrets bitwarden when given.
+  --bws-gateway-project-id UUID  (optional) PLATFORM project id (same as
+                         BWS_GATEWAY_PROJECT_ID). Holds Slack/Telegram secrets;
+                         NOT injected into deity profiles — validated here (must
+                         differ from --bws-project-id) and wired into the default
+                         profile by hack/gateway.sh (ADR-0006).
   -h, --help     This help.
 
 Env overrides (flags above take precedence):
@@ -159,7 +177,9 @@ Env overrides (flags above take precedence):
   MODEL_DEFAULT   global override for model.default  (unset: falls back to MODEL_ID)
   MODEL_REASONING_EFFORT  global override for model.reasoning_effort (unset: per-agent)
   AGENTHEON_SECRETS  secret source to wire in          (required; "bitwarden")
-  BWS_PROJECT_ID     Bitwarden project id              (required if bitwarden)
+  BWS_PROJECT_ID     Bitwarden PROVIDERS project id    (required if bitwarden)
+  BWS_GATEWAY_PROJECT_ID  Bitwarden PLATFORM project id (optional; must differ
+                     from BWS_PROJECT_ID; wired into default by gateway.sh)
   BWS_SERVER_URL     Bitwarden server URL              (default: https://vault.bitwarden.com)
   BWS_TOKEN_ENV      env var holding the access token  (default: BWS_ACCESS_TOKEN)
 
@@ -185,6 +205,10 @@ while [[ $# -gt 0 ]]; do
     # backend was already chosen, implies --secrets bitwarden so the flag alone
     # is enough: ./agentheon.sh --bws-project-id <uuid>.
     --bws-project-id) BWS_PROJECT_ID="$2"; SECRETS_BACKEND="${SECRETS_BACKEND:-bitwarden}"; shift 2 ;;
+    # Platform (gateway) project id. Not injected into any deity profile — only
+    # validated here (must differ from the providers project) and echoed as the
+    # value to hand hack/gateway.sh, which wires it into the default profile.
+    --bws-gateway-project-id) BWS_GATEWAY_PROJECT_ID="$2"; shift 2 ;;
     -h|--help)    usage 0 ;;
     *)            echo "${KO} unknown argument: $1"; usage 1 ;;
   esac
@@ -200,6 +224,14 @@ case "$SECRETS_BACKEND" in
   bitwarden) [[ -n "$BWS_PROJECT_ID" ]] || { echo "${KO} --bws-project-id is required with --secrets bitwarden (or set BWS_PROJECT_ID)"; usage 1; } ;;
   *)         echo "${KO} unknown --secrets '${SECRETS_BACKEND}' (supported: bitwarden)"; usage 1 ;;
 esac
+
+# Two-project guard (ADR-0006): the providers project (injected into every deity)
+# must never be the same project as the platform/gateway project, or the platform
+# tokens leak back into every profile and Hermes refuses to start the duplicate.
+if [[ -n "$BWS_GATEWAY_PROJECT_ID" && "$BWS_GATEWAY_PROJECT_ID" == "$BWS_PROJECT_ID" ]]; then
+  echo "${KO} BWS_GATEWAY_PROJECT_ID must differ from BWS_PROJECT_ID — the platform project cannot be the providers project (ADR-0006)"
+  usage 1
+fi
 
 run() { # echo + execute unless dry-run
   if [[ "$DRY_RUN" == 1 ]]; then echo "   would: $*"; else "$@"; fi
@@ -553,7 +585,13 @@ secrets:
     override_existing: true
 YAML
 )"
-  echo "${INFO} secret source: bitwarden (project ${BWS_PROJECT_ID}, token env ${BWS_TOKEN_ENV}) → emitted into every config.yaml"
+  echo "${INFO} secret source: bitwarden providers project ${BWS_PROJECT_ID} (token env ${BWS_TOKEN_ENV}) → emitted into every deity config.yaml"
+  if [[ -n "$BWS_GATEWAY_PROJECT_ID" ]]; then
+    echo "${INFO} platform project ${BWS_GATEWAY_PROJECT_ID} → wire into the default profile with:"
+    echo "        BWS_GATEWAY_PROJECT_ID=${BWS_GATEWAY_PROJECT_ID} hack/gateway.sh install"
+  else
+    echo "${WARN} no BWS_GATEWAY_PROJECT_ID given — platform tokens (Slack/Telegram) are wired separately via hack/gateway.sh (ADR-0006)"
+  fi
 elif [[ -n "$SECRETS_BACKEND" ]]; then
   echo "${KO} unknown AGENTHEON_SECRETS='${SECRETS_BACKEND}' (supported: bitwarden)"; exit 1
 fi
@@ -805,6 +843,26 @@ for d in "${PROFILES_DIR}"/*/; do
   fi
 done
 
+# Guard: platform tokens must NOT live in the shared file (ADR-0006). The shared
+# env is symlinked into every satellite profile, so a SLACK_/TELEGRAM_ token
+# placed here is consumed by every deity at once — Hermes' multiplex gateway then
+# refuses to start ("one credential cannot be consumed twice"). Outbound
+# messaging is Zeus's job alone; platform tokens belong only in the default
+# profile env ($HERMES_HOME/.env). Flag a leak loudly (non-fatal — the operator
+# owns this file).
+if [[ -e "$SHARED_SECRETS" ]]; then
+  leaked="$(grep -oiE '\b(SLACK|TELEGRAM)_[A-Z_]+' "$SHARED_SECRETS" 2>/dev/null \
+    | tr '[:lower:]' '[:upper:]' | sort -u | paste -sd, - || true)"
+  if [[ -n "$leaked" ]]; then
+    echo
+    echo "${KO} platform token(s) in ${SHARED_SECRETS}: ${leaked}"
+    echo "   The shared env feeds EVERY profile, so a messaging token here makes"
+    echo "   each deity configure the platform and the multiplex gateway refuses"
+    echo "   to start (one credential cannot be consumed twice — ADR-0006)."
+    echo "   Move it to the default profile env: ${HOME_DIR}/.env"
+  fi
+fi
+
 echo
 echo "Next:"
 if [[ "$SECRETS_BACKEND" == "bitwarden" ]]; then
@@ -813,6 +871,7 @@ if [[ "$SECRETS_BACKEND" == "bitwarden" ]]; then
 else
   echo "  hermes -p <name> setup    # add API keys (.env)"
 fi
-echo "  \$EDITOR ${HOME_DIR}/.shared-secrets.env   # one env shared by every profile (symlinked)"
+echo "  \$EDITOR ${HOME_DIR}/.shared-secrets.env   # provider/LLM keys shared by every profile (symlinked)"
+echo "  \$EDITOR ${HOME_DIR}/.env                   # default profile: platform tokens (SLACK_*/TELEGRAM_*) live here ONLY — ADR-0006"
 echo "  hermes -p <name> chat     # run the agent"
 echo "  hermes profile list       # see them all"

@@ -34,15 +34,29 @@ set -euo pipefail
 #   hack/gateway.sh install --force
 #   hack/gateway.sh start --system
 #
+# Wire the platform (Slack/Telegram) secrets into the default profile only:
+#   BWS_GATEWAY_PROJECT_ID=<uuid> BWS_ACCESS_TOKEN=<tok> hack/gateway.sh install
+#
 # Env:
 #   HERMES_HOME       profiles root parent (default: ~/.hermes)
 #   BWS_ACCESS_TOKEN  Bitwarden Secrets Manager token, written to the default .env on install
+#   BWS_GATEWAY_PROJECT_ID  Bitwarden PLATFORM project id (Slack/Telegram secrets). When set,
+#                     a `secrets.bitwarden` block pointing at it is written into the DEFAULT
+#                     profile so only the gateway resolves the platform tokens (ADR-0006). It
+#                     must differ from BWS_PROJECT_ID (the providers project used by deities).
+#   BWS_PROJECT_ID    Bitwarden PROVIDERS project id — read only to reject reusing it here.
+#   BWS_SERVER_URL    Bitwarden server URL (default: https://vault.bitwarden.com)
+#   BWS_TOKEN_ENV     env var holding the access token (default: BWS_ACCESS_TOKEN)
 #   NO_COLOR=1        disable ANSI colour (also auto-off when stdout is not a tty)
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 AGENTS_DIR="${ROOT}/agents"
 HOME_DIR="${HERMES_HOME:-${HOME}/.hermes}"
 DEFAULT_ENV="${HOME_DIR}/.env"
+BWS_GATEWAY_PROJECT_ID="${BWS_GATEWAY_PROJECT_ID:-}"
+BWS_PROJECT_ID="${BWS_PROJECT_ID:-}"
+BWS_SERVER_URL="${BWS_SERVER_URL:-https://vault.bitwarden.com}"
+BWS_TOKEN_ENV="${BWS_TOKEN_ENV:-BWS_ACCESS_TOKEN}"
 
 # --- colour -----------------------------------------------------------------
 if [[ -t 1 && "${NO_COLOR:-0}" != 1 ]]; then
@@ -83,6 +97,32 @@ write_default_env() {
   ok "wrote BWS_ACCESS_TOKEN → ${DEFAULT_ENV}"
 }
 
+# write_default_secrets_block — point the DEFAULT profile at the Bitwarden PLATFORM
+# project (BWS_GATEWAY_PROJECT_ID) so ONLY the gateway resolves the Slack/Telegram
+# secrets (ADR-0006). Deity profiles keep their own providers-project block
+# (agentheon.sh); this block is the default profile's alone. No-op when the
+# platform project id is unset (plain-.env delivery still works). Written with
+# `hermes config set` (dotted keys), matching how the gateway toggles are set.
+write_default_secrets_block() {
+  [[ -n "$BWS_GATEWAY_PROJECT_ID" ]] || {
+    warn "BWS_GATEWAY_PROJECT_ID unset — not wiring a platform secrets block; the default profile must get Slack/Telegram tokens another way (plain ${DEFAULT_ENV})"
+    return 0
+  }
+  # Guard: the platform project must never be the providers project, or the
+  # platform tokens leak into every deity and the gateway refuses to start.
+  if [[ -n "$BWS_PROJECT_ID" && "$BWS_GATEWAY_PROJECT_ID" == "$BWS_PROJECT_ID" ]]; then
+    die "BWS_GATEWAY_PROJECT_ID must differ from BWS_PROJECT_ID — the platform project cannot be the providers project (ADR-0006)"
+  fi
+  info "wiring default profile → Bitwarden platform project ${CYAN}${BWS_GATEWAY_PROJECT_ID}${R}"
+  hermes config set secrets.bitwarden.enabled true --force >/dev/null
+  hermes config set secrets.bitwarden.access_token_env "$BWS_TOKEN_ENV" --force >/dev/null
+  hermes config set secrets.bitwarden.project_id "$BWS_GATEWAY_PROJECT_ID" --force >/dev/null
+  hermes config set secrets.bitwarden.server_url "$BWS_SERVER_URL" --force >/dev/null
+  hermes config set secrets.bitwarden.cache_ttl_seconds 300 --force >/dev/null
+  hermes config set secrets.bitwarden.override_existing true --force >/dev/null
+  ok "default profile: secrets.bitwarden.project_id = ${BWS_GATEWAY_PROJECT_ID} (platform tokens, gateway-only)"
+}
+
 # --- commands ---------------------------------------------------------------
 
 # install — turn the default profile into a multiplexer, then install its gateway.
@@ -93,6 +133,7 @@ write_default_env() {
 cmd_install() {
   info "configuring ${B}default${R} profile as a cron gateway multiplexer"
   write_default_env
+  write_default_secrets_block
   # The default profile OWNS the listener (enabled), and multiplexes every named
   # deity profile. Satellites are pinned gateway.enabled=false by
   # gen-hermes-profiles.sh — this is the other side of that split.
