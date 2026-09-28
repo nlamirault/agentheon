@@ -15,8 +15,8 @@ repos themselves — no external inventory needed. Read-only report; do not edit
 any site.
 
 Steps:
-1. Repo list:   gh repo list <owner> --no-archived --source --limit 100 --json name,homepageUrl,hasPages  (for each owner)
-2. Target URLs: collect each non-empty homepageUrl; for repos with hasPages, add the GitHub Pages URL (gh api repos/<owner>/<repo>/pages --jq .html_url, skip 404). De-dupe.
+1. Repo list:   gh repo list <owner> --no-archived --source --limit 100 --json name,homepageUrl  (for each owner)
+2. Target URLs: collect each non-empty homepageUrl; for every repo also probe GitHub Pages (gh api repos/<owner>/<repo>/pages --jq .html_url, skip 404 = Pages not enabled) and add any URL returned. De-dupe.
 3. Scan: run an axe-core accessibility scan on each URL (npx @axe-core/cli <url>, or equivalent). If no runner is available, report that and list the URLs that would be scanned.
 4. Collect: per URL, count violations by impact (critical, serious, moderate, minor) with the top rule ids
 

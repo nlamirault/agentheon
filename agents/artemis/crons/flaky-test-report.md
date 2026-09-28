@@ -16,8 +16,8 @@ of workflow runs.
 
 Steps:
 1. Repo list:      gh repo list <owner> --no-archived --source --limit 100 --json name  (for each owner)
-2. Recent runs:    per repo, gh run list --repo <owner>/<repo> --created '>'$(date -d '7 days ago' +%F) --limit 100 --json workflowName,headBranch,conclusion,event,databaseId,createdAt
-3. Flaky signal:   a run that was re-run and flipped failure -> success on the same commit (compare attempts via gh api repos/<owner>/<repo>/actions/runs/<id>/attempts). Flag workflows with the highest flip rate.
+2. Recent runs:    per repo, gh run list --repo <owner>/<repo> --created '>'$(date -u -d '7 days ago' +%F 2>/dev/null || date -v-7d +%F) --limit 100 --json workflowName,headBranch,conclusion,event,databaseId,createdAt,attempt
+3. Flaky signal:   a run that was re-run and flipped failure -> success on the same commit. For a run with attempt > 1, fetch each earlier attempt (gh api repos/<owner>/<repo>/actions/runs/<id>/attempts/<n> for n in 1..attempt) and flag workflows where an earlier attempt failed and a later one succeeded. Rank by flip rate.
 4. Chronic red:    workflows failing on the default branch more than once this week.
 5. Slow trend:     from run durations, flag the slowest workflows (top 5 by median minutes).
 

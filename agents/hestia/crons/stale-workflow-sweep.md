@@ -19,7 +19,7 @@ Steps:
 2. Workflow files: per repo, list .github/workflows/*.{yml,yaml} on the default branch (gh api repos/<owner>/<repo>/git/trees/<branch>?recursive=1)
 3. Deprecated runners: flag any `runs-on:` using ubuntu-20.04, macos-12, or other EOL images
 4. Tag-pinned actions: flag `uses:` referencing a mutable tag (e.g. @v4, @main) instead of a full commit SHA
-5. Dead workflows: per workflow, gh run list --workflow=<file> --limit 1 --json createdAt — flag any with 0 runs or last run > 90 days ago
+5. Dead workflows: per workflow, gh run list --repo <owner>/<repo> --workflow=<file> --limit 1 --json createdAt — flag any with 0 runs or last run > 90 days ago
 
 Format:
 
