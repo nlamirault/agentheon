@@ -12,9 +12,9 @@ Produce a weekly digest across all my GitHub owners.
 
 Steps:
 1. Open PRs:       gh search prs   --owner nlamirault --owner portefaix --owner pilotariak --state open   --limit 50 --json repository,number,title,author,updatedAt
-2. Merged (7d):    gh search prs   --owner nlamirault --owner portefaix --owner pilotariak --merged --merged-at '>'$(date -d '7 days ago' +%F) --limit 50 --json repository,number,title
+2. Merged (7d):    gh search prs   --owner nlamirault --owner portefaix --owner pilotariak --merged --merged-at '>'$(date -u -d '7 days ago' +%F 2>/dev/null || date -v-7d +%F) --limit 50 --json repository,number,title
 3. Open issues:    gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state open --limit 50 --json repository,number,title,labels,updatedAt
-4. Closed (7d):    gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state closed --closed '>'$(date -d '7 days ago' +%F) --limit 50 --json repository,number,title
+4. Closed (7d):    gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state closed --closed '>'$(date -u -d '7 days ago' +%F 2>/dev/null || date -v-7d +%F) --limit 50 --json repository,number,title
 5. Dependabot:     per repo, count open alerts (skip 404 = disabled)
 
 Format:

@@ -15,8 +15,8 @@ derived from the repos themselves — no external inventory needed. Read-only
 report.
 
 Steps:
-1. Repo list:   gh repo list <owner> --no-archived --source --limit 100 --json name,homepageUrl,hasPages  (for each owner)
-2. Target URLs: collect each non-empty homepageUrl; for repos with hasPages, add the GitHub Pages URL (gh api repos/<owner>/<repo>/pages --jq .html_url, skip 404). De-dupe.
+1. Repo list:   gh repo list <owner> --no-archived --source --limit 100 --json name,homepageUrl  (for each owner)
+2. Target URLs: collect each non-empty homepageUrl; for every repo also probe GitHub Pages (gh api repos/<owner>/<repo>/pages --jq .html_url, skip 404 = Pages not enabled) and add any URL returned. De-dupe.
 3. Run: Lighthouse on each URL (npx lighthouse <url> --quiet --chrome-flags="--headless" --output=json). If no runner is available, report that and list the URLs that would be scanned.
 4. Collect: per URL the four category scores — performance, accessibility, best-practices, SEO (0-100)
 5. Trend: compare each score to the same URL in last week's report from channel history; flag drops of 5+ points
