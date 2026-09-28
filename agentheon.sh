@@ -646,6 +646,35 @@ for file in "${AGENTS_DIR}"/*/README.md; do
   mapfile -t aliases   < <(fm_list "$file" aliases)
 
   pdir="${PROFILES_DIR}/${slug}"
+
+  # Register with the CLI FIRST, so Hermes creates the profile dir and its
+  # identity file before anything else populates it. Hermes refuses
+  # `profile create` when the target dir already exists without an identity file
+  # ("carries no profile identity file … Move or remove that directory first"),
+  # so vendoring skills or making the dir beforehand would break a fresh install.
+  if [[ "$HAVE_HERMES" == 1 ]]; then
+    if hermes profile list 2>/dev/null | grep -qw "$slug"; then
+      :
+    else
+      # Not a registered profile. A dir here is orphaned scaffolding from an
+      # interrupted run — Hermes has no identity file for it and refuses to
+      # create over it. Everything in it is regenerated below, so move it aside
+      # (non-destructive) and create cleanly.
+      if [[ -e "$pdir" ]]; then
+        if [[ "$DRY_RUN" == 1 ]]; then
+          echo "   would: mv ${pdir} → ${pdir}.orphan.<ts> (unregistered leftover)"
+        else
+          bak="${pdir}.orphan.$(date +%Y%m%d%H%M%S)"
+          mv "$pdir" "$bak"
+          echo "   ${WARN} moved unregistered ${slug} dir aside → ${bak}"
+        fi
+      fi
+      run hermes profile create "$slug" --description "${domain} — ${tagline}"
+    fi
+  fi
+
+  # Ensure the dir exists for the file-drop-only path (no hermes CLI) and for
+  # idempotent re-runs; a no-op right after `profile create`.
   run mkdir -p "$pdir"
 
   # Install the agent's vendored skills into this profile's own skill store, then
@@ -659,15 +688,6 @@ for file in "${AGENTS_DIR}"/*/README.md; do
 
   # Install this agent's scheduled tasks (agents/<slug>/crons/*.md), if any.
   install_crons "$(dirname "$file")" "$slug" "${HOME_DIR}/crons"
-
-  # Register with the CLI when available, so it lands in `hermes profile list`.
-  if [[ "$HAVE_HERMES" == 1 ]]; then
-    if hermes profile list 2>/dev/null | grep -qw "$slug"; then
-      :
-    else
-      run hermes profile create "$slug" --description "${domain} — ${tagline}"
-    fi
-  fi
 
   # Aliases (frontmatter `aliases:`) — alternate names that resolve to this
   # profile, e.g. `hermes -p design ...` → aglaea. CLI-only feature; there is no
