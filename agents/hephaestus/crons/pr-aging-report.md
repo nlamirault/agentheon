@@ -2,7 +2,7 @@
 name: pr-aging-report
 schedule: "0 11 * * 1"
 skill: incremental-implementation
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly PR aging report — stale, review-blocked, and approved-but-unmerged PRs across all repos.
 ---
 

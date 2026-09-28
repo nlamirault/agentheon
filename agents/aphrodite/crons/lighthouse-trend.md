@@ -2,7 +2,7 @@
 name: lighthouse-trend
 schedule: "0 8 * * 4"
 skill: web-perf
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly Lighthouse trend — performance, SEO, and best-practices scores for every published site URL.
 ---
 

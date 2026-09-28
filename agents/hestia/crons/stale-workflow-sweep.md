@@ -2,7 +2,7 @@
 name: stale-workflow-sweep
 schedule: "20 7 15 * *"
 skill: cicd-github-actions
-deliver: slack
+deliver: bot-chat:default
 summary: Monthly CI hygiene sweep — deprecated runners, tag-pinned actions, and dead workflows across all repos.
 ---
 

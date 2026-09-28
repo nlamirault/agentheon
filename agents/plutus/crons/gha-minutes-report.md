@@ -2,7 +2,7 @@
 name: gha-minutes-report
 schedule: "30 8 1 * *"
 skill: cost-management
-deliver: slack
+deliver: bot-chat:default
 summary: Monthly GitHub Actions minutes report — usage vs quota and top-burning repos across all owners.
 ---
 

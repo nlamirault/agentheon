@@ -2,7 +2,7 @@
 name: flaky-test-report
 schedule: "15 9 * * 5"
 skill: testing
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly CI reliability report — flaky and slow test signals from recent workflow runs.
 ---
 

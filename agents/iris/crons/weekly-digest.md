@@ -2,7 +2,7 @@
 name: weekly-digest
 schedule: "0 18 * * 0"
 skill: git-workflow
-deliver: slack
+deliver: bot-chat:default
 summary: Weekly rollup across all GitHub owners — PRs, issues, supply-chain, compliance.
 ---
 
