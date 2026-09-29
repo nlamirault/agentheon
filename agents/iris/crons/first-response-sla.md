@@ -1,9 +1,9 @@
 ---
 name: first-response-sla
-schedule: "0 10 * * 1-5"
+schedule: "0 12 * * 1"
 skill: git-workflow
 deliver: bot-chat:default
-summary: Weekday sweep for unanswered issues/PRs from first-time contributors — respond before they bounce.
+summary: Weekly Monday sweep for unanswered issues/PRs from first-time contributors — respond before they bounce.
 ---
 
 Find issues and PRs awaiting a first response across all my GitHub owners.

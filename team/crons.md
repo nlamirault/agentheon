@@ -19,7 +19,7 @@ owns it and is delivered to one channel. Sorted by name.
 | contributor-funnel | `15 9 * * 2` | iris | git-workflow | bot-chat:default | Weekly check that each active repo keeps enough open good-first-issue / help-wanted on-ramps. |
 | dep-version-drift | `0 6 1 * *` | daedalus | ci-cd-and-automation | bot-chat:default | Monthly toolchain drift report — inconsistent or EOL language/tool versions across all repos. |
 | dependency-audit | `0 8 * * 1` | nemesis | audit-and-reduce-dependencies | bot-chat:default | Weekly supply-chain scan — open Dependabot alerts and outdated dependencies across all repos. |
-| first-response-sla | `0 10 * * 1-5` | iris | git-workflow | bot-chat:default | Weekday sweep for unanswered issues/PRs from first-time contributors — respond before they bounce. |
+| first-response-sla | `0 12 * * 1` | iris | git-workflow | bot-chat:default | Weekly Monday sweep for unanswered issues/PRs from first-time contributors — respond before they bounce. |
 | flaky-test-report | `15 9 * * 5` | artemis | testing | bot-chat:default | Weekly CI reliability report — flaky and slow test signals from recent workflow runs. |
 | gha-minutes-report | `30 8 1 * *` | plutus | cost-management | bot-chat:default | Monthly GitHub Actions minutes report — usage vs quota and top-burning repos across all owners. |
 | license-audit | `45 9 1 * *` | themis | security-compliance | bot-chat:default | Monthly governance audit — LICENSE, SPDX headers, DCO, and contribution files across all repos. |
@@ -28,6 +28,6 @@ owns it and is delivered to one channel. Sorted by name.
 | priority-triage-digest | `15 9 * * 4` | kairos | planning-and-task-breakdown | bot-chat:default | Weekly priority digest — high-priority stale issues, milestone slippage, and unlabeled backlog. |
 | release-radar | `15 9 * * 1` | iris | shipping-and-launch | bot-chat:default | Weekly check for repos with merged work sitting unreleased since the last tag. |
 | security-sweep | `0 7 * * 1` | argus | security-and-hardening | bot-chat:default | Weekly security posture sweep — code scanning and secret scanning alerts across all repos. |
-| stale-issue-triage | `0 9 * * *` | iris | git-workflow | bot-chat:default | Daily sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close. |
+| stale-issue-triage | `0 6 * * 1` | iris | git-workflow | bot-chat:default | Weekly Monday sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close. |
 | stale-workflow-sweep | `20 7 15 * *` | hestia | cicd-github-actions | bot-chat:default | Monthly CI hygiene sweep — deprecated runners, tag-pinned actions, and dead workflows across all repos. |
 | weekly-digest | `0 18 * * 0` | iris | git-workflow | bot-chat:default | Weekly rollup across all GitHub owners — PRs, issues, supply-chain, compliance. |

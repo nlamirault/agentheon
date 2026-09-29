@@ -1,9 +1,9 @@
 ---
 name: stale-issue-triage
-schedule: "0 9 * * *"
+schedule: "0 6 * * 1"
 skill: git-workflow
 deliver: bot-chat:default
-summary: Daily sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close.
+summary: Weekly Monday sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close.
 ---
 
 Triage stale issues and pull requests across all my GitHub owners.
