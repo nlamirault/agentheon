@@ -14,9 +14,9 @@ Read-only. I reply myself.
 
 Steps:
 1. Open issues, no maintainer reply, <7d old:
-   gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state open --created '>'$(date -u -d '7 days ago' +%F 2>/dev/null || date -v-7d +%F) --sort created --json repository,number,title,author,commentsCount,createdAt
+   gh search issues --owner <each owner in the Targets table above> --state open --created '>'$(date -u -d '7 days ago' +%F 2>/dev/null || date -v-7d +%F) --sort created --json repository,number,title,author,commentsCount,createdAt
 2. Open PRs same window:
-   gh search prs --owner nlamirault --owner portefaix --owner pilotariak --state open --created '>'$(date -u -d '7 days ago' +%F 2>/dev/null || date -v-7d +%F) --sort created --json repository,number,title,author,createdAt
+   gh search prs --owner <each owner in the Targets table above> --state open --created '>'$(date -u -d '7 days ago' +%F 2>/dev/null || date -v-7d +%F) --sort created --json repository,number,title,author,createdAt
 3. Flag first-time authors (author-association FIRST_TIME_CONTRIBUTOR / NONE)
 4. Bucket by age: >48h waiting = breach
 

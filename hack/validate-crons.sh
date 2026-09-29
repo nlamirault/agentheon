@@ -50,6 +50,16 @@ TARGETS_FILE="${ROOT}/team/cron-targets.yaml"
 [[ -f "$TARGETS_FILE" ]] && ! grep -q '^owners:' "$TARGETS_FILE" \
   && err "team/cron-targets.yaml has no 'owners:' block"
 
+# The owner names under `owners:` — the single source a cron's {{TARGETS}} block
+# expands to. A cron body must never bake these names into a literal
+# `--owner <name>` flag: that duplicates the owner list and drifts the moment
+# cron-targets.yaml changes. Bodies reference the injected Targets table instead.
+OWNERS=""
+[[ -f "$TARGETS_FILE" ]] && OWNERS="$(awk '
+  /^owners:/ { inb=1; next }
+  inb && /^[^[:space:]]/ { inb=0 }
+  inb && /^[[:space:]]+[A-Za-z0-9_-]+:/ { gsub(/[[:space:]]/, ""); sub(/:.*/, ""); print }' "$TARGETS_FILE")"
+
 declare -A SLUGS
 count=0
 shopt -s nullglob
@@ -91,6 +101,13 @@ for file in "${AGENTS_DIR}"/*/crons/*.md; do
   # hardcoded owner list baked into the prompt.
   grep -q '{{TARGETS}}' "$file" \
     || err "${rel}: prompt is missing the {{TARGETS}} placeholder (owner scope comes from team/cron-targets.yaml)"
+
+  # ...and it must not also hardcode an owner name in a `--owner` flag: that
+  # re-duplicates the list {{TARGETS}} exists to own. Reference the Targets table.
+  for owner in $OWNERS; do
+    grep -q -- "--owner ${owner}" "$file" \
+      && err "${rel}: hardcodes '--owner ${owner}' — use the owners from the {{TARGETS}} table, not a literal name"
+  done
 done
 
 if [[ "$count" -eq 0 ]]; then

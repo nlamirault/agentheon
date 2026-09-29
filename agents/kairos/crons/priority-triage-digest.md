@@ -14,7 +14,7 @@ Iris triages stale issues by age; this is the priority-and-milestone lens — wh
 matters most and whether milestones are on track. Read-only report.
 
 Steps:
-1. Open issues:  gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state open --limit 100 --json repository,number,title,labels,createdAt,updatedAt  (milestone data comes from the milestones API in step 3 — `gh search issues` exposes no milestone field)
+1. Open issues:  gh search issues --owner <each owner in the Targets table above> --state open --limit 100 --json repository,number,title,labels,createdAt,updatedAt  (milestone data comes from the milestones API in step 3 — `gh search issues` exposes no milestone field)
 2. High priority stale: issues labelled priority (priority/high, P0, P1, critical, urgent — match loosely) with idle > 7 days
 3. Milestones: per repo, gh api repos/<owner>/<repo>/milestones --jq '.[] | {title, due_on, open_issues, closed_issues}' — flag milestones past due_on with open issues, or due within 14 days with > 30% still open
 4. Unlabeled backlog: open issues with no labels, oldest first
