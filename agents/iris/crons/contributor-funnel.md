@@ -14,9 +14,9 @@ Read-only.
 
 Steps:
 1. good-first-issue count:
-   gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state open --label "good first issue" --json repository,number,title
+   gh search issues --owner <each owner in the Targets table above> --state open --label "good first issue" --json repository,number,title
 2. help-wanted count:
-   gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state open --label "help wanted" --json repository,number,title
+   gh search issues --owner <each owner in the Targets table above> --state open --label "help wanted" --json repository,number,title
 3. Stale on-ramps: any good-first-issue open 60+ days (too hard, or unclaimed?)
 
 Format:

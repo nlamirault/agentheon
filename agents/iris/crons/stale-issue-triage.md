@@ -1,9 +1,9 @@
 ---
 name: stale-issue-triage
-schedule: "0 9 * * *"
+schedule: "0 6 * * 1"
 skill: git-workflow
 deliver: bot-chat:default
-summary: Daily sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close.
+summary: Weekly Monday sweep for issues and PRs gone quiet — surface what needs a nudge, a label, or a close.
 ---
 
 Triage stale issues and pull requests across all my GitHub owners.
@@ -14,8 +14,8 @@ An item is stale when it has had no update in 30+ days. Do not comment on or
 modify anything — this is a read-only report I act on myself.
 
 Steps:
-1. Stale open issues: gh search issues --owner nlamirault --owner portefaix --owner pilotariak --state open --updated '<'$(date -u -d '30 days ago' +%F 2>/dev/null || date -v-30d +%F) --sort updated --limit 50 --json repository,number,title,labels,updatedAt,commentsCount
-2. Stale open PRs:    gh search prs    --owner nlamirault --owner portefaix --owner pilotariak --state open --updated '<'$(date -u -d '30 days ago' +%F 2>/dev/null || date -v-30d +%F) --sort updated --limit 50 --json repository,number,title,author,updatedAt
+1. Stale open issues: gh search issues --owner <each owner in the Targets table above> --state open --updated '<'$(date -u -d '30 days ago' +%F 2>/dev/null || date -v-30d +%F) --sort updated --limit 50 --json repository,number,title,labels,updatedAt,commentsCount
+2. Stale open PRs:    gh search prs    --owner <each owner in the Targets table above> --state open --updated '<'$(date -u -d '30 days ago' +%F 2>/dev/null || date -v-30d +%F) --sort updated --limit 50 --json repository,number,title,author,updatedAt
 3. No-label issues:   from the open-issue set, flag any with zero labels (needs triage)
 4. Awaiting-response: PRs where the last activity was mine and the author has gone quiet 14+ days
 

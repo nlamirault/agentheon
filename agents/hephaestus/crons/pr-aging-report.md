@@ -14,7 +14,7 @@ Iris's weekly digest counts PRs; this is the actionable deep view — which PRs 
 stuck and why, so they get unstuck. Read-only report.
 
 Steps:
-1. Open PRs:    gh search prs --owner nlamirault --owner portefaix --owner pilotariak --state open --limit 100 --json repository,number,title,author,createdAt,updatedAt,isDraft
+1. Open PRs:    gh search prs --owner <each owner in the Targets table above> --state open --limit 100 --json repository,number,title,author,createdAt,updatedAt,isDraft
 2. Age & idle:  per PR compute age (now - createdAt) and idle time (now - updatedAt)
 3. Review state: per PR, gh pr view <n> --repo <repo> --json reviewDecision,reviews,mergeable
 4. Bucket each PR:
