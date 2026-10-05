@@ -69,13 +69,22 @@ agents-routing: ## Regenerate team/routing.md from agent frontmatter
 agents-routing-check: ## Fail if team/routing.md is out of sync with frontmatter
 	@./hack/gen-routing.sh --check
 
+.PHONY: agents-roster
+agents-roster: ## Regenerate team/roster.md (human who's-who) from agent frontmatter
+	@echo -e "$(INFO)$(INFO_COLOR)[Agents] Generating roster $(NO_COLOR)"
+	@./hack/gen-roster.sh
+
+.PHONY: agents-roster-check
+agents-roster-check: ## Fail if team/roster.md is out of sync with frontmatter
+	@./hack/gen-roster.sh --check
+
 .PHONY: agents-eval
 agents-eval: ## Run the Zeus routing eval golden set (static; --live for LLM)
 	@echo -e "$(INFO)$(INFO_COLOR)[Agents] Routing evals $(NO_COLOR)"
 	@./hack/eval-routing.sh
 
 .PHONY: agents-check
-agents-check: agents-validate agents-routing-check agents-eval ## Run all agent checks (validate + routing sync + evals)
+agents-check: agents-validate agents-routing-check agents-roster-check agents-eval ## Run all agent checks (validate + routing/roster sync + evals)
 
 ##@ Crons
 
