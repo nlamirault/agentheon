@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.5.0](https://github.com/nlamirault/agentheon/compare/v0.4.0...v0.5.0) (2026-10-05)
+
+
+### 🚀 Features
+
+* **crons:** add Iris open-source community crons ([#60](https://github.com/nlamirault/agentheon/issues/60)) ([5394276](https://github.com/nlamirault/agentheon/commit/5394276a660fd9b3bca3b07ae28a54e6a1e33894))
+* **crons:** add operational crons for specialist deities ([#61](https://github.com/nlamirault/agentheon/issues/61)) ([2678657](https://github.com/nlamirault/agentheon/commit/26786570f85d519ca95820235a12744ba608c246))
+* **crons:** scope owners via shared cron-targets.yaml with {{TARGETS}} ([#66](https://github.com/nlamirault/agentheon/issues/66)) ([1b4594d](https://github.com/nlamirault/agentheon/commit/1b4594dd5a8a41f3105aceeda328f70bfe38d85b))
+* **gateway:** add script to manage per-profile gateways ([#58](https://github.com/nlamirault/agentheon/issues/58)) ([57cab9a](https://github.com/nlamirault/agentheon/commit/57cab9a1d075e17f823128a06390458a660aad63))
+* **gateway:** multiplex crons through a single default gateway ([#59](https://github.com/nlamirault/agentheon/issues/59)) ([5717754](https://github.com/nlamirault/agentheon/commit/5717754e67a1f3ac873b57cb265fce747c47a307))
+* **gateway:** scope platform tokens to the default gateway ([#69](https://github.com/nlamirault/agentheon/issues/69)) ([d246481](https://github.com/nlamirault/agentheon/commit/d246481a26aa8e48f33d72ce97ca0368d3973483))
+* **model:** add global model override vars across install scripts ([#68](https://github.com/nlamirault/agentheon/issues/68)) ([2550807](https://github.com/nlamirault/agentheon/commit/2550807107d5d536e893f97cf480c6680044728e))
+* **profiles:** add behavioral soul depth, baseline contract, and roster ([#75](https://github.com/nlamirault/agentheon/issues/75)) ([397ba55](https://github.com/nlamirault/agentheon/commit/397ba5532591d12dd3376e144c62a29b0e730939))
+* **profiles:** add script to set model across all hermes profiles ([#63](https://github.com/nlamirault/agentheon/issues/63)) ([5a97ff5](https://github.com/nlamirault/agentheon/commit/5a97ff536af81e6b798ebb4f6958cf20251840b8))
+* **secrets:** symlink profile .env files to a shared secrets file ([#65](https://github.com/nlamirault/agentheon/issues/65)) ([ecdcd92](https://github.com/nlamirault/agentheon/commit/ecdcd928a9800d9e50a627a0924d1a3f4c5775ce))
+
+
+### 🐛 Bug Fixes
+
+* **crons:** correct gh search issues closed-date flags in weekly-digest ([#72](https://github.com/nlamirault/agentheon/issues/72)) ([58d1ec8](https://github.com/nlamirault/agentheon/commit/58d1ec8ec3bf4781e45e7ab020674bc883c5b0e6))
+* **crons:** correct invalid gh CLI fields and portability ([#73](https://github.com/nlamirault/agentheon/issues/73)) ([5f12c77](https://github.com/nlamirault/agentheon/commit/5f12c778806f8daa43cb02c86fab4b8f02921671))
+* **crons:** deliver via gateway bot-chat, not unresolvable slack ([#71](https://github.com/nlamirault/agentheon/issues/71)) ([e3bb556](https://github.com/nlamirault/agentheon/commit/e3bb556484b95908659433d940452fdaa027b934))
+* **crons:** monday reschedule and single-source owner scope ([#74](https://github.com/nlamirault/agentheon/issues/74)) ([bce4eec](https://github.com/nlamirault/agentheon/commit/bce4eecaf2f10c5fea3c04e39a055e8be08c7421))
+* **crons:** stagger schedules to eliminate collisions ([#67](https://github.com/nlamirault/agentheon/issues/67)) ([00a20a2](https://github.com/nlamirault/agentheon/commit/00a20a2d7f2a18f3725e1ce35155c7506e6080cc))
+* **crons:** switch cron delivery from telegram to slack ([#56](https://github.com/nlamirault/agentheon/issues/56)) ([320cec8](https://github.com/nlamirault/agentheon/commit/320cec8dec0b0b6cad602384686a5cf01e85a0cb))
+* **install:** create profile before vendoring skills ([#70](https://github.com/nlamirault/agentheon/issues/70)) ([a0807f0](https://github.com/nlamirault/agentheon/commit/a0807f01d0ef754f0922a76e7fc62ece59ec1ad0))
+
+
+### 🚨 Maintenance
+
+* **deps:** Bump astro from 7.1.1 to 7.2.8 in /web ([#62](https://github.com/nlamirault/agentheon/issues/62)) ([a5f4dae](https://github.com/nlamirault/agentheon/commit/a5f4dae42389ec1d7e7b9f37fdad55ef301d7755))
+
+
+### 📚 Documentation
+
+* **reference:** document agentheon.sh, set-model.sh and gateway.sh ([#64](https://github.com/nlamirault/agentheon/issues/64)) ([5aac9d3](https://github.com/nlamirault/agentheon/commit/5aac9d314aee2c4c65be25452ddba5265a17d505))
+
 ## [0.4.0](https://github.com/nlamirault/agentheon/compare/v0.3.0...v0.4.0) (2026-09-04)
 
 
