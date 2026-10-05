@@ -25,18 +25,21 @@ PASS/FAIL quality gates.
   structured handoff template.
 - **Generated routing matrix** — `team/routing.md` is compiled from each agent's
   frontmatter, giving Zeus a machine-readable map.
+- **Human roster** — `team/roster.md` is compiled from the same frontmatter,
+  grouped by tier with a "good fit" column for picking the right agent.
 
 ## Documentation
 
 Full docs live in [`docs/`](docs/README.md), organized with the
 [Diátaxis](https://diataxis.fr/) framework:
 
-| I want to...                      | Go to                                             |
-| --------------------------------- | ------------------------------------------------- |
-| Learn Agentheon from scratch      | [Tutorials](docs/tutorials/)                      |
-| Accomplish a specific task        | [How-to Guides](docs/how-to/)                     |
-| Look up an agent or convention    | [Reference](docs/reference/agents.md)             |
-| Understand how the pantheon works | [Explanation](docs/explanation/architecture.md)   |
+| I want to...                       | Go to                                           |
+| ---------------------------------- | ----------------------------------------------- |
+| Learn Agentheon from scratch       | [Tutorials](docs/tutorials/)                    |
+| Accomplish a specific task         | [How-to Guides](docs/how-to/)                   |
+| See who's who and when to use them | [Roster](team/roster.md)                        |
+| Look up an agent or convention     | [Reference](docs/reference/agents.md)           |
+| Understand how the pantheon works  | [Explanation](docs/explanation/architecture.md) |
 
 ## Contributing
 

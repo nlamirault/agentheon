@@ -136,6 +136,73 @@ persona_avoid() {
   printf '%s\n' "${out[@]}"
 }
 
+# big_five -> "Under Pressure" paragraph, driven by Neuroticism (composure) and
+# Conscientiousness (whether the agent protects its checks when time is short).
+# A behavioral section, not voice: how this agent acts when a gate is failing or
+# the clock is against it. Derived so all agents stay consistent.
+big_five_to_pressure() {
+  local bf="$1" n c line
+  n="$(printf '%s' "$bf" | grep -oE 'N[0-9]+' | tr -dc '0-9' || true)"
+  c="$(printf '%s' "$bf" | grep -oE 'C[0-9]+' | tr -dc '0-9' || true)"
+  if   [[ -n "$n" ]] && ((n<=20)); then line="You stay calm and deliberate — you slow down rather than speed up, check your assumptions, and rank the problems by evidence before acting."
+  elif [[ -n "$n" ]] && ((n<=40)); then line="You keep a steady hand — you triage to the highest-risk item first and state what is still unknown before you commit."
+  elif [[ -n "$n" ]] && ((n>=60)); then line="You can over-escalate — name the single most likely failure, act on that, and resist raising more alarms than the evidence supports."
+  else                                   line="You prioritize the highest-risk item first and report what remains uncertain rather than forcing false certainty."
+  fi
+  [[ -n "$c" ]] && ((c>=85)) && line+=" You protect the checks that matter even when time is short — never skip a gate or a verification to finish faster."
+  printf '%s' "$line"
+}
+
+# big_five + comm_style -> "Disagreement" paragraph, driven by Agreeableness
+# (how directly the agent pushes back) with a provenance/formal modifier. Defines
+# how this agent disputes another's output — central to review and the quality
+# gates, where an agent must be able to say "no" well.
+big_five_to_disagreement() {
+  local bf="$1" cs="$2" a line
+  a="$(printf '%s' "$bf" | grep -oE 'A[0-9]+' | tr -dc '0-9' || true)"
+  if   [[ -n "$a" ]] && ((a<=40)); then line="You say so directly and early — name the exact claim you dispute and give the evidence or test that would settle it. You do not defer to rank or soften a real objection into a suggestion."
+  elif [[ -n "$a" ]] && ((a>=60)); then line="You surface the objection plainly but kindly — state the specific point, show your reasoning, and leave the other agent room to respond. Warmth never means withholding the disagreement."
+  else                                   line="You pinpoint the specific premise or step you dispute and propose how to resolve it — evidence, a test, or the decision's owner. You engage the argument, not the agent."
+  fi
+  [[ "$cs" =~ [Pp]rovenance|[Ss]trict|[Ff]ormal|[Rr]igorous ]] && line+=" You back the objection with evidence, never assertion."
+  printf '%s' "$line"
+}
+
+# big_five -> "Blind Spots" bullets: the failure modes implied by this agent's
+# trait extremes, each paired with the compensating correction. A self-aware
+# limits section (the reference's "compensate deliberately"), so a persona carries
+# its own guard-rails instead of forcing the user to discover them.
+big_five_to_blindspots() {
+  local bf="$1" o c e a n
+  local -a out=()
+  o="$(printf '%s' "$bf" | grep -oE 'O[0-9]+' | tr -dc '0-9' || true)"
+  c="$(printf '%s' "$bf" | grep -oE 'C[0-9]+' | tr -dc '0-9' || true)"
+  e="$(printf '%s' "$bf" | grep -oE 'E[0-9]+' | tr -dc '0-9' || true)"
+  a="$(printf '%s' "$bf" | grep -oE 'A[0-9]+' | tr -dc '0-9' || true)"
+  n="$(printf '%s' "$bf" | grep -oE 'N[0-9]+' | tr -dc '0-9' || true)"
+  [[ -n "$o" ]] && ((o>=85)) && out+=("High openness can scatter focus — resist redesigning what already works; change only what the task needs.")
+  [[ -n "$o" ]] && ((o<=55)) && out+=("Low openness can reject the unfamiliar too fast — give a novel approach a fair hearing before dismissing it.")
+  [[ -n "$c" ]] && ((c>=90)) && out+=("High conscientiousness can tip into gold-plating — stop at the acceptance criteria; done beats perfect.")
+  [[ -n "$e" ]] && ((e<=35)) && out+=("Low expressiveness can under-communicate — say what you did and why, even when it feels obvious to you.")
+  [[ -n "$e" ]] && ((e>=75)) && out+=("High expressiveness can over-explain — lead with the answer, then keep the context short.")
+  [[ -n "$a" ]] && ((a<=40)) && out+=("Low agreeableness can read as cold or combative — keep the judgment, lose the edge.")
+  [[ -n "$a" ]] && ((a>=75)) && out+=("High agreeableness can dodge hard truths — say the uncomfortable thing when the work needs it.")
+  [[ -n "$n" ]] && ((n<=15)) && out+=("Very low anxiety can underweight real risk — actively look for what could go wrong before declaring done.")
+  [[ ${#out[@]} -eq 0 ]] && out+=("Your traits are balanced — the main risk is drifting toward generic output; keep your domain's specific judgment sharp.")
+  printf '%s\n' "${out[@]}"
+}
+
+# Extract the injectable section of the shared baseline safety contract
+# (team/baseline-contract.md) — everything between the CONTRACT:BEGIN/END
+# markers, so every agent's SOUL.md carries the identical "Non-Negotiable
+# Boundaries" block, edited in one place. Empty (section omitted) if the file is
+# absent, so the generator never hard-fails on a missing contract.
+BASELINE_CONTRACT="${TEAM_DIR}/baseline-contract.md"
+baseline_contract() {
+  [[ -f "$BASELINE_CONTRACT" ]] || return 0
+  awk '/CONTRACT:BEGIN/ { f=1; next } /CONTRACT:END/ { f=0 } f' "$BASELINE_CONTRACT"
+}
+
 # --- pass 1: build the sibling lookup used to render handoff routes --------
 
 declare -A NAME DOMAIN TAGLINE MODEL REASON HANDS ALIASES
@@ -303,11 +370,28 @@ for file in "${AGENTS_DIR}"/*/README.md; do
     echo "## Avoid"
     persona_avoid "$comm_style" "$big_five" | sed 's/^/- /'
     echo
+    if [[ -n "$big_five" ]]; then
+      echo "## Under Pressure"
+      big_five_to_pressure "$big_five"
+      printf '\n\n'
+      echo "## Disagreement"
+      big_five_to_disagreement "$big_five" "$comm_style"
+      printf '\n\n'
+      echo "## Blind Spots"
+      echo "A strong persona carries its own limits so the user never has to discover them. Watch for these and compensate:"
+      big_five_to_blindspots "$big_five" | sed 's/^/- /'
+      echo
+    fi
     echo "## Defaults"
     if [[ -n "$default" ]]; then
       echo "${default}"
     else
       echo "When a request is ambiguous, lead with your most likely reading, state the assumption in one line, and proceed — ask only when the ambiguity would change the outcome."
+    fi
+    contract="$(baseline_contract)"
+    if [[ -n "$contract" ]]; then
+      echo
+      printf '%s\n' "$contract"
     fi
     echo "<!-- AGENTHEON:END -->"
   } > "$gen"
