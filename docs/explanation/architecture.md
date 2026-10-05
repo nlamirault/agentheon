@@ -30,7 +30,9 @@ and Zeus itself does no specialist work. This keeps three concerns apart:
 Centralizing routing means the map of "who does what" lives in exactly one
 model of the system — the `handoffs` edges declared across the agent profiles,
 compiled into `team/routing.md`. There is no implicit, tribal knowledge of how
-work flows; it is machine-readable.
+work flows; it is machine-readable. The same frontmatter also compiles into
+[`team/roster.md`](../../team/roster.md), the human-facing companion that groups
+agents by tier with a "good fit" column for picking one by hand.
 
 ## Why a strategy tier
 
@@ -71,6 +73,41 @@ a structured From/To document carrying phase, context, files, acceptance
 criteria, and evidence. Context travels *with* the work, so each agent starts
 where the previous one left off instead of re-deriving it.
 
+## Why persona and config are separate
+
+Each agent is defined by exactly one file — `agents/<name>/README.md` and its
+frontmatter — but the installer derives **three** artifacts from it, each with a
+single concern:
+
+- **`SOUL.md` — who the agent is.** Identity, voice, and behavioral stance. The
+  persona traits (`archetype`, `big_five`, `comm_style`) are translated into
+  prose, and from `big_five` the generator derives how the agent behaves at the
+  moments that matter in a multi-agent team: **Under Pressure** (a failing gate,
+  a short clock), **Disagreement** (how it disputes another agent's output), and
+  **Blind Spots** (its own failure modes, each with a compensating correction).
+  The point is *behavioral differentiation* — agents that reason and fail
+  differently, not merely sound different.
+- **`config.yaml` — how the agent runs.** Model, reasoning effort, toolsets,
+  skills. Purely operational; carries no identity.
+- **`AGENTS.md` — what the agent does.** Project mechanics: scope (`does` /
+  `does_not`), handoff routes, shared-context pointers, and the finalization
+  gate.
+
+Keeping identity apart from runtime config is deliberate. A SOUL file that mixes
+in file paths, tool lists, or workflow steps reads as weaker identity, and the
+persona stays portable and model-agnostic — the same SOUL can run on a different
+model by changing only `config.yaml`. For the same reason, credentials, memory,
+cron schedules, and MCP servers are **never** part of the persona; they live in
+runtime config and secret stores (see [ADR 0003](../decisions/0003-secret-management.md)).
+
+Underneath every persona sits one shared floor. The
+[baseline contract](../../team/baseline-contract.md) — authorization scope,
+least privilege, destructive-action confirmation, bounded security work, and
+evidence over claims — is injected verbatim into every `SOUL.md` as
+**Non-Negotiable Boundaries**. It is written once and identical everywhere, and
+it **outranks persona**: when a deity's character and the contract conflict, the
+contract wins.
+
 ## How the pieces fit
 
 ```text
@@ -103,4 +140,6 @@ declared handoff routes.
 
 - [`team/company.md`](../../team/company.md) — the working principles in full
 - [`team/workflow.md`](../../team/workflow.md) — the loop and every gate
+- [`team/baseline-contract.md`](../../team/baseline-contract.md) — the shared safety floor
+- [`team/roster.md`](../../team/roster.md) — who's who, grouped by tier
 - [Agent catalog](../reference/agents.md) — every agent and its domain
